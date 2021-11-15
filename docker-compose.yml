@@ -1,8 +1,4 @@
-version: '3.8'
-
-networks:
-  aecr_net:
-    driver: bridge
+version: '3.7'
 
 services:
   db:
