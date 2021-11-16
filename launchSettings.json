@@ -1,19 +1,21 @@
 {
   "profiles": {
-    "Docker Compose": {
+    "Docker Compose MeltBot": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
         "db": "StartWithoutDebugging",
-        "kiarapi": "StartDebugging"
+        "kiarapi": "DoNotStart",
+        "meltbot": "StartDebugging"
       }
     },
-    "Docker Compose Prod": {
+    "Docker Compose KiarApi": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
         "db": "StartWithoutDebugging",
-        "kiarapi": "StartWithoutDebugging"
+        "kiarapi": "StartDebugging",
+        "meltbot": "DoNotStart"
       }
     }
   }

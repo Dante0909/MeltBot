@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MeltBot": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

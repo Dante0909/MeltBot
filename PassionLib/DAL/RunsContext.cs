@@ -13,6 +13,20 @@ namespace PassionLib.DAL
         public RunsContext(DbContextOptions<RunsContext> options) : base(options)
         {
         }
+        public RunsContext() : base()
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_postgres");
+                Console.WriteLine(connectionString);
+                optionsBuilder.UseNpgsql(connectionString);
+            }
+            base.OnConfiguring(optionsBuilder);
+        }
 
         public DbSet<Run> Runs => Set<Run>();
         public DbSet<User> Users => Set<User>();
