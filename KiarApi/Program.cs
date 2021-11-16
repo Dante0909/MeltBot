@@ -31,13 +31,16 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 
-    using (var scope = app.Services.CreateScope())
+    var doDbRecreation = bool.Parse(Environment.GetEnvironmentVariable("DO_DB_RECREATION") ?? "false");
+    if (doDbRecreation)
     {
-        var context = scope.ServiceProvider.GetRequiredService<RunsContext>();
-        context.Database.EnsureDeleted();
-        /*context.Database.EnsureCreated();*/
-        context.Database.Migrate();
-        RunDbInitializer.Initialize(context);
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<RunsContext>();
+            context.Database.EnsureDeleted();
+            context.Database.Migrate();
+            RunDbInitializer.Initialize(context);
+        }
     }
 }
 
