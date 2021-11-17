@@ -24,6 +24,15 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
 
         }
+        [Command("start")]
+        public async Task Start(CommandContext ctx)
+        {
+            if (ctx.User.Id == 290938252540641290)
+            {
+
+            }
+        }
+
         [Command("temprun")]
         public async Task TempRun(CommandContext ctx,
             [Description("Name or id of the quest")] string quest,
@@ -31,56 +40,59 @@ namespace MeltBot.Modules
             [Description("Link of the run")] string runLink,
             [Description("Additional params")] params string[] link)
         {
-            User user = null;
-            var q = GetQuest(quest);
-            var d = GetServant(dps);
-            Console.WriteLine(q.JpName);
-            Console.WriteLine(d.JpName);
-            if (q is null)
+
+            try
             {
-                await ctx.Channel.SendMessageAsync($"Quest {quest} does not exist.");
-                return;
-            }
-            if(d is null)
-            {
-                await ctx.Channel.SendMessageAsync($"Servant {dps} does not exist.");
-                return;
-            }
-            
-            var discordUser = ctx.User;
-            var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id).Select(u => u).ToList();
-            if (users is not null && users.Any())
-            {
-                foreach (var u in users)
+                User user = null;
+
+                var q = GetQuest(quest);
+                var d = GetServant(dps);
+
+
+                var discordUser = ctx.User;
+                var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id).Select(u => u).ToList();
+                if (users is not null && users.Any())
                 {
-                    if(discordUser.Discriminator == u.DiscordDiscriminator && discordUser.Username == u.DiscordUsername)
+                    foreach (var u in users)
                     {
-                        user = u;
-                        //means that the exact user was found
-                        break;
+                        if (discordUser.Discriminator == u.DiscordDiscriminator && discordUser.Username == u.DiscordUsername)
+                        {
+                            user = u;
+                            //means that the exact user was found
+                            break;
+                        }
                     }
                 }
+                if (user is null) user = new User()
+                {
+                    DiscordDiscriminator = discordUser.Discriminator,
+                    DiscordSnowflake = (long)discordUser.Id,
+                    DiscordUsername = discordUser.Username
+                };
+                //var run = new Run()
             }
-            if (user is null) user = new User()
+            catch (Exception ex)
             {
-                DiscordDiscriminator = discordUser.Discriminator,
-                DiscordSnowflake = (long)discordUser.Id,
-                DiscordUsername = discordUser.Username
-            };
-            //var run = new Run()
+                Console.WriteLine(ex);
+                await ctx.Channel.SendMessageAsync(ex.Message);
+            }
+
         }
 
         //These two commmands should not be in this class
         private Quest GetQuest(string quest)
         {
             Quest q = null;
-            if(int.TryParse(quest, out int id))
+            if (int.TryParse(quest, out int id))
             {
-                q = Context.Quests.Where(x => x.Id == id).FirstOrDefault() ?? null;
+                q = Context.Quests.Where(x => x.Id == id).FirstOrDefault();
+                if (q is null) throw new Exception($"Quest {quest} could not be found.");
             }
             else
             {
-                q = Context.QuestAliases.Where(x => x.Nickname == quest).FirstOrDefault().Quest ?? null;
+                q = Context.QuestAliases.Where(x => x.Nickname == quest).FirstOrDefault()?.Quest;
+                if (q is null) throw new Exception($"Quest {quest} could not be found.");
+
             }
             return q;
         }
@@ -90,11 +102,13 @@ namespace MeltBot.Modules
             Servant d = null;
             if (int.TryParse(dps, out int id))
             {
-                d = Context.Servants.Where(x => x.Id == id).FirstOrDefault() ?? null;
+                d = Context.Servants.Where(x => x.Id == id).FirstOrDefault();
+                if (d is null) throw new Exception($"Servant {dps} could not be found.");
             }
             else
             {
-                d = Context.ServantAliases.Where(x => x.Nickname == dps).FirstOrDefault().Servant ?? null;
+                d = Context.ServantAliases.Where(x => x.Nickname == dps).FirstOrDefault()?.Servant;
+                if (d is null) throw new Exception($"Servant {dps} could not be found.");
             }
             return d;
         }
