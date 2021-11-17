@@ -17,7 +17,8 @@ using (var context = new RunsContext())
     var woahnilandRerunCq = context.Quests.FirstOrDefault(o => o.Id == 94042801);
     context.Runs.Add(new Run(woahnilandRerunCq, "https://youtu.be/-BcOMkFBXng"));
     context.SaveChanges();
-}
 
+    
+}
 var bot = new MeltBot.Bot();
 bot.RunAsync().GetAwaiter().GetResult();

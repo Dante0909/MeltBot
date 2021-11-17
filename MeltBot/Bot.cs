@@ -1,6 +1,8 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.DependencyInjection;
+using PassionLib.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,7 @@ namespace MeltBot
 {
     internal class Bot
     {
+        
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
         public async Task RunAsync()
@@ -30,8 +33,11 @@ namespace MeltBot
 
             Client.Ready += OnClientReady;
 
+            var services = new ServiceCollection().AddSingleton<RunsContext>().BuildServiceProvider();
+
             var commandsConfig = new CommandsNextConfiguration
             {
+                Services = services,
                 IgnoreExtraArguments = true,
                 StringPrefixes = new string[] { "%" },
                 EnableDms = true,

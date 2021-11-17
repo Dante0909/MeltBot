@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PassionLib.DAL;
@@ -11,9 +12,10 @@ using PassionLib.DAL;
 namespace PassionLib.Migrations
 {
     [DbContext(typeof(RunsContext))]
-    partial class RunsContextModelSnapshot : ModelSnapshot
+    [Migration("20211117051713_AddDpsToRun_and_DiscriminatorToString")]
+    partial class AddDpsToRun_and_DiscriminatorToString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,20 +29,11 @@ namespace PassionLib.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CnName")
-                        .HasColumnType("text");
-
                     b.Property<string>("JpName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("KrName")
-                        .HasColumnType("text");
-
                     b.Property<string>("NaName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TwName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -68,20 +61,11 @@ namespace PassionLib.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CnName")
-                        .HasColumnType("text");
-
                     b.Property<string>("JpName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("KrName")
-                        .HasColumnType("text");
-
                     b.Property<string>("NaName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TwName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -109,20 +93,11 @@ namespace PassionLib.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CnName")
-                        .HasColumnType("text");
-
                     b.Property<string>("JpName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("KrName")
-                        .HasColumnType("text");
-
                     b.Property<string>("NaName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TwName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -207,20 +182,11 @@ namespace PassionLib.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CnName")
-                        .HasColumnType("text");
-
                     b.Property<string>("JpName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("KrName")
-                        .HasColumnType("text");
-
                     b.Property<string>("NaName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TwName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

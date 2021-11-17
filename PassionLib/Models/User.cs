@@ -11,7 +11,7 @@ namespace PassionLib.Models
     {
         public int Id { get; set; }
         public string? DiscordUsername { get; set; }
-        public short? DiscordDiscriminator { get; set; }
+        public string? DiscordDiscriminator { get; set; }
         public long? DiscordSnowflake { get; set; }
 
     }

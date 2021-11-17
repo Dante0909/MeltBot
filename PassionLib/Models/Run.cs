@@ -12,6 +12,11 @@ namespace PassionLib.Models
 {
     public class Run
     {
+        public Run(Quest quest, string runUrl, User submitter) : this(quest, runUrl)
+        {
+            Submitter = submitter;
+
+        }
         public Run(Quest quest, string runUrl) : this(runUrl) => Quest = quest;
         private Run(string runUrl) => RunUrl = runUrl;
         // EF complains if there's no reference-less constructor, see https://stackoverflow.com/a/55750607
@@ -20,6 +25,8 @@ namespace PassionLib.Models
         public int Id { get; set; }
         public virtual Quest Quest { get; set; }
         public short? Phase { get; set; }
+
+        public short Dps { get; set; }
         public virtual List<PartySlot> Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
         public DateTime? RunDate { get; set; }

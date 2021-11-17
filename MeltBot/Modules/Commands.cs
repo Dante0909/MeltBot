@@ -1,6 +1,8 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using PassionLib.DAL;
+using PassionLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +13,90 @@ namespace MeltBot.Modules
 {
     internal class Commands : BaseCommandModule
     {
+        public RunsContext Context { private get; set; }
 
         [Command("ping")]
         [Description("Returns pong")]
         public async Task Ping(CommandContext ctx)
         {
+
+
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
 
+        }
+        [Command("temprun")]
+        public async Task TempRun(CommandContext ctx,
+            [Description("Name or id of the quest")] string quest,
+            [Description("Name or id of the dps")] string dps,
+            [Description("Link of the run")] string runLink,
+            [Description("Additional params")] params string[] link)
+        {
+            User user = null;
+            var q = GetQuest(quest);
+            var d = GetServant(dps);
+            Console.WriteLine(q.JpName);
+            Console.WriteLine(d.JpName);
+            if (q is null)
+            {
+                await ctx.Channel.SendMessageAsync($"Quest {quest} does not exist.");
+                return;
+            }
+            if(d is null)
+            {
+                await ctx.Channel.SendMessageAsync($"Servant {dps} does not exist.");
+                return;
+            }
+            
+            var discordUser = ctx.User;
+            var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id).Select(u => u).ToList();
+            if (users is not null && users.Any())
+            {
+                foreach (var u in users)
+                {
+                    if(discordUser.Discriminator == u.DiscordDiscriminator && discordUser.Username == u.DiscordUsername)
+                    {
+                        user = u;
+                        //means that the exact user was found
+                        break;
+                    }
+                }
+            }
+            if (user is null) user = new User()
+            {
+                DiscordDiscriminator = discordUser.Discriminator,
+                DiscordSnowflake = (long)discordUser.Id,
+                DiscordUsername = discordUser.Username
+            };
+            //var run = new Run()
+        }
+
+        //These two commmands should not be in this class
+        private Quest GetQuest(string quest)
+        {
+            Quest q = null;
+            if(int.TryParse(quest, out int id))
+            {
+                q = Context.Quests.Where(x => x.Id == id).FirstOrDefault() ?? null;
+            }
+            else
+            {
+                q = Context.QuestAliases.Where(x => x.Nickname == quest).FirstOrDefault().Quest ?? null;
+            }
+            return q;
+        }
+
+        private Servant GetServant(string dps)
+        {
+            Servant d = null;
+            if (int.TryParse(dps, out int id))
+            {
+                d = Context.Servants.Where(x => x.Id == id).FirstOrDefault() ?? null;
+            }
+            else
+            {
+                d = Context.ServantAliases.Where(x => x.Nickname == dps).FirstOrDefault().Servant ?? null;
+            }
+            return d;
         }
         //I commented all the commands, I just copypastad commands that are old and outdated.
         /*
