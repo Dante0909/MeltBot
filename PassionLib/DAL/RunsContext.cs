@@ -40,6 +40,7 @@ namespace PassionLib.DAL
         public DbSet<MysticCodeAlias> MysticCodeAliases => Set<MysticCodeAlias>();
         public DbSet<QuestAlias> QuestAliases => Set<QuestAlias>();
         public DbSet<ServantAlias> ServantAliases => Set<ServantAlias>();
+        public DbSet<Pong> Pongs => Set<Pong>();
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {

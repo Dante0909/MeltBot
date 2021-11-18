@@ -19,17 +19,114 @@ namespace MeltBot.Modules
         [Description("Returns pong")]
         public async Task Ping(CommandContext ctx)
         {
-
-
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
-
         }
+        [Hidden]
+        [Command("woahreceive")]
+        public async Task AddPing(CommandContext ctx, string mention)
+        {
+            try
+            {
+                if (ctx.User.Id == 290938252540641290)
+                {
+
+                    Context.Pongs.Add(new Pong() { UserMention = mention });
+                    Context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message);
+            }
+        }
+
+        [Hidden]
+        [Command("woahreceive")]
+        public async Task AddPing(CommandContext ctx)
+        {
+            try
+            {
+
+                Context.Pongs.Add(new Pong() { UserMention = ctx.User.Mention });
+                await ctx.Channel.SendMessageAsync("Embrace woah");
+                Context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message);
+            }
+        }
+        [Hidden]
+        [Command("woahditch")]
+        public async Task ByePing(CommandContext ctx, string mention)
+        {
+            try
+            {
+                if (ctx.User.Id == 290938252540641290)
+                {
+                    Pong? p = Context.Pongs.Where(x => x.UserMention == mention).FirstOrDefault();
+                    if (p is not null)
+                    {
+                        Context.Pongs.Remove(p);
+                        Context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message);
+            }
+        }
+
+        [Hidden]
+        [Command("woahditch")]
+        public async Task ByePing(CommandContext ctx)
+        {
+            try
+            {
+                Pong? p = Context.Pongs.Where(x => x.UserMention == ctx.User.Mention).FirstOrDefault();
+                if (p is not null)
+                {
+                    Context.Pongs.Remove(p);
+                    await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:");
+                    Context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message);
+            }
+        }
+
+        [Hidden]
         [Command("start")]
         public async Task Start(CommandContext ctx)
         {
-            if (ctx.User.Id == 290938252540641290)
+            try
             {
-
+                if (ctx.User.Id == 290938252540641290)
+                {
+                    var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
+                    while (true)
+                    {
+                        string message = ":woahgiver: ";
+                        foreach(Pong p in Context.Pongs)
+                        {
+                            message += p.UserMention + " ";
+                        }
+                        await ctx.Channel.SendMessageAsync(message);
+                        //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
+                        await Task.Delay(1000 * 60 * 60 * 24).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 
@@ -82,7 +179,7 @@ namespace MeltBot.Modules
         //These two commmands should not be in this class
         private Quest GetQuest(string quest)
         {
-            Quest q = null;
+            Quest? q = null;
             if (int.TryParse(quest, out int id))
             {
                 q = Context.Quests.Where(x => x.Id == id).FirstOrDefault();
@@ -99,7 +196,7 @@ namespace MeltBot.Modules
 
         private Servant GetServant(string dps)
         {
-            Servant d = null;
+            Servant? d = null;
             if (int.TryParse(dps, out int id))
             {
                 d = Context.Servants.Where(x => x.Id == id).FirstOrDefault();

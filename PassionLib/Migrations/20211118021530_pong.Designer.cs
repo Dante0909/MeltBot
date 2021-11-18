@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PassionLib.DAL;
@@ -11,9 +12,10 @@ using PassionLib.DAL;
 namespace PassionLib.Migrations
 {
     [DbContext(typeof(RunsContext))]
-    partial class RunsContextModelSnapshot : ModelSnapshot
+    [Migration("20211118021530_pong")]
+    partial class pong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,16 +104,6 @@ namespace PassionLib.Migrations
                     b.HasIndex("MysticCodeId");
 
                     b.ToTable("MysticCodeAliases");
-                });
-
-            modelBuilder.Entity("PassionLib.Models.Pong", b =>
-                {
-                    b.Property<string>("UserMention")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserMention");
-
-                    b.ToTable("Pongs");
                 });
 
             modelBuilder.Entity("PassionLib.Models.Quest", b =>
