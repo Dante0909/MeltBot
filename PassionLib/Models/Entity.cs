@@ -24,5 +24,6 @@ namespace PassionLib.Models
         public string? TwName { get; set; }
         public string? CnName { get; set; }
         public string? KrName { get; set; }
+        
     }
 }

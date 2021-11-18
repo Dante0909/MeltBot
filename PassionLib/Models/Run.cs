@@ -12,10 +12,11 @@ namespace PassionLib.Models
 {
     public class Run
     {
-        public Run(Quest quest, string runUrl, User submitter) : this(quest, runUrl)
+        //I think only this one should be used
+        public Run(Quest quest, string runUrl, Servant servant, User submitter) : this(quest, runUrl)
         {
             Submitter = submitter;
-
+            Dps = servant;
         }
         public Run(Quest quest, string runUrl) : this(runUrl) => Quest = quest;
         private Run(string runUrl) => RunUrl = runUrl;
@@ -26,14 +27,21 @@ namespace PassionLib.Models
         public virtual Quest Quest { get; set; }
         public short? Phase { get; set; }
 
-        public short Dps { get; set; }
+        public virtual Servant Dps { get; set; }
         public virtual List<PartySlot> Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
         public DateTime? RunDate { get; set; }
         public string RunUrl { get; set; }
         public int? CsUsed { get; set; }
         public int? RevivesUsed { get; set; }
+        public bool? Failure { get; set; } = false;
+        public short? Cost { get; set; }
+        public bool? Rta { get; set; } = false;
+        public short? ServantCount { get; set; } = 6;
+        public bool? NoCeDps { get; set; } = false;
+        public bool? NoDupe { get; set; } = false;
         public string? Misc { get; set; }
+
         [JsonIgnoreAttribute]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;

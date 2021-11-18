@@ -29,7 +29,6 @@ namespace MeltBot.Modules
             {
                 if (ctx.User.Id == 290938252540641290)
                 {
-
                     Context.Pongs.Add(new Pong() { UserMention = mention });
                     Context.SaveChanges();
                 }
@@ -47,7 +46,6 @@ namespace MeltBot.Modules
         {
             try
             {
-
                 Context.Pongs.Add(new Pong() { UserMention = ctx.User.Mention });
                 await ctx.Channel.SendMessageAsync("Embrace woah");
                 Context.SaveChanges();
@@ -114,7 +112,7 @@ namespace MeltBot.Modules
                     while (true)
                     {
                         string message = ":woahgiver: ";
-                        foreach(Pong p in Context.Pongs)
+                        foreach (Pong p in Context.Pongs)
                         {
                             message += p.UserMention + " ";
                         }
@@ -134,28 +132,22 @@ namespace MeltBot.Modules
         public async Task TempRun(CommandContext ctx,
             [Description("Name or id of the quest")] string quest,
             [Description("Name or id of the dps")] string dps,
-            [Description("Link of the run")] string runLink,
-            [Description("Additional params")] params string[] link)
+            [Description("Link of the run")] string runUrl,
+            [Description("Additional params")] params string[] args)
         {
-
             try
             {
                 User user = null;
-
-                var q = GetQuest(quest);
-                var d = GetServant(dps);
-
-
                 var discordUser = ctx.User;
-                var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id).Select(u => u).ToList();
+                var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id)?.ToList();
                 if (users is not null && users.Any())
                 {
                     foreach (var u in users)
                     {
                         if (discordUser.Discriminator == u.DiscordDiscriminator && discordUser.Username == u.DiscordUsername)
                         {
-                            user = u;
                             //means that the exact user was found
+                            user = u;
                             break;
                         }
                     }
@@ -166,7 +158,9 @@ namespace MeltBot.Modules
                     DiscordSnowflake = (long)discordUser.Id,
                     DiscordUsername = discordUser.Username
                 };
-                //var run = new Run()
+                List<PartySlot>? party = null;//Insert your program output
+                Run run = DbHelper.CreateRun(Context, quest, runUrl, dps, user, party, args);
+
             }
             catch (Exception ex)
             {
@@ -177,38 +171,7 @@ namespace MeltBot.Modules
         }
 
         //These two commmands should not be in this class
-        private Quest GetQuest(string quest)
-        {
-            Quest? q = null;
-            if (int.TryParse(quest, out int id))
-            {
-                q = Context.Quests.Where(x => x.Id == id).FirstOrDefault();
-                if (q is null) throw new Exception($"Quest {quest} could not be found.");
-            }
-            else
-            {
-                q = Context.QuestAliases.Where(x => x.Nickname == quest).FirstOrDefault()?.Quest;
-                if (q is null) throw new Exception($"Quest {quest} could not be found.");
 
-            }
-            return q;
-        }
-
-        private Servant GetServant(string dps)
-        {
-            Servant? d = null;
-            if (int.TryParse(dps, out int id))
-            {
-                d = Context.Servants.Where(x => x.Id == id).FirstOrDefault();
-                if (d is null) throw new Exception($"Servant {dps} could not be found.");
-            }
-            else
-            {
-                d = Context.ServantAliases.Where(x => x.Nickname == dps).FirstOrDefault()?.Servant;
-                if (d is null) throw new Exception($"Servant {dps} could not be found.");
-            }
-            return d;
-        }
         //I commented all the commands, I just copypastad commands that are old and outdated.
         /*
         [Command("run")]
