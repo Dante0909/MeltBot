@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PassionLib.Models
 {
-    public class CraftEssence : Entity
+    public class CraftEssence : CollectionEntity
     {
         public CraftEssence(int id, string jpName) : base(id, jpName)
         {

@@ -22,7 +22,7 @@ namespace PassionLib.DAL
                 woahnilandRerunCq = new Quest(94042801,
                                               "【高難易度】護法少女スペシャルヒーローショー");
                 woahnilandRerunCq.NaName =    "[High Difficulty] Magifender Girls Special Hero Show";
-                context.Quests.Add(woahnilandRerunCq);
+                //context.Quests.Add(woahnilandRerunCq);
             }
 
             var runs = new Run[]
@@ -32,9 +32,9 @@ namespace PassionLib.DAL
                 new Run(woahnilandRerunCq, "https://youtu.be/gwwTwJ1F9WY"),
                 new Run(woahnilandRerunCq, "https://youtu.be/7ZrAoqPJ4qw")
            };
-            context.Runs.AddRange(runs);
+            //context.Runs.AddRange(runs);
 
-            context.SaveChanges();
+            //context.SaveChanges();
         }
     }
 }

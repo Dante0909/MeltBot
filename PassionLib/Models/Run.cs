@@ -35,12 +35,16 @@ namespace PassionLib.Models
         public int? CsUsed { get; set; }
         public int? RevivesUsed { get; set; }
         public bool? Failure { get; set; } = false;
-        public short? Cost { get; set; }
         public bool? Rta { get; set; } = false;
-        public short? ServantCount { get; set; } = 6;
-        public bool? NoCeDps { get; set; } = false;
-        public bool? NoDupe { get; set; } = false;
         public string? Misc { get; set; }
+
+        //These can be inferred from party or entered through argument
+        public short? Cost { get; set; }//through image recognition or adding costs from each servant
+        public short? ServantCount { get; set; } = 6;
+        public bool? NoCe { get; set; } = false;
+        public bool? NoCeDps { get; set; } = false;
+        public bool? NoEventCeDps { get; set; } = false;
+        public bool? NoDupe { get; set; } = false;
 
         [JsonIgnoreAttribute]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -56,8 +60,10 @@ namespace PassionLib.Models
     {
         [Key]
         public int Id { get; set; }
-        public virtual Servant? Servant { get; set; }
-        public virtual CraftEssence? CraftEssence { get; set; }
-        public bool? CraftEssenceMlb { get; set; }
+        public virtual Servant? Servant { get; set; } = null;
+        public virtual CraftEssence? CraftEssence { get; set; } = null;
+        public bool? CraftEssenceMlb { get; set; } = null;
+        public short? Slot { get; set; } = null;
+        public short? TotalAttack { get; set; } = null;
     }
 }

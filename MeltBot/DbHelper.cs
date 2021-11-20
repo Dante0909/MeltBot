@@ -16,14 +16,19 @@ namespace MeltBot
             Servant dps = GetServant(context, strDps);
             if (Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : {runUrl}");
             if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists.");
+
+            List<PartySlot>? p = party;
+
             Run run = new Run(quest, runUrl, dps, user);
-            if (party is not null)
+            if (p is not null)
             {
 
-                run.Party = party;
+                run.Party = p;
                 //ask if craft essence/servant are null
             }
-            /*
+
+
+            //Do not open unless you want suicidal thoughts 
             if (args is not null && !args.Any())
             {
                 for (int i = 0; i < args.Length; ++i)
@@ -38,7 +43,7 @@ namespace MeltBot
                     if (s.StartsWith("cs"))
                     {
                         s = s.Substring(2);
-                        if(short.TryParse(s, out short n))
+                        if (short.TryParse(s, out short n))
                         {
                             run.CsUsed = n;
                         }
@@ -48,9 +53,9 @@ namespace MeltBot
                         }
                         continue;
                     }
-                    if (s.StartsWith("r"))
+                    if (s.StartsWith("rev"))
                     {
-                        s = s.Substring(1);
+                        s = s.Substring(3);
                         if (short.TryParse(s, out short n))
                         {
                             run.RevivesUsed = n;
@@ -66,8 +71,7 @@ namespace MeltBot
                         s = s.Substring(4);
                         if (short.TryParse(s, out short n) && n >= 0)
                         {
-                            party = party is null ? new Party() : party;
-                            party.Cost = n;
+                            run.Cost = n;
                             continue;
                         }
                         else
@@ -78,131 +82,164 @@ namespace MeltBot
                     if (s.StartsWith("mc"))
                     {
                         s = s.Substring(2);
-                        party = party is null ? new Party() : party;
-                        party.MysticCode = s;
+                        MysticCode? mc = null;
+                        if (int.TryParse(s, out int n) && n >= 0)
+                        {
+                            mc = context.MysticCodes.FirstOrDefault(x => x.Id == n);
+                        }
+                        else
+                        {
+                            mc = context.MysticCodeAliases.FirstOrDefault(x => x.Nickname == s)?.MysticCode;
+                        }
+                        if (mc is null) throw new Exception($"{s} could not be recognized as a mystic code id or nickname.");
+                        run.MysticCode = mc;
                         continue;
                     }
-                    if (s.StartsWith("ndps"))
-                    {
-                        s = s.Substring(4);
-                        if (byte.TryParse(s, out byte n) && n <= 6 && n >= 1)
-                        {
-                            nDps = n;
-                        }
-                        else
-                        {
-                            throw new Exception($"{s} is not a valid number of dps");
-                        }
-                        continue;
-                    }
-                    
-                    if (s.StartsWith("s"))
+                    if (s.StartsWith("n"))
                     {
                         s = s.Substring(1);
-                        if (byte.TryParse(s, out byte n) && n <= 6 && n >= 1)
+                        if (short.TryParse(s, out short n) && n >= 1 && n <= 6)
                         {
-                            party = party is null ? new Party() : party;
-                            if (party.Servants.Exists(x => x.Slot == n))
-                            {
-                                throw new Exception("The servant slot already exists.");
-                            }
-                            servant = new Servant(n);
-                            party.Servants.Add(servant);
-                            continue;
+                            run.ServantCount = n;
                         }
-                        else
-                        {
-                            throw new Exception($"{s} is not a valid servant slot");
-                        }
+                        else throw new Exception($"{s} is not a valid servant count.");
                     }
-                    if (s.StartsWith("id"))
-                    {
-                        if (servant is null)
-                        {
-                            byte[] slots = party.Servants.Select(x => x.Slot).ToArray();
-                            byte n = 0;
-                            for (byte j = 1; j <= 6; ++j)
-                            {
-                                if (!slots.Contains(j)) n = j;
-
-                            }
-                            if (n == 0) throw new Exception("Too many servant slot.");
-                            servant = new Servant(n);
-
-                        }
-                        s = s.Substring(2);
-                        servant.AssignIdentifier(s);
-                        continue;
-
-                    }
-                    if (s.StartsWith("a"))
-                    {
-                        if (servant is null) throw new Exception("No servant found.");
-                        s = s.Substring(1);
-                        if (int.TryParse(s, out int n))
-                        {
-                            servant.Attack = n;
-                            continue;
-                        }
-                        else
-                        {
-                            throw new Exception($"{s} is not a valid attack number.");
-                        }
-
-                    }
-                    if (s.StartsWith("ce"))
-                    {
-                        if (servant is null) throw new Exception("No servant found.");
-                        s = s.Substring(2);
-
-                        servant.CraftEssence = db.GetCeId(s);
-                    }
-                    if (s.StartsWith("d"))
-                    {
-                        s = s.Substring(1);
-                        if (byte.TryParse(s, out byte n) && n >= 1 && n <= 6)
-                        {
-                            Servant serv = party.Servants.Where(x => x.Slot == n)?.First();
-                            if (serv is null) throw new Exception($"No servent has been assigned to slot {n}.");
-                            dirtySlot = n;
-                            continue;
-                        }
-                        else
-                        {
-                            throw new Exception($"{s} is not a valid servant slot.");
-                        }
-                    }
-                    
                     if (s == "rta")
                     {
-                        rta = true;
+                        run.Rta = true;
                         continue;
                     }
                     if (s == "noce")
                     {
-                        noCe = true;
-                        noCeDps = true;
-                        noEventCe = true;
-                        continue;
-                    }
-                    if (s == "noeventce")
-                    {
-                        noEventCe = true;
+                        run.NoCe = true;
+                        run.NoCeDps = true;
+                        run.NoEventCeDps = true;
                         continue;
                     }
                     if (s == "nocedps")
                     {
-                        noCeDps = true;
+                        run.NoCeDps = true;
+                        run.NoEventCeDps = true;
                         continue;
                     }
+                    if (s == "noeventce")
+                    {
+                        run.NoEventCeDps = true;
+                        continue;
+                    }
+                    if (p is null)
+                    {
+                        PartySlot? ps = null;
+                        if (s.StartsWith("svt"))
+                        {
+                            p = p is null ? new List<PartySlot>() : p;
+                            s = s.Substring(3);
+                            if (short.TryParse(s, out short n) && n <= 6 && n >= 1)
+                            {
+                                if (p.Any(x => x.Slot == n)) throw new Exception("The servant slot already exists.");
+                                ps = new PartySlot() { Slot = n };
+                                p.Add(ps);
 
+                                continue;
+                            }
+                            else if (s == "")
+                            {
+                                //takes the left most slot possible
+                                p = p.OrderBy(x => x.Slot).ToList();
+                                short temp = 0;
+                                for (short j = 0; i < p.Count; i++)
+                                {
+                                    if (j == p[j].Slot) continue;
+                                    else temp = j;
+                                }
+                                if (temp == 0) temp = (short)p.Count();
+                                ps = new PartySlot() { Slot = temp };
+                            }
+                            else
+                            {
+                                throw new Exception($"{s} is not a valid servant slot");
+                            }
+                        }
+                        if (ps is not null)
+                        {
+                            if (s.StartsWith("id"))
+                            {
+                                if (ps.Servant is not null) throw new Exception($"A servant has already been entered for that party slot.");
+                                s = s.Substring(2);
+                                Servant? svt = null;
+                                if (int.TryParse(s, out int n) && n > 0)
+                                {
+                                    svt = context.Servants.FirstOrDefault(x => x.Id == n);
+                                }
+                                else
+                                {
+                                    svt = context.ServantAliases.FirstOrDefault(x => x.Nickname == s)?.Servant;
+                                }
+                                if (svt is null) throw new Exception($"{s} could not be recognized as a servant id or nickname.");
+                                ps.Servant = svt;
+
+                                continue;
+                            }
+                            if (s.StartsWith("ce"))
+                            {
+                                if (ps.CraftEssence is not null) throw new Exception($"A craft essence has already been entered for that party slot.");
+                                s = s.Substring(2);
+                                CraftEssence? ce = null;
+                                if (int.TryParse(s, out int n) && n > 0)
+                                {
+                                    ce = context.CraftEssences.FirstOrDefault(x => x.Id == n);
+                                }
+                                else
+                                {
+                                    ce = context.CraftEssenceAliases.FirstOrDefault(x => x.Nickname == s)?.CraftEssence;
+                                }
+                                if (ce is null) throw new Exception($"{s} could not be recognized as a craft essence id or nickname.");
+                                ps.CraftEssence = ce;
+
+                            }
+                            if (s == "mlb")
+                            {
+                                ps.CraftEssenceMlb = true;
+                            }
+                            //sets total attack of this partyslot, irrelevant of the servant and ce attack
+                            if (s.StartsWith("ta"))
+                            {
+                                s = s.Substring(2);
+                                if (short.TryParse(s, out short n) && n > 0)
+                                {
+                                    ps.TotalAttack = n;
+                                    continue;
+                                }
+                                else
+                                {
+                                    throw new Exception($"{s} is not a valid attack number.");
+                                }
+                            }
+                        }
+
+
+                        if (s.StartsWith("d"))
+                        {
+                            s = s.Substring(1);
+                            if (byte.TryParse(s, out byte n) && n >= 1 && n <= 6)
+                            {
+                                
+                            }
+                            else
+                            {
+                                throw new Exception($"{s} is not a valid servant slot.");
+                            }
+                        }
+                    }
                 }
+                if (p is not null && p.Any())
+                {
+                    //if craft essence is null, sets mlb to null
+                    p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
+                }
+
             }
 
-            Run run = new Run(quest, runUrl, dps, user)
-            {
-
-            };*/
             return null;
         }
         private static Quest GetQuest(RunsContext context, string quest)
