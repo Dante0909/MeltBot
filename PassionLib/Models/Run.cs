@@ -20,6 +20,10 @@ namespace PassionLib.Models
         }
         public Run(Quest quest, string runUrl) : this(runUrl) => Quest = quest;
         private Run(string runUrl) => RunUrl = runUrl;
+        public Run()
+        {
+
+        }
         // EF complains if there's no reference-less constructor, see https://stackoverflow.com/a/55750607
 
         [JsonIgnoreAttribute]
@@ -40,7 +44,7 @@ namespace PassionLib.Models
 
         //These can be inferred from party or entered through argument
         public short? Cost { get; set; }//through image recognition or adding costs from each servant
-        public short? ServantCount { get; set; } = 6;
+        public short? ServantCount { get; set; } = null;
         public bool? NoCe { get; set; } = false;
         public bool? NoCeDps { get; set; } = false;
         public bool? NoEventCeDps { get; set; } = false;

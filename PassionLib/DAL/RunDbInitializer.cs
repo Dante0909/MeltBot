@@ -13,28 +13,40 @@ namespace PassionLib.DAL
         {
             if (context.Runs.Any())
             {
+                Console.WriteLine("herre");
                 return; // DB already has data
             }
-
             var woahnilandRerunCq = context.Quests.FirstOrDefault(o => o.Id == 94042801);
-            if(woahnilandRerunCq == null)
+            if (woahnilandRerunCq == null)
             {
                 woahnilandRerunCq = new Quest(94042801,
                                               "【高難易度】護法少女スペシャルヒーローショー");
-                woahnilandRerunCq.NaName =    "[High Difficulty] Magifender Girls Special Hero Show";
-                //context.Quests.Add(woahnilandRerunCq);
+                woahnilandRerunCq.NaName = "[High Difficulty] Magifender Girls Special Hero Show";
+                context.Quests.Add(woahnilandRerunCq);
             }
+            var charlotte = context.Servants.FirstOrDefault(x => x.Id == 603800);
 
+            if (charlotte is null)//oof
+            {
+                charlotte = new Servant(603800, "シャルロット・コルデー");
+                //using(var client = new HttpClient())
+                //{
+                //    var response = client.GetStringAsync("https://api.atlasacademy.io/basic/JP/Servant/603800").ConfigureAwait(false);
+                //}
+                //charlotte = new Servant()
+                context.Servants.Add(charlotte);
+            }
+            User u = new User() { Id = 1 };
             var runs = new Run[]
             {
-                new Run(woahnilandRerunCq, "https://youtu.be/xqu9_kDYPvo"),
-                new Run(woahnilandRerunCq, "https://youtu.be/JGo6nnMMu7g"),
-                new Run(woahnilandRerunCq, "https://youtu.be/gwwTwJ1F9WY"),
-                new Run(woahnilandRerunCq, "https://youtu.be/7ZrAoqPJ4qw")
-           };
-            //context.Runs.AddRange(runs);
+                new Run(woahnilandRerunCq,"https://youtu.be/xqu9_kDYPvo",charlotte, u)
+            //new Run(woahnilandRerunCq, "https://youtu.be/JGo6nnMMu7g"),
+            //new Run(woahnilandRerunCq, "https://youtu.be/gwwTwJ1F9WY"),
+            //new Run(woahnilandRerunCq, "https://youtu.be/7ZrAoqPJ4qw")
+            };
+            context.Runs.AddRange(runs);
 
-            //context.SaveChanges();
+            context.SaveChanges();
         }
     }
 }

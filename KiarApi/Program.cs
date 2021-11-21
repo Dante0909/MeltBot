@@ -1,6 +1,6 @@
 using PassionLib.DAL;
 using Microsoft.EntityFrameworkCore;
-
+using Newtonsoft.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add config shared across projects
@@ -10,8 +10,21 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddRazorPages();
+
+
+
+builder.Services.AddCors(c => c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddControllersWithViews().
+    AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+    .AddNewtonsoftJson(options=>options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
+
+
+
+
 var connectionString = builder.Configuration.GetConnectionString("postgres");
-connectionString ??= "dummy placeholder to make EF happy when buildinging migrations";
+connectionString ??= @"host=localhost;port=5432;Database=aecrdb;User ID=postgres;Password=DefaultLUL;";
 builder.Services.AddDbContext<RunsContext>(options =>
 {
     options.UseNpgsql(connectionString);
@@ -19,19 +32,27 @@ builder.Services.AddDbContext<RunsContext>(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//app.UseSwaggerUI(options =>
+//{
+//    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+//    options.RoutePrefix = String.Empty;
+//});
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseWebAssemblyDebugging();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 
     var doDbRecreation = bool.Parse(Environment.GetEnvironmentVariable("DO_DB_RECREATION") ?? "false");
+    
     if (doDbRecreation)
     {
         using (var scope = app.Services.CreateScope())
@@ -43,7 +64,6 @@ if (app.Environment.IsDevelopment())
         }
     }
 }
-
 if (app.Environment.IsProduction())
 {
     /*app.UseHsts();*/
@@ -58,9 +78,13 @@ if (app.Environment.IsProduction())
 }
 
 /*app.UseHttpsRedirection();*/
+app.UseHttpsRedirection();
+app.UseBlazorFrameworkFiles();
+app.MapRazorPages();
+app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapFallbackToFile("index.html");
 app.Run();

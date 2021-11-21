@@ -1,0 +1,45 @@
+﻿@page "/runs"
+@inject IRunService RunService
+@inject HttpClient Http
+<h3>Runs</h3>
+
+
+
+@if (run is null)
+{
+    <span>Loading Runs..</span>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Quest</th>
+                <th>Dps</th>
+                <th>Url</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+                <tr>
+                <td>@run.Quest.Id</td>
+                <td>@run.Quest.Id</td>
+                <td>@run.Quest.Id</td>
+
+                </tr>
+                
+        </tbody>
+    </table>
+}
+
+@code {
+
+
+    Run? run = null;
+    JObject? j = null;
+    protected override async Task OnInitializedAsync()
+    {
+        string str = await Http.GetStringAsync("api/runs").ConfigureAwait(false);
+        run = JsonConvert.DeserializeObject<Run>(str);
+    }
+}

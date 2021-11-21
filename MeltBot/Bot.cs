@@ -58,6 +58,7 @@ namespace MeltBot
         private Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
             Console.WriteLine("Logged In");
+            
             return Task.CompletedTask;
         }
     }

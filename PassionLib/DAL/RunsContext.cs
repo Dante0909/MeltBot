@@ -22,7 +22,8 @@ namespace PassionLib.DAL
             if (!optionsBuilder.IsConfigured)
             {
                 var connectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_postgres");
-                Console.WriteLine(connectionString);
+                if (connectionString is null) connectionString = @"host=localhost;port=5432;Database=aecrdb;User ID=postgres;Password=DefaultLUL;";
+
                 optionsBuilder.UseNpgsql(connectionString);
             }
             base.OnConfiguring(optionsBuilder);

@@ -19,6 +19,9 @@ namespace MeltBot.Modules
         [Description("Returns pong")]
         public async Task Ping(CommandContext ctx)
         {
+            Run? r = Context.Runs.FirstOrDefault(x=>x.Quest.Id == 94042801);
+            Console.WriteLine(r is null);
+
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
         }
         [Hidden]

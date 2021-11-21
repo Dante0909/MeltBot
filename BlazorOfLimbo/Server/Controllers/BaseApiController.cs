@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace KiarApi.Controllers
+namespace BlazorOfLimbo.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

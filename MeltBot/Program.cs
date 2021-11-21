@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using PassionLib.DAL;
 using PassionLib.Models;
 
-Console.WriteLine("Hello, World!");
 
 using (var context = new RunsContext())
 // I think generally you'll want to pass around the same context to classes that want it
@@ -18,6 +17,7 @@ using (var context = new RunsContext())
     //context.Runs.Add(new Run(woahnilandRerunCq, "https://youtu.be/-BcOMkFBXng"));
     context.SaveChanges();
 
+    
     
 }
 var bot = new MeltBot.Bot();

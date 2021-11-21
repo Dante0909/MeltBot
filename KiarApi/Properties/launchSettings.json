@@ -14,9 +14,11 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "DO_DB_RECREATION": "true",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:7000;http://localhost:5000",
+      //"applicationUrl": "https://localhost:7000;http://localhost:5000",
+      "applicationUrl": "http://localhost:7000",
       "dotnetRunMessages": true
     },
     "IIS Express": {

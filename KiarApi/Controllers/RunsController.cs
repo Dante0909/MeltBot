@@ -11,6 +11,10 @@ namespace KiarApi.Controllers
     {
         private readonly RunsContext context;
 
+        //public RunsController(IConfiguration configuration, RunsContext context) : this(context)
+        //{
+        //    this.context = context;
+        //}
         public RunsController(RunsContext context)
         {
             this.context = context;
