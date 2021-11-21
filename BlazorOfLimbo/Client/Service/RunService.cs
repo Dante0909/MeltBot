@@ -13,20 +13,22 @@ namespace BlazorOfLimbo.Client.Service
         {
             this.client = client;
         }
-        public async Task<Run> GetRuns()
+        public async Task<List<Run>> GetRuns()
         {
-            Run r;
-            using (var client = new HttpClient())
-            {
-                var message = await client.GetStringAsync("https://localhost:7209/api/runs").ConfigureAwait(false);
-                
-                r = JsonConvert.DeserializeObject<Run>(message);
-                JObject j;
-                //j["Quest"]["Id"]
-             }
-            return r;
-            //return await client.GetFromJsonAsync<List<Run>>("https://localhost:7209/api/runs");
-            
+            //Run r;
+            //using (var client = new HttpClient())
+            //{
+            //    var message = await client.GetStringAsync("https://localhost:7209/api/runs").ConfigureAwait(false);
+
+            //    r = JsonConvert.DeserializeObject<Run>(message);
+            //    JObject j;
+            //    //j["Quest"]["Id"]
+            // }
+            var str = await client.GetStringAsync("api/runs");
+            List<Run> runs = JsonConvert.DeserializeObject<List<Run>>(str);
+            return runs;
+
+
         }
 
     }

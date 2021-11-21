@@ -32,7 +32,7 @@ namespace PassionLib.Models
         public short? Phase { get; set; }
 
         public virtual Servant Dps { get; set; }
-        public virtual List<PartySlot> Party { get; set; } = new List<PartySlot>();
+        public virtual List<PartySlot>? Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
         public DateTime? RunDate { get; set; }
         public string RunUrl { get; set; }

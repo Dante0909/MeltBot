@@ -5,7 +5,7 @@
 
 
 
-@if (run is null)
+@if (runs is null || runs.Count == 0)
 {
     <span>Loading Runs..</span>
 }
@@ -21,13 +21,15 @@ else
         </thead>
         <tbody>
             
+            @foreach(var run in runs)
+            {
                 <tr>
-                <td>@run.Quest.Id</td>
-                <td>@run.Quest.Id</td>
-                <td>@run.Quest.Id</td>
+                <td>@run.Quest.JpName</td>
+                <td>@run.Dps.JpName</td>
+                <td>@run.RunUrl</td>
 
                 </tr>
-                
+            }                           
         </tbody>
     </table>
 }
@@ -35,11 +37,12 @@ else
 @code {
 
 
-    Run? run = null;
-    JObject? j = null;
+    List<Run>? runs = null;
     protected override async Task OnInitializedAsync()
     {
-        string str = await Http.GetStringAsync("api/runs").ConfigureAwait(false);
-        run = JsonConvert.DeserializeObject<Run>(str);
+
+        //string str = await Http.GetStringAsync("api/runs").ConfigureAwait(false);
+        //run = JsonConvert.DeserializeObject<Run>(str);
+        runs = await RunService.GetRuns();
     }
 }

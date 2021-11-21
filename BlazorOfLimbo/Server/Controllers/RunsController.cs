@@ -22,22 +22,23 @@ namespace BlazorOfLimbo.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<string>> GetRuns()
+        public async Task<IActionResult> GetRuns()
         {
-            //Run r = context.Runs.Take(1).First();
-            User u = new User()
-            {
-                Id = 1
-            };
+            ////Run r = context.Runs.Take(1).First();
+            //User u = new User()
+            //{
+            //    Id = 1
+            //};
 
-            Run r = new Run(new Quest(94042801, "【高難易度】護法少女スペシャルヒーローショー"), "link", new Servant(603800, "シャルロット・コルデー"), u);
+            //Run r = new Run(new Quest(94042801, "【高難易度】護法少女スペシャルヒーローショー"), "link", new Servant(603800, "シャルロット・コルデー"), u);
 
-            string str = JsonConvert.SerializeObject(r, Formatting.Indented);
+            //string str = JsonConvert.SerializeObject(r, Formatting.Indented);
             
-            //Run s = JsonConvert.DeserializeObject<Run>(str);
-            //Console.WriteLine(s.Quest.Id);
+            ////Run s = JsonConvert.DeserializeObject<Run>(str);
+            ////Console.WriteLine(s.Quest.Id);
 
-            return str;
+            //return str;
+            return Ok(await context.Runs.Include(r=>r.Quest).Include(r=>r.Dps).Include(r=>r.Submitter).ToListAsync());
         }
     }
 }

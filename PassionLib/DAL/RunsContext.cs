@@ -28,6 +28,12 @@ namespace PassionLib.DAL
             }
             base.OnConfiguring(optionsBuilder);
         }
+        //protected override void OnModelCreating(ModelBuilder model)
+        //{
+        //    model.Entity<Run>().HasData(
+        //        new Run()
+        //        );
+        //}
 
         public DbSet<Run> Runs => Set<Run>();
         public DbSet<User> Users => Set<User>();

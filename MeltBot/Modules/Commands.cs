@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using Microsoft.EntityFrameworkCore;
 using PassionLib.DAL;
 using PassionLib.Models;
 using System;
@@ -19,7 +20,7 @@ namespace MeltBot.Modules
         [Description("Returns pong")]
         public async Task Ping(CommandContext ctx)
         {
-            Run? r = Context.Runs.FirstOrDefault(x=>x.Quest.Id == 94042801);
+            Run? r = Context.Runs.Include(r=>r.Quest).Include(r=>r.Dps).FirstOrDefault(x=>x.Quest.Id == 94042801);
             Console.WriteLine(r is null);
 
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);

@@ -4,6 +4,6 @@ namespace BlazorOfLimbo.Client.Service
 {
     public interface IRunService
     {
-        public Task<Run> GetRuns();
+        public Task<List<Run>> GetRuns();
     }
 }
