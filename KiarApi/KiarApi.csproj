@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorOfLimbo\Client\BlazorOfLimbo.Client.csproj" />
+    <ProjectReference Include="..\BlazorOfLimbo\Shared\BlazorOfLimbo.Shared.csproj" />
     <ProjectReference Include="..\PassionLib\PassionLib.csproj" />
   </ItemGroup>
 
