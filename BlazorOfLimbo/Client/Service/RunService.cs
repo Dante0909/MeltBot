@@ -13,6 +13,14 @@ namespace BlazorOfLimbo.Client.Service
         {
             this.client = client;
         }
+
+        public async Task<List<Quest>> GetQuests()
+        {
+            var str = await client.GetStringAsync("api/quests");
+            List<Quest> quests = JsonConvert.DeserializeObject<List<Quest>>(str);
+            return quests;
+        }
+
         public async Task<List<Run>> GetRuns()
         {
             //Run r;

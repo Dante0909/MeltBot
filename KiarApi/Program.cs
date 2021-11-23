@@ -110,6 +110,7 @@ builder.Services.AddDbContext<RunsContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
+builder.Services.AddLocalization();
 
 var app = builder.Build();
 
@@ -157,6 +158,7 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 
 app.UseAuthorization();
 

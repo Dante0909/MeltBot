@@ -1,0 +1,55 @@
+﻿@page "/Kr"
+@inject IRunService RunService
+@using System.Globalization
+
+@if (quests is null || quests.Count == 0)
+{
+    <span>Loading Quests...</span>
+}
+else
+{
+    <TabControl>
+        @foreach (Quest q in quests)
+        {
+            <TabPage Text=@((string.IsNullOrEmpty(q.NaName)) ? q.JpName : q.NaName)>
+                @if (runs is null || runs.Count == 0)
+                {
+                    <span>Loading Runs...</span>
+                }
+                else
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Dps</th>
+                                <th>Url</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
+                            {
+                                <tr>
+                                    <td>@((string.IsNullOrEmpty(run.Dps.NaName)) ? run.Dps.JpName : run.Dps.NaName)</td>
+                                    <td>@run.RunUrl</td>
+                                    <td>@((string.IsNullOrEmpty(run.Dps.NaName)) ? run.Dps.JpName : run.Dps.NaName)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </TabPage>
+        }
+    </TabControl>
+}
+
+
+@code {
+    List<Quest>? quests = null;
+    List<Run>? runs = null;
+    protected override async Task OnInitializedAsync()
+    {
+        quests = await RunService.GetQuests();
+        runs = await RunService.GetRuns();
+    }
+}

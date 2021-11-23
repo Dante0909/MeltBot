@@ -39,8 +39,8 @@ using Newtonsoft.Json;
 namespace KiarApi.Controllers
 {
     [ApiController]
-    [Route("api/runs")]
-    public class RunsController : BaseApiController
+    [Route("api/quests")]
+    public class QuestsController : BaseApiController
     {
         private readonly RunsContext context;
 
@@ -48,13 +48,13 @@ namespace KiarApi.Controllers
         //{
         //    this.context = context;
         //}
-        public RunsController(RunsContext context)
+        public QuestsController(RunsContext context)
         {
             this.context = context;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRuns()
+        public async Task<IActionResult> GetQuests()
         {
             ////Run r = context.Runs.Take(1).First();
             //User u = new User()
@@ -70,7 +70,7 @@ namespace KiarApi.Controllers
             ////Console.WriteLine(s.Quest.Id);
 
             //return str;
-            return Ok(await context.Runs.Include(r => r.Quest).Include(r => r.Dps).Include(r => r.Submitter).ToListAsync());
+            return Ok(await context.Quests.ToListAsync());
         }
     }
 }

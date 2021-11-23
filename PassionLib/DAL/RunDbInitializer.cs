@@ -24,6 +24,12 @@ namespace PassionLib.DAL
                 woahnilandRerunCq.NaName = "[High Difficulty] Magifender Girls Special Hero Show";
                 context.Quests.Add(woahnilandRerunCq);
             }
+            var imaginaryScramble = context.Quests.FirstOrDefault(q => q.Id == 94053435);
+            if(imaginaryScramble is null)
+            {
+                imaginaryScramble = new Quest(94053435, "【高難易度】聖女を呼ぶ声");
+                context.Quests.Add(imaginaryScramble);
+            }
             var charlotte = context.Servants.FirstOrDefault(x => x.Id == 603800);
 
             if (charlotte is null)//oof

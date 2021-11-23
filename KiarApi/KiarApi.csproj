@@ -31,4 +31,8 @@
     <ProjectReference Include="..\PassionLib\PassionLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\" />
+  </ItemGroup>
+
 </Project>
