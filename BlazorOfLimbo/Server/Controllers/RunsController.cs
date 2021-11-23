@@ -38,7 +38,7 @@ namespace BlazorOfLimbo.Server.Controllers
             ////Console.WriteLine(s.Quest.Id);
 
             //return str;
-            return Ok(await context.Runs.Include(r=>r.Quest).Include(r=>r.Dps).Include(r=>r.Submitter).ToListAsync());
+            return Ok(await context.Runs.Include(r=>r.Quest).Include(r=>r.Dps).Include(r=>r.Party).ToListAsync());
         }
     }
 }

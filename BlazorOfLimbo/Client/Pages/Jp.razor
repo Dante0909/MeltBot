@@ -23,7 +23,8 @@ else
                             <tr>
                                 <th>Dps</th>
                                 <th>Url</th>
-                                <th>Costtttttttttttttttttt</th>
+                                <th>Party</th>
+                                <th>Cost</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,6 +34,7 @@ else
                                 <tr>
                                     <td>@run.Dps.JpName</td>
                                     <td>@run.RunUrl</td>
+                                    <td>@PartyToString(run.Party)</td>
                                     <td>@run.Cost</td>
                                 </tr>
                             }
@@ -46,11 +48,29 @@ else
 
 
 @code {
+    string party = string.Empty;
     List<Quest>? quests = null;
     List<Run>? runs = null;
+    public string PartyToString(List<PartySlot> l)
+    {
+        string str = string.Empty;
+        if (l is not null && l.Count > 0)
+        {
+            foreach (var ps in l)
+            {
+                str += ps.Servant?.JpName;
+                str += ps.CraftEssence?.JpName;
+                str += "\n";
+            }
+
+        }
+        return str;
+    }
     protected override async Task OnInitializedAsync()
     {
+        party = string.Empty;
         quests = await RunService.GetQuests();
         runs = await RunService.GetRuns();
     }
+
 }

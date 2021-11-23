@@ -12,6 +12,7 @@ namespace PassionLib.Models
         protected Alias(string nickname) => Nickname = nickname;
         [Key]
         public string Nickname { get; set; }
+        public virtual User Submitter { get; set; }
     }
 
     public class CraftEssenceAlias : Alias

@@ -46,6 +46,16 @@ namespace PassionLib.DAL
             var runs = new Run[]
             {
                 new Run(woahnilandRerunCq,"https://youtu.be/xqu9_kDYPvo",charlotte, u)
+                {
+                    Party = new List<PartySlot>()
+                    {
+                        new PartySlot()
+                        {
+
+
+                        }
+                    }
+                }
             //new Run(woahnilandRerunCq, "https://youtu.be/JGo6nnMMu7g"),
             //new Run(woahnilandRerunCq, "https://youtu.be/gwwTwJ1F9WY"),
             //new Run(woahnilandRerunCq, "https://youtu.be/7ZrAoqPJ4qw")

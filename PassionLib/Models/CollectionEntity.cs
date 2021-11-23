@@ -10,7 +10,7 @@ namespace PassionLib.Models
     {
         public short? Rarity { get; set; }
         public short? BaseMaxAttack { get; set; }
-        public int collectionNo { get; set; }
+        public int CollectionNo { get; set; }
         protected CollectionEntity(int id, string jpName) : base(id, jpName)
         {
         }
