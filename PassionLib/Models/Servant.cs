@@ -10,7 +10,7 @@ namespace PassionLib.Models
     public class Servant : CollectionEntity
     {
         public string? Class { get; set; }
-        public Servant(int id, string jpName) : base(id, jpName)
+        public Servant(int id, string jpName, int collectionNo) : base(id, jpName, collectionNo)
         {
         }
     }

@@ -9,7 +9,7 @@ namespace PassionLib.Models
 {
     public class CraftEssence : CollectionEntity
     {
-        public CraftEssence(int id, string jpName) : base(id, jpName)
+        public CraftEssence(int id, string jpName, int collectionNo) : base(id, jpName, collectionNo)
         {
         }
     }

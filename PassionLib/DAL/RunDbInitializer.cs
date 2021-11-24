@@ -34,7 +34,7 @@ namespace PassionLib.DAL
 
             if (charlotte is null)//oof
             {
-                charlotte = new Servant(603800, "シャルロット・コルデー");
+                charlotte = new Servant(603800, "シャルロット・コルデー", 1);
                 //using(var client = new HttpClient())
                 //{
                 //    var response = client.GetStringAsync("https://api.atlasacademy.io/basic/JP/Servant/603800").ConfigureAwait(false);
@@ -42,7 +42,7 @@ namespace PassionLib.DAL
                 //charlotte = new Servant()
                 context.Servants.Add(charlotte);
             }
-            User u = new User() { Id = 1 };
+            User u = new User();
             var runs = new Run[]
             {
                 new Run(woahnilandRerunCq,"https://youtu.be/xqu9_kDYPvo",charlotte, u)

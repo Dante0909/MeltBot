@@ -2,6 +2,8 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PassionLib.DAL;
 using PassionLib.Models;
 using System;
@@ -20,9 +22,6 @@ namespace MeltBot.Modules
         [Description("Returns pong")]
         public async Task Ping(CommandContext ctx)
         {
-            Run? r = Context.Runs.Include(r => r.Quest).Include(r => r.Dps).FirstOrDefault(x => x.Quest.Id == 94042801);
-            Console.WriteLine(r is null);
-
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
         }
         [Hidden]
@@ -153,58 +152,8 @@ namespace MeltBot.Modules
             }
 
         }
-        [Command("AddServant")]
-        public async Task AddServant(CommandContext ctx,
-            [Description("Id of the servant to add")] int servantId,
-            [Description("(Optional)A nickname to that servant.")] string nickname = null)
-        {
-            try
-            {
-                Servant? s = Context.Servants.FirstOrDefault(s => s.Id == servantId);
-                if (s is null)
-                {
-
-                }
-                else if (nickname is not null) await AddServantNickname(ctx, servantId.ToString(), nickname);
-            }
-            catch(Exception ex)
-            {
-                await ctx.Channel.SendMessageAsync(ex.Message);
-            }
-            
-        }
-        [Command("NickS")]
-        [Description("Add a nickname to a servant")]
-        public async Task AddServantNickname(CommandContext ctx,
-            [Description("Id of nickname of servant")] string servant,
-            [Description("New nickname")] string nickname)
-        {
-            string str = string.Empty;
-            try
-            {
-                Servant? s;
-                if (int.TryParse(servant, out int id))
-                {
-                    s = Context.Servants.FirstOrDefault(s => s.Id == id || s.CollectionNo == id);
-                    if (s is null) throw new Exception($"{servant} could not be found.");
-                }
-                else
-                {
-                    s = Context.ServantAliases.FirstOrDefault(x => x.Nickname == servant)?.Servant;
-                    if (s is null) throw new Exception($"{servant} could not be found.");
-                }
-                User u = GetUser(ctx, Context);
-                Context.ServantAliases.Add(new ServantAlias(s, nickname) { Submitter = u});
-                Context.SaveChanges();
-                str = $"Nickname {nickname} added.";
-            }
-            catch (Exception ex)
-            {
-                str = ex.Message;
-            }
-            await ctx.Channel.SendMessageAsync(str);
-        }
-        private static User GetUser(CommandContext ctx, RunsContext Context)
+        
+        public static User GetUser(CommandContext ctx, RunsContext Context)
         {
             User? user = null;
             var discordUser = ctx.User;

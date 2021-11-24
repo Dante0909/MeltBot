@@ -33,7 +33,7 @@ namespace MeltBot
             {
                 for (int i = 0; i < args.Length; ++i)
                 {
-                    Servant servant = null;
+                    Quest servant = null;
                     string s = args[i].ToLower();
                     if (s == "f")
                     {
