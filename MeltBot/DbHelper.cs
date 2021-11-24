@@ -1,4 +1,5 @@
-﻿using PassionLib.DAL;
+﻿using DSharpPlus.CommandsNext;
+using PassionLib.DAL;
 using PassionLib.Models;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,6 @@ namespace MeltBot
             Run run = new Run(quest, runUrl, dps, user);
             if (p is not null)
             {
-
                 run.Party = p;
                 //ask if craft essence/servant are null
             }
@@ -33,7 +33,7 @@ namespace MeltBot
             {
                 for (int i = 0; i < args.Length; ++i)
                 {
-                    Quest servant = null;
+                    Servant servant = null;
                     string s = args[i].ToLower();
                     if (s == "f")
                     {
@@ -273,6 +273,35 @@ namespace MeltBot
                 if (d is null) throw new Exception($"Servant {dps} could not be found.");
             }
             return d;
+        }
+        public static User GetUser(CommandContext ctx, RunsContext Context)
+        {
+            User? user = null;
+            var discordUser = ctx.User;
+            var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id)?.ToList();
+            if (users is not null && users.Any())
+            {
+                foreach (var u in users)
+                {
+                    if (discordUser.Discriminator == u.DiscordDiscriminator && discordUser.Username == u.DiscordUsername)
+                    {
+                        //means that the exact user was found
+                        user = u;
+                        break;
+                    }
+                }
+            }
+            if (user is null)
+            {
+                user = new User()
+                {
+                    DiscordDiscriminator = discordUser.Discriminator,
+                    DiscordSnowflake = (long)discordUser.Id,
+                    DiscordUsername = discordUser.Username
+                };
+                Context.Users.Add(user);
+            }
+            return user;
         }
     }
 }

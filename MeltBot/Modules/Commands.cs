@@ -140,7 +140,7 @@ namespace MeltBot.Modules
         {
             try
             {
-                var user = GetUser(ctx, Context);
+                var user = DbHelper.GetUser(ctx, Context);
                 List<PartySlot>? party = null;//Insert your program output
                 Run run = DbHelper.CreateRun(Context, quest, runUrl, dps, user, party, args);
 
@@ -153,35 +153,7 @@ namespace MeltBot.Modules
 
         }
         
-        public static User GetUser(CommandContext ctx, RunsContext Context)
-        {
-            User? user = null;
-            var discordUser = ctx.User;
-            var users = Context.Users.Where(u => u.DiscordSnowflake == (long)discordUser.Id)?.ToList();
-            if (users is not null && users.Any())
-            {
-                foreach (var u in users)
-                {
-                    if (discordUser.Discriminator == u.DiscordDiscriminator && discordUser.Username == u.DiscordUsername)
-                    {
-                        //means that the exact user was found
-                        user = u;
-                        break;
-                    }
-                }
-            }
-            if (user is null)
-            {
-                user = new User()
-                {
-                    DiscordDiscriminator = discordUser.Discriminator,
-                    DiscordSnowflake = (long)discordUser.Id,
-                    DiscordUsername = discordUser.Username
-                };
-                Context.Users.Add(user);
-            }
-            return user;
-        }
+        
         //These two commmands should not be in this class
 
         //I commented all the commands, I just copypastad commands that are old and outdated.
