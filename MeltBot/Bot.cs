@@ -13,7 +13,6 @@ namespace MeltBot
 {
     internal class Bot
     {
-        
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
         public async Task RunAsync()
@@ -58,7 +57,7 @@ namespace MeltBot
         private Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
             Console.WriteLine("Logged In");
-            
+
             return Task.CompletedTask;
         }
     }

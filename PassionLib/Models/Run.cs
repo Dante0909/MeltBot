@@ -65,9 +65,11 @@ namespace PassionLib.Models
         [Key]
         public int Id { get; set; }
         public virtual Servant? Servant { get; set; } = null;
+        public short? ServantLevel { get; set; } = null;
+        public short? ServantFou { get; set; } = 1000;
         public virtual CraftEssence? CraftEssence { get; set; } = null;
+        public short? CraftEssenceLevel { get; set; } = null;
         public bool? CraftEssenceMlb { get; set; } = null;
-        public short? Slot { get; set; } = null;
         public short? TotalAttack { get; set; } = null;
     }
 }
