@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace PassionLib.DAL
 {
     public static class RunDbInitializer
     {
-        public static void Initialize(RunsContext context)
+        public static async void Initialize(RunsContext context)
         {
             if (context.Runs.Any())
             {
@@ -17,6 +18,9 @@ namespace PassionLib.DAL
                 return; // DB already has data
             }
             var woahnilandRerunCq = context.Quests.FirstOrDefault(o => o.Id == 94042801);
+            bool isOnline = CheckForInternetConnection();
+            Console.WriteLine(isOnline);
+            
             if (woahnilandRerunCq == null)
             {
                 woahnilandRerunCq = new Quest(94042801,
@@ -63,6 +67,21 @@ namespace PassionLib.DAL
             context.Runs.AddRange(runs);
 
             context.SaveChanges();
+        }
+        public static bool CheckForInternetConnection(int timeoutMs = 10000)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create("http://www.gstatic.com/generate_204");
+                request.KeepAlive = false;
+                request.Timeout = timeoutMs;
+                using (var response = (HttpWebResponse)request.GetResponse())
+                    return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

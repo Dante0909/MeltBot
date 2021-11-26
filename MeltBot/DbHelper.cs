@@ -206,7 +206,7 @@ namespace MeltBot
                             }
                             if (s == "mlb")
                             {
-                                ps.CraftEssenceMlb = true;
+                                ps.CraftEssenceMlb = false;
                             }
                             //sets total attack of this partyslot, irrelevant of the servant and ce attack
                             if (s.StartsWith("ta"))
@@ -230,11 +230,12 @@ namespace MeltBot
                     //if craft essence is null, sets mlb to null
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
                     p.ForEach(x => x.TotalAttack = GetAttack(x));
+                    run.Party = p;
                 }
 
             }
 
-            return null;
+            return run;
         }
         private static short? GetCost(List<PartySlot> l)
         {
@@ -245,7 +246,7 @@ namespace MeltBot
             int? cost = 0;
             foreach (var ps in l)
             {
-                cost += ps.Servant?.Rarity is not null ? ServantCost[(short)ps.Servant.Rarity] : null;
+                cost += ps.Servant?.Rarity is not null ? ServantCost[(short)ps.Servant.Rarity] : 0;
                 cost += ps.CraftEssence?.Rarity is not null ? ServantCost[(short)ps.CraftEssence.Rarity] : 0;
             }
             return (short?)cost;
@@ -332,5 +333,6 @@ namespace MeltBot
             }
             return user;
         }
+        
     }
 }

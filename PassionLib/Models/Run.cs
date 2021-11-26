@@ -69,7 +69,7 @@ namespace PassionLib.Models
         public short? ServantFou { get; set; } = 1000;
         public virtual CraftEssence? CraftEssence { get; set; } = null;
         public short? CraftEssenceLevel { get; set; } = null;
-        public bool? CraftEssenceMlb { get; set; } = null;
+        public bool? CraftEssenceMlb { get; set; } = true;
         public short? TotalAttack { get; set; } = null;
     }
 }
