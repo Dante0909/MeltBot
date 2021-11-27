@@ -15,7 +15,9 @@ namespace MeltBot
         {
             Quest quest = GetQuest(context, strQuest);
             Servant dps = GetServant(context, strDps);
-            if (Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : {runUrl}");
+            if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
+            if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
+            if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
             if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists.");
 
             List<PartySlot>? p = party;
@@ -30,7 +32,7 @@ namespace MeltBot
 
 
             //Do not open unless you want suicidal thoughts 
-            if (args is not null && !args.Any())
+            if (args is not null && args.Any())
             {
                 bool dirtyCeCheck = false;
                 PartySlot? ps = null;
@@ -169,7 +171,6 @@ namespace MeltBot
                                 {
                                     ps.CraftEssence = null;
                                     p.Add(ps);
-                                    ps = null;
 
                                     continue;
                                 }
@@ -191,11 +192,11 @@ namespace MeltBot
                                 s = s.Substring(1);
                                 if (short.TryParse(s, out short n) && n > 0)
                                 {
-                                    if(typeCheck is Servant && n < 121)
+                                    if (typeCheck is Servant && n < 121)
                                     {
                                         ps.ServantLevel = 121;
                                     }
-                                    if(typeCheck is CraftEssence && n < 101)
+                                    if (typeCheck is CraftEssence && n < 101)
                                     {
                                         ps.CraftEssenceLevel = n;
                                     }
@@ -203,6 +204,10 @@ namespace MeltBot
                                 }
                                 else throw new Exception($"{s} is an invalid level.");
 
+                            }
+                            if (s == "b")
+                            {
+                                ps.Borrowed = true;
                             }
                             if (s == "mlb")
                             {
@@ -230,6 +235,7 @@ namespace MeltBot
                     //if craft essence is null, sets mlb to null
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
                     p.ForEach(x => x.TotalAttack = GetAttack(x));
+                    run.Cost = GetCost(p);
                     run.Party = p;
                 }
 
@@ -243,34 +249,56 @@ namespace MeltBot
             {
                 return null;
             }
-            int? cost = 0;
+            int? totalCost = 0;
             foreach (var ps in l)
             {
-                cost += ps.Servant?.Rarity is not null ? ServantCost[(short)ps.Servant.Rarity] : 0;
-                cost += ps.CraftEssence?.Rarity is not null ? ServantCost[(short)ps.CraftEssence.Rarity] : 0;
+                if (ps.Borrowed == false)
+                {
+                    int? cost = 0;
+                    if (ps.Servant is not null)
+                    {
+                        cost += ps.Servant.Rarity is not null ? ServantCost[(short)ps.Servant.Rarity] : 0;
+                    }
+
+                    if (ps.CraftEssence is not null)
+                    {
+                        cost += ps.CraftEssence.Rarity is not null ? CraftEssenceCost[(short)ps.CraftEssence.Rarity] : 0;
+                    }
+                    totalCost += cost;
+                }
+
             }
-            return (short?)cost;
+            return (short?)totalCost;
         }
         private static short? GetAttack(PartySlot p)
         {
-            int? atk = null;
+            int? atk = 0;
             if (p.TotalAttack is not null) atk = p.TotalAttack;
-            else if (p.Servant is not null && p.CraftEssence is not null)
+            else
             {
-                atk += p.ServantLevel is not null ? p.Servant.AttackScaling?[(int)p.ServantLevel] : p.Servant.BaseMaxAttack;
-                atk += p.CraftEssenceLevel is not null ? p.CraftEssence.AttackScaling?[(int)p.CraftEssenceLevel] : p.CraftEssence.BaseMaxAttack;
+                if (p.Servant is not null) atk += p.ServantLevel is not null ? p.Servant.AttackScaling?[(int)p.ServantLevel] : p.Servant.BaseMaxAttack;
 
+                if (p.CraftEssence is not null) atk += p.CraftEssenceLevel is not null ? p.CraftEssence.AttackScaling?[(int)p.CraftEssenceLevel] : p.CraftEssence.BaseMaxAttack;
             }
             return (short?)atk;
         }
         private static Dictionary<short, short> ServantCost = new Dictionary<short, short>()
         {
-            {5,15 },
-            {4,11 },
-            {3,6 },
+            {5,16 },
+            {4,12 },
+            {3,7 },
             {2,4 },
             {1,3 },
             {0,4 }
+        };
+        private static Dictionary<short, short> CraftEssenceCost = new Dictionary<short, short>()
+        {
+            {5,12 },
+            {4,9 },
+            {3,5 },
+            {2,3 },
+            {1,1 }
+
         };
         private static Quest GetQuest(RunsContext context, string quest)
         {
@@ -333,6 +361,6 @@ namespace MeltBot
             }
             return user;
         }
-        
+
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
+
 using System.Threading.Tasks;
 
 namespace PassionLib.Models
@@ -26,11 +27,10 @@ namespace PassionLib.Models
         }
         // EF complains if there's no reference-less constructor, see https://stackoverflow.com/a/55750607
 
-        [JsonIgnoreAttribute]
+        //[JsonIgnoreAttribute] I don't want to ignore it, that way users can delete their own runs if they want
         public int Id { get; set; }
         public virtual Quest Quest { get; set; }
         public short? Phase { get; set; }
-
         public virtual Servant Dps { get; set; }
         public virtual List<PartySlot>? Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
@@ -56,14 +56,16 @@ namespace PassionLib.Models
         [JsonIgnoreAttribute]
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
         [JsonIgnoreAttribute]
-        public virtual User? Submitter { get; set; }
+        public virtual User Submitter { get; set; }
     }
 
     [Owned]
     public class PartySlot
     {
         [Key]
+        [JsonIgnoreAttribute]
         public int Id { get; set; }
+        public bool? Borrowed { get; set; } = false;
         public virtual Servant? Servant { get; set; } = null;
         public short? ServantLevel { get; set; } = null;
         public short? ServantFou { get; set; } = 1000;

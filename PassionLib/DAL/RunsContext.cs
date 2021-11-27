@@ -31,6 +31,8 @@ namespace PassionLib.DAL
         protected override void OnModelCreating(ModelBuilder model)
         {
             model.Entity<Servant>().HasIndex(s => s.CollectionNo).IsUnique();
+            model.Entity<CraftEssence>().HasIndex(s => s.CollectionNo).IsUnique();
+            model.Entity<Run>().HasIndex(s => s.RunUrl).IsUnique();
         }
 
         public DbSet<Run> Runs => Set<Run>();

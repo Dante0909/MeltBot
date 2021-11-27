@@ -1,0 +1,5 @@
+How to use:
+
+%temprun <quest> <servant> <url> <params>
+
+quest can be the id of the quest or a nicknam, use %nickq <questId> nickname to add a q

@@ -111,17 +111,31 @@ namespace MeltBot.Modules
             {
                 if (ctx.User.Id == 290938252540641290)
                 {
+                    int counter = 0;
+                    
                     var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
                     while (true)
                     {
-                        string message = ":woahgiver: ";
+                        await Task.Delay(995 * 60 * 60 * 24).ConfigureAwait(false);
+                        if (counter == 7)
+                        {
+                            var gameplay = await ctx.Client.GetChannelAsync(715944125916250154).ConfigureAwait(false);
+                            foreach (var t in gameplay.Threads)
+                            {
+                               await t.SendMessageAsync("Weekly message to keep this thread alive.");
+                            }
+                            counter = 0;
+                        }
+                        else counter++;
+
+                        string message = "<a:woahgiver:911084288705986570>";
                         foreach (Pong p in Context.Pongs)
                         {
-                            message += p.UserMention + " ";
+                            message += " "+p.UserMention;
                         }
-                        await ctx.Channel.SendMessageAsync(message);
+                        //await thread.SendMessageAsync(message);
                         //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
-                        await Task.Delay(1000 * 60 * 60 * 24).ConfigureAwait(false);
+                        
                     }
                 }
             }
@@ -143,7 +157,17 @@ namespace MeltBot.Modules
                 var user = DbHelper.GetUser(ctx, Context);
                 List<PartySlot>? party = null;//Insert your program output
                 Run run = DbHelper.CreateRun(Context, quest, runUrl, dps, user, party, args);
-
+                //Context.Runs.Add(run);
+                //Context.SaveChanges();
+                string obj = JsonConvert.SerializeObject(run, Formatting.Indented);
+                byte[] t = Encoding.UTF8.GetBytes(obj);
+                using (var stream = new MemoryStream(t))
+                {
+                    var builder = new DiscordMessageBuilder();
+                    builder.WithFile("run.txt", stream);
+                    await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
+                }
+                
             }
             catch (Exception ex)
             {

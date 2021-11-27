@@ -128,10 +128,7 @@ namespace MeltBot.Modules
                         JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/quest/{questId}"));
                         if (j is null) throw new Exception("Problem with " + questId);
                         string n = j.Value<string>("name");
-                        q = new Quest(j.Value<int>("id"), n);
-                        Context.Quests.Add(q);
-                        Context.SaveChanges();
-                        str = $"Successfully added {n}.";
+                        q = new Quest(j.Value<int>("id"), n);                        
 
                         var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/quest/{questId}");
                         if (response.IsSuccessStatusCode)
@@ -157,6 +154,9 @@ namespace MeltBot.Modules
                             j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
                             q.TwName = j?.Value<string>("name");
                         }
+                        Context.Quests.Add(q);
+                        Context.SaveChanges();
+                        str = $"Successfully added {n}.";
                     }
                 }
             }
@@ -313,9 +313,7 @@ namespace MeltBot.Modules
                         if (j is null) throw new Exception("Problem with " + mcId);
                         string n = j.Value<string>("name");
                         mc = new MysticCode(j.Value<int>("id"), n);
-                        Context.MysticCodes.Add(mc);
-                        Context.SaveChanges();
-                        str = $"Successfully added {n}.";
+                        
 
                         var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/MC/{mcId}");
                         if (response.IsSuccessStatusCode)
@@ -341,6 +339,9 @@ namespace MeltBot.Modules
                             j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
                             mc.TwName = j?.Value<string>("name");
                         }
+                        Context.MysticCodes.Add(mc);
+                        Context.SaveChanges();
+                        str = $"Successfully added {n}.";
                     }
                 }
             }
