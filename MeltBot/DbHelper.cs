@@ -194,7 +194,7 @@ namespace MeltBot
                                 {
                                     if (typeCheck is Servant && n < 121)
                                     {
-                                        ps.ServantLevel = 121;
+                                        ps.ServantLevel = n;
                                     }
                                     if (typeCheck is CraftEssence && n < 101)
                                     {
@@ -203,6 +203,16 @@ namespace MeltBot
                                     typeCheck = null;
                                 }
                                 else throw new Exception($"{s} is an invalid level.");
+
+                            }
+                            if (s.StartsWith("fou"))
+                            {
+                                s = s.Substring(3);
+                                if (short.TryParse(s, out short n) && n >= 0 && n <= 2000)
+                                {
+                                    ps.ServantFou = n;
+                                }
+                                else throw new Exception($"{s} is an invalid fou.");
 
                             }
                             if (s == "b")
@@ -230,6 +240,7 @@ namespace MeltBot
                         }
                     }
                 }
+
                 if (p is not null && p.Any())
                 {
                     //if craft essence is null, sets mlb to null
@@ -276,9 +287,12 @@ namespace MeltBot
             if (p.TotalAttack is not null) atk = p.TotalAttack;
             else
             {
-                if (p.Servant is not null) atk += p.ServantLevel is not null ? p.Servant.AttackScaling?[(int)p.ServantLevel] : p.Servant.BaseMaxAttack;
+                if (p.Servant is not null) {
+                    atk += p.ServantLevel is not null ? p.Servant.AttackScaling?[(int)p.ServantLevel - 1] : p.Servant.BaseMaxAttack;
+                    atk += p.ServantFou;
+                } 
 
-                if (p.CraftEssence is not null) atk += p.CraftEssenceLevel is not null ? p.CraftEssence.AttackScaling?[(int)p.CraftEssenceLevel] : p.CraftEssence.BaseMaxAttack;
+                if (p.CraftEssence is not null) atk += p.CraftEssenceLevel is not null ? p.CraftEssence.AttackScaling?[(int)p.CraftEssenceLevel - 1] : p.CraftEssence.BaseMaxAttack;
             }
             return (short?)atk;
         }

@@ -96,6 +96,10 @@ namespace PassionLib.DAL
             Servant lanling = null;
             Servant tamamo = null;
             Servant bride = null;
+            CraftEssence outrage = null;
+            CraftEssence royalIcing = null;
+            CraftEssence gentlemen = null;
+            CraftEssence fanClub = null;
             if (isOnline)
             {
                 try
@@ -110,6 +114,14 @@ namespace PassionLib.DAL
                     if (s is null) tamamo = await AddServant(context, 500300);
                     s = context.Servants.FirstOrDefault(s => s.Id == 100600);
                     if (s is null) bride = await AddServant(context, 100600);
+                    CraftEssence? c = context.CraftEssences.FirstOrDefault(s => s.Id == 9402320);
+                    if (c is null) outrage = await AddCraftEssence(context, 9402320);
+                    c = context.CraftEssences.FirstOrDefault(s => s.Id == 9403490);
+                    if (c is null) royalIcing = await AddCraftEssence(context, 9403490);
+                    c = context.CraftEssences.FirstOrDefault(s => s.Id == 9404040);
+                    if (c is null) gentlemen = await AddCraftEssence(context, 9404040);
+                    c = context.CraftEssences.FirstOrDefault(s => s.Id == 9300410);
+                    if (c is null) fanClub = await AddCraftEssence(context, 9300410);
                 }
                 catch (Exception ex)
                 {
@@ -124,6 +136,7 @@ namespace PassionLib.DAL
 
 
             context.Servants.AddRange(skadi, charlotte, lanling, tamamo, bride);
+            context.CraftEssences.AddRange(outrage, royalIcing, gentlemen, fanClub);
             //User u = new User();
             //var runs = new Run[]
             //{
@@ -147,46 +160,106 @@ namespace PassionLib.DAL
 
             context.SaveChanges();
         }
+        public static async Task<CraftEssence> AddCraftEssence(RunsContext context, int ceId)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/equip/{ceId}"));
+                    if (j is null) throw new Exception("Problem with " + ceId);
+                    string n = j.Value<string>("name");
+                    CraftEssence ce = new CraftEssence(j.Value<int>("id"), n, j.Value<int>("collectionNo"))
+                    {
+                        BaseMaxAttack = j.Value<short>("atkMax"),
+                        AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>(),
+                        Rarity = j.Value<short>("rarity")
+                    };
+
+                    var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/equip/{ceId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        ce.NaName = j?.Value<string>("name");
+                    }
+                    response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/equip/{ceId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        ce.CnName = j?.Value<string>("name");
+                    }
+                    response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/equip/{ceId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        ce.KrName = j?.Value<string>("name");
+                    }
+                    response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/equip/{ceId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        ce.TwName = j?.Value<string>("name");
+                    }
+                    return ce;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
         public static async Task<Servant> AddServant(RunsContext context, int servantId)
         {
-            using (var client = new HttpClient())
+            try
             {
-                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/servant/{servantId}"));
-                if (j is null) throw new Exception("Problem with " + servantId);
-                string n = j.Value<string>("name");
-                Servant s = new Servant(j.Value<int>("id"), n, j.Value<int>("collectionNo"))
+                using (var client = new HttpClient())
                 {
-                    BaseMaxAttack = j.Value<short>("atkMax"),
-                    AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>(),
-                    Class = j.Value<string>("className"),
-                    Rarity = j.Value<short>("rarity")
-                };
-                var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/servant/{servantId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                    s.NaName = j?.Value<string>("name");
+                    JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/servant/{servantId}"));
+                    if (j is null) throw new Exception("Problem with " + servantId);
+                    string n = j.Value<string>("name");
+                    Servant s = new Servant(j.Value<int>("id"), n, j.Value<int>("collectionNo"))
+                    {
+                        BaseMaxAttack = j.Value<short>("atkMax"),
+                        AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>(),
+                        Class = j.Value<string>("className"),
+                        Rarity = j.Value<short>("rarity")
+                    };
+                    var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/servant/{servantId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        s.NaName = j?.Value<string>("name");
+                    }
+                    response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/servant/{servantId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        s.CnName = j?.Value<string>("name");
+                    }
+                    response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/servant/{servantId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        s.KrName = j?.Value<string>("name");
+                    }
+                    response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/servant/{servantId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                        s.TwName = j?.Value<string>("name");
+                    }
+                    return s;
                 }
-                response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/servant/{servantId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                    s.CnName = j?.Value<string>("name");
-                }
-                response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/servant/{servantId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                    s.KrName = j?.Value<string>("name");
-                }
-                response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/servant/{servantId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                    s.TwName = j?.Value<string>("name");
-                }
-                return s;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+
         }
         public static bool CheckForInternetConnection(int timeoutMs = 10000)
         {
