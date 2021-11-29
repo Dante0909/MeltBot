@@ -32,7 +32,7 @@ else
                             @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
                             {
                                 <tr>
-                                    <td>@run.Dps.JpName</td>
+                                    <td>@run.Dps.Servant?.JpName</td>
                                     <td>@run.RunUrl</td>
                                     <td>@PartyToString(run.Party)</td>
                                     <td>@run.Cost</td>

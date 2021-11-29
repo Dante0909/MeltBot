@@ -30,7 +30,7 @@ else
                             @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
                             {
                                 <tr>
-                                    <td>@((string.IsNullOrEmpty(run.Dps.NaName)) ? run.Dps.JpName : run.Dps.NaName)</td>
+                                    <td>@(string.IsNullOrEmpty(run.Dps?.Servant?.TwName) ? run.Dps?.Servant?.JpName : run.Dps?.Servant.TwName)</td>
                                     <td>@run.RunUrl</td>
                                 </tr>
                             }
