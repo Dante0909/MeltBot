@@ -1,5 +1,4 @@
 ﻿using DSharpPlus.CommandsNext;
-using Newtonsoft.Json;
 using PassionLib.DAL;
 using PassionLib.Models;
 using System;
@@ -12,10 +11,10 @@ namespace MeltBot
 {
     internal static class DbHelper
     {
-        public static Run CreateRun(RunsContext context, string strQuest, string runUrl, User user, List<PartySlot>? party, params string[] args)
+        public static Run CreateRun(RunsContext context, string strQuest, string runUrl, string strDps, User user, List<PartySlot>? party, params string[] args)
         {
             Quest quest = GetQuest(context, strQuest);
-            //Servant dps = GetServant(context, strDps);
+            Servant dps = GetServant(context, strDps);
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
             if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
@@ -23,7 +22,7 @@ namespace MeltBot
 
             List<PartySlot>? p = party;
 
-            Run run = new Run(quest, runUrl, user);
+            Run run = new Run(quest, runUrl, dps, user);
             if (p is not null)
             {
                 run.Party = p;
@@ -216,10 +215,6 @@ namespace MeltBot
                                 else throw new Exception($"{s} is an invalid fou.");
 
                             }
-                            if (s == "m" || s == "main")
-                            {
-                                run.Dps = JsonConvert.DeserializeObject<Cancer>(JsonConvert.SerializeObject(ps));
-                            }
                             if (s == "b")
                             {
                                 ps.Borrowed = true;
@@ -246,41 +241,17 @@ namespace MeltBot
                     }
                 }
 
-
                 if (p is not null && p.Any())
                 {
+                    //if craft essence is null, sets mlb to null
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
-                    p.ForEach(x => x.TotalAttack = x.TotalAttack is not null ? x.TotalAttack : GetAttack(x));
-
-                    if (p.Count == 1)
-                    {
-                        run.Dps = JsonConvert.DeserializeObject<Cancer>(JsonConvert.SerializeObject(p.First()));
-                    }
-                    else if (p.Count == 6)
-                    {
-                        if (run.Dps is null) run.Dps = JsonConvert.DeserializeObject<Cancer>(JsonConvert.SerializeObject(p.First()));
-                        run.Cost = run.Cost is not null ? run.Cost :
-                            GetCost(p);
-
-                        run.ServantCount = run.ServantCount is not null ? run.ServantCount :
-                            (short?)p.Count(x => x.Servant is not null);
-
-                        run.NoCe = run.NoCe is not null ? run.NoCe :
-                            p.Count(x => x.CraftEssence is null) == 6;
-
-                        run.NoCeDps = run.Dps.CraftEssence is null;
-                        run.NoEventCeDps = run.NoEventCeDps is not null ? run.NoEventCeDps : null;//null should be changed to check quest individuality
-
-                    }
-                    else throw new Exception("Invalid servant count, enter either 1 or 6 servants.");
-                    //if craft essence is null, sets mlb to null                    
-
+                    p.ForEach(x => x.TotalAttack = GetAttack(x));
+                    run.Cost = GetCost(p);
                     run.Party = p;
                 }
-                else throw new Exception("No servant has been entered.");
 
             }
-            else throw new Exception("No servant has been entered.");
+
             return run;
         }
         private static short? GetCost(List<PartySlot> l)
@@ -316,11 +287,10 @@ namespace MeltBot
             if (p.TotalAttack is not null) atk = p.TotalAttack;
             else
             {
-                if (p.Servant is not null)
-                {
+                if (p.Servant is not null) {
                     atk += p.ServantLevel is not null ? p.Servant.AttackScaling?[(int)p.ServantLevel - 1] : p.Servant.BaseMaxAttack;
                     atk += p.ServantFou;
-                }
+                } 
 
                 if (p.CraftEssence is not null) atk += p.CraftEssenceLevel is not null ? p.CraftEssence.AttackScaling?[(int)p.CraftEssenceLevel - 1] : p.CraftEssence.BaseMaxAttack;
             }

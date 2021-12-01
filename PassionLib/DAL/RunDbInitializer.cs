@@ -36,7 +36,7 @@ namespace PassionLib.DAL
                             using (var client = new HttpClient())
                             {
                                 var questId = 94042801;
-                                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/quest/{questId}/1"));
+                                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/quest/{questId}"));
                                 if (j is null) throw new Exception("Problem with " + 94042801);
                                 string n = j.Value<string>("name");
                                 q = new Quest(j.Value<int>("id"), n);

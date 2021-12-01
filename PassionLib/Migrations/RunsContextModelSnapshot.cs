@@ -203,6 +203,9 @@ namespace PassionLib.Migrations
                     b.Property<int?>("CsUsed")
                         .HasColumnType("integer");
 
+                    b.Property<int>("DpsId")
+                        .HasColumnType("integer");
+
                     b.Property<bool?>("Failure")
                         .HasColumnType("boolean");
 
@@ -253,6 +256,8 @@ namespace PassionLib.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DpsId");
 
                     b.HasIndex("MysticCodeId");
 
@@ -411,6 +416,12 @@ namespace PassionLib.Migrations
 
             modelBuilder.Entity("PassionLib.Models.Run", b =>
                 {
+                    b.HasOne("PassionLib.Models.Servant", "Dps")
+                        .WithMany()
+                        .HasForeignKey("DpsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PassionLib.Models.MysticCode", "MysticCode")
                         .WithMany()
                         .HasForeignKey("MysticCodeId");
@@ -426,59 +437,6 @@ namespace PassionLib.Migrations
                         .HasForeignKey("SubmitterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.OwnsOne("PassionLib.Models.Cancer", "Dps", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .HasColumnType("integer");
-
-                            b1.Property<bool?>("Borrowed")
-                                .HasColumnType("boolean");
-
-                            b1.Property<int?>("CraftEssenceId")
-                                .HasColumnType("integer");
-
-                            b1.Property<short?>("CraftEssenceLevel")
-                                .HasColumnType("smallint");
-
-                            b1.Property<bool?>("CraftEssenceMlb")
-                                .HasColumnType("boolean");
-
-                            b1.Property<short?>("ServantFou")
-                                .HasColumnType("smallint");
-
-                            b1.Property<int?>("ServantId")
-                                .HasColumnType("integer");
-
-                            b1.Property<short?>("ServantLevel")
-                                .HasColumnType("smallint");
-
-                            b1.Property<short?>("TotalAttack")
-                                .HasColumnType("smallint");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("CraftEssenceId");
-
-                            b1.HasIndex("ServantId");
-
-                            b1.ToTable("Runs");
-
-                            b1.HasOne("PassionLib.Models.CraftEssence", "CraftEssence")
-                                .WithMany()
-                                .HasForeignKey("CraftEssenceId");
-
-                            b1.WithOwner()
-                                .HasForeignKey("Id");
-
-                            b1.HasOne("PassionLib.Models.Servant", "Servant")
-                                .WithMany()
-                                .HasForeignKey("ServantId");
-
-                            b1.Navigation("CraftEssence");
-
-                            b1.Navigation("Servant");
-                        });
 
                     b.OwnsMany("PassionLib.Models.PartySlot", "Party", b1 =>
                         {
@@ -541,8 +499,7 @@ namespace PassionLib.Migrations
                             b1.Navigation("Servant");
                         });
 
-                    b.Navigation("Dps")
-                        .IsRequired();
+                    b.Navigation("Dps");
 
                     b.Navigation("MysticCode");
 
