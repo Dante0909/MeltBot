@@ -14,9 +14,10 @@ namespace PassionLib.Models
     public class Run
     {
         //I think only this one should be used
-        public Run(Quest quest, string runUrl, User submitter) : this(quest, runUrl)
+        public Run(Quest quest, string runUrl, Servant servant, User submitter) : this(quest, runUrl)
         {
             Submitter = submitter;
+            Dps = servant;
         }
         public Run(Quest quest, string runUrl) : this(runUrl) => Quest = quest;
         private Run(string runUrl) => RunUrl = runUrl;
@@ -30,8 +31,7 @@ namespace PassionLib.Models
         public int Id { get; set; }
         public virtual Quest Quest { get; set; }
         public short? Phase { get; set; }
-        [Required]
-        public virtual Cancer? Dps { get; set; }        
+        public virtual Servant Dps { get; set; }
         public virtual List<PartySlot>? Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
         public DateTime? RunDate { get; set; }
@@ -60,7 +60,7 @@ namespace PassionLib.Models
     }
 
     [Owned]
-    public class PartySlotParent
+    public class PartySlot
     {
         [Key]
         [JsonIgnoreAttribute]
@@ -73,35 +73,5 @@ namespace PassionLib.Models
         public short? CraftEssenceLevel { get; set; } = null;
         public bool? CraftEssenceMlb { get; set; } = true;
         public short? TotalAttack { get; set; } = null;
-    }
-    
-    public class PartySlot :PartySlotParent
-    {
-        //[Key]
-        //[JsonIgnoreAttribute]
-        //public int Id { get; set; }
-        //public bool? Borrowed { get; set; } = false;
-        //public virtual Servant? Servant { get; set; } = null;
-        //public short? ServantLevel { get; set; } = null;
-        //public short? ServantFou { get; set; } = 1000;
-        //public virtual CraftEssence? CraftEssence { get; set; } = null;
-        //public short? CraftEssenceLevel { get; set; } = null;
-        //public bool? CraftEssenceMlb { get; set; } = true;
-        //public short? TotalAttack { get; set; } = null;
-    }
-   
-    public class Cancer :PartySlotParent
-    {
-        //[Key]
-        //[JsonIgnoreAttribute]
-        //public int Id { get; set; }
-        //public bool? Borrowed { get; set; } = false;
-        //public virtual Servant? Servant { get; set; } = null;
-        //public short? ServantLevel { get; set; } = null;
-        //public short? ServantFou { get; set; } = 1000;
-        //public virtual CraftEssence? CraftEssence { get; set; } = null;
-        //public short? CraftEssenceLevel { get; set; } = null;
-        //public bool? CraftEssenceMlb { get; set; } = true;
-        //public short? TotalAttack { get; set; } = null;
     }
 }

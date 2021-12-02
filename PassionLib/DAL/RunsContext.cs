@@ -33,14 +33,6 @@ namespace PassionLib.DAL
             model.Entity<Servant>().HasIndex(s => s.CollectionNo).IsUnique();
             model.Entity<CraftEssence>().HasIndex(s => s.CollectionNo).IsUnique();
             model.Entity<Run>().HasIndex(s => s.RunUrl).IsUnique();
-            //model.Entity<Run>().OwnsMany(s => s.Party, a =>
-            // {
-            //     a.WithOwner().HasForeignKey("Id");
-            //     a.Property<int>("Id");
-            //     a.HasKey("Id");
-            // });
-            //model.Entity<Run>().OwnsMany(s => s.Party).WithOwner().HasForeignKey("Id");
-            model.Entity<Run>().OwnsOne(s => s.Dps).WithOwner().HasForeignKey("Id");
         }
 
         public DbSet<Run> Runs => Set<Run>();
