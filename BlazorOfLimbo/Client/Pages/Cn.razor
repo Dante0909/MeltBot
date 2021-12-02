@@ -11,7 +11,7 @@ else
     <TabControl>
         @foreach (Quest q in quests)
         {
-            <TabPage Text=@((string.IsNullOrEmpty(q.CnName)) ? q.JpName : q.NaName)>
+            <TabPage Text=@((string.IsNullOrEmpty(q.CnName)) ? q.JpName : q.CnName)>
                 @if (runs is null || runs.Count == 0)
                 {
                     <span>Loading Runs...</span>

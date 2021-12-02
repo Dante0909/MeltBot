@@ -31,10 +31,10 @@ else
 
                             @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
                             {
-                                <tr>
-                                    {
+                                {
                                  main = run.Party.First(x=>x.IsMainDps);
                                 }
+                                <tr>
                                     <td>@main.Servant.JpName</td>
                                     <td>@run.RunUrl</td>
                                     <td>@PartyToString(run.Party)</td>

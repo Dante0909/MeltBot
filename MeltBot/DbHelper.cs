@@ -11,10 +11,9 @@ namespace MeltBot
 {
     internal static class DbHelper
     {
-        public static Run CreateRun(RunsContext context, string strQuest, string runUrl, string strDps, User user, List<PartySlot>? party, params string[] args)
+        public static Run CreateRun(RunsContext context, string strQuest, string runUrl, User user, List<PartySlot>? party, params string[] args)
         {
             Quest quest = GetQuest(context, strQuest);
-            Servant dps = GetServant(context, strDps);
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
             if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
@@ -22,7 +21,12 @@ namespace MeltBot
 
             List<PartySlot>? p = party;
 
-            Run run = new Run(quest, runUrl, dps, user);
+            Run run = new Run()
+            {
+                Quest = quest,
+                RunUrl = runUrl,
+                Submitter = user
+            };
             if (p is not null)
             {
                 run.Party = p;
@@ -214,6 +218,10 @@ namespace MeltBot
                                 }
                                 else throw new Exception($"{s} is an invalid fou.");
 
+                            }
+                            if(s == "main")
+                            {
+                                ps.IsMainDps = true;
                             }
                             if (s == "b")
                             {
