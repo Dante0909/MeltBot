@@ -159,14 +159,21 @@ namespace MeltBot.Modules
                 Run run = DbHelper.CreateRun(Context, quest, runUrl, dps, user, party, args);
                 //Context.Runs.Add(run);
                 //Context.SaveChanges();
-                string obj = JsonConvert.SerializeObject(run, Formatting.Indented);
-                byte[] t = Encoding.UTF8.GetBytes(obj);
-                using (var stream = new MemoryStream(t))
+                if (args.Contains("debug"))
                 {
-                    var builder = new DiscordMessageBuilder();
-                    builder.WithFile("run.txt", stream);
-                    await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
+                    string obj = JsonConvert.SerializeObject(run, Formatting.Indented);
+                    byte[] t = Encoding.UTF8.GetBytes(obj);
+                    using (var stream = new MemoryStream(t))
+                    {
+                        var builder = new DiscordMessageBuilder();
+                        builder.WithFile("run.txt", stream);
+                        await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
+                    }
                 }
+                
+                Context.Runs.Add(run);
+                Context.SaveChanges();
+                await ctx.Channel.SendMessageAsync("Run successfully added.");
                 
             }
             catch (Exception ex)
