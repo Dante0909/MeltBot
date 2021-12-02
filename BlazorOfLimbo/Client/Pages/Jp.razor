@@ -31,8 +31,11 @@ else
 
                             @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
                             {
+                                {
+                                 main = run.Party.First(x=>x.IsMainDps);
+                                }
                                 <tr>
-                                    <td>@run.Dps.JpName</td>
+                                    <td>@main.Servant.JpName</td>
                                     <td>@run.RunUrl</td>
                                     <td>@PartyToString(run.Party)</td>
                                     <td>@run.Cost</td>
@@ -51,6 +54,7 @@ else
     string party = string.Empty;
     List<Quest>? quests = null;
     List<Run>? runs = null;
+    PartySlot main;
     public string PartyToString(List<PartySlot> l)
     {
         string str = string.Empty;

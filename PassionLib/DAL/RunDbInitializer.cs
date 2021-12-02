@@ -12,7 +12,7 @@ namespace PassionLib.DAL
 {
     public static class RunDbInitializer
     {
-        public static async Task Initialize(RunsContext context)
+        public static async Task Initialize(RunsContext context, bool createRun = false)
         {
             if (context.Runs.Any())
             {
@@ -91,6 +91,7 @@ namespace PassionLib.DAL
             //    imaginaryScramble = new Quest(94053435, "【高難易度】聖女を呼ぶ声");
             //    context.Quests.Add(imaginaryScramble);
             //}
+            User u = new User();
             Servant skadi = null;
             Servant charlotte = null;
             Servant lanling = null;
@@ -134,9 +135,54 @@ namespace PassionLib.DAL
                 //charlotte = new Servant(603800, "シャルロット・コルデー", 1);
             }
 
-
+            context.Users.Add(u);
             context.Servants.AddRange(skadi, charlotte, lanling, tamamo, bride);
             context.CraftEssences.AddRange(outrage, royalIcing, gentlemen, fanClub);
+            if (createRun)
+            {
+                Run run = new Run()
+                {
+                    RunUrl = "https://youtu.be/xqu9_kDYPvo",
+                    Submitter = u,
+                    Quest = woahnilandRerunCq,
+                    Party = new List<PartySlot>()
+                {
+                    new PartySlot()
+                    {
+                        Servant = skadi,
+                        CraftEssence = outrage
+                    },
+                    new PartySlot()
+                    {
+                        Servant = charlotte,
+                        CraftEssence = royalIcing,
+                        IsMainDps = true
+                    },
+                    new PartySlot()
+                    {
+                        Servant = lanling,
+                        CraftEssence = gentlemen
+                    },
+                    new PartySlot()
+                    {
+                        Servant = tamamo,
+                        CraftEssence = outrage
+                    },
+                    new PartySlot()
+                    {
+                        Servant = tamamo,
+                        CraftEssence = fanClub
+                    },
+                    new PartySlot()
+                    {
+                        Servant = bride,
+                        CraftEssence = gentlemen
+                    }
+                }
+                };
+                context.Runs.Add(run);
+            }
+            
             //User u = new User();
             //var runs = new Run[]
             //{

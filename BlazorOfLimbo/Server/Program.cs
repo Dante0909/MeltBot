@@ -43,7 +43,7 @@ if (doDbRecreation)
         var context = scope.ServiceProvider.GetRequiredService<RunsContext>();
         context.Database.EnsureDeleted();
         context.Database.Migrate();
-        RunDbInitializer.Initialize(context);
+        await RunDbInitializer.Initialize(context);
     }
 }
 if (app.Environment.IsProduction())

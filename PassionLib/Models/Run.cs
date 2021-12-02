@@ -17,7 +17,7 @@ namespace PassionLib.Models
         public Run(Quest quest, string runUrl, Servant servant, User submitter) : this(quest, runUrl)
         {
             Submitter = submitter;
-            Dps = servant;
+            //Dps = servant;
         }
         public Run(Quest quest, string runUrl) : this(runUrl) => Quest = quest;
         private Run(string runUrl) => RunUrl = runUrl;
@@ -31,7 +31,9 @@ namespace PassionLib.Models
         public int Id { get; set; }
         public virtual Quest Quest { get; set; }
         public short? Phase { get; set; }
-        public virtual Servant Dps { get; set; }
+        [NotMapped]
+        [JsonIgnoreAttribute]
+        public virtual PartySlot Dps { get; set; }
         public virtual List<PartySlot>? Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
         public DateTime? RunDate { get; set; }
@@ -65,6 +67,7 @@ namespace PassionLib.Models
         [Key]
         [JsonIgnoreAttribute]
         public int Id { get; set; }
+        public bool IsMainDps { get; set; } = false;
         public bool? Borrowed { get; set; } = false;
         public virtual Servant? Servant { get; set; } = null;
         public short? ServantLevel { get; set; } = null;

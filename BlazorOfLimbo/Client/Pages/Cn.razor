@@ -11,7 +11,7 @@ else
     <TabControl>
         @foreach (Quest q in quests)
         {
-            <TabPage Text=@((string.IsNullOrEmpty(q.CnName)) ? q.JpName : q.NaName)>
+            <TabPage Text=@((string.IsNullOrEmpty(q.CnName)) ? q.JpName : q.CnName)>
                 @if (runs is null || runs.Count == 0)
                 {
                     <span>Loading Runs...</span>
@@ -29,8 +29,11 @@ else
 
                             @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
                             {
-                                <tr>
-                                    <td>@((string.IsNullOrEmpty(run.Dps.CnName)) ? run.Dps.JpName : run.Dps.CnName)</td>
+                                {
+                                 main = run.Party.First(x=>x.IsMainDps);
+                                }
+                                <tr>                                    
+                                    <td>@((string.IsNullOrEmpty(main.Servant.CnName)) ? main.Servant.JpName : main.Servant.CnName)</td>
                                     <td>@run.RunUrl</td>
                                 </tr>
                             }
@@ -46,6 +49,7 @@ else
 @code {
     List<Quest>? quests = null;
     List<Run>? runs = null;
+    PartySlot main;
     protected override async Task OnInitializedAsync()
     {
         quests = await RunService.GetQuests();

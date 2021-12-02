@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PassionLib.DAL;
@@ -11,9 +12,10 @@ using PassionLib.DAL;
 namespace PassionLib.Migrations
 {
     [DbContext(typeof(RunsContext))]
-    partial class RunsContextModelSnapshot : ModelSnapshot
+    [Migration("20211202043658_Clean")]
+    partial class Clean
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,9 +205,6 @@ namespace PassionLib.Migrations
                     b.Property<int?>("CsUsed")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DpsId")
-                        .HasColumnType("integer");
-
                     b.Property<bool?>("Failure")
                         .HasColumnType("boolean");
 
@@ -256,8 +255,6 @@ namespace PassionLib.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DpsId");
 
                     b.HasIndex("MysticCodeId");
 
@@ -416,12 +413,6 @@ namespace PassionLib.Migrations
 
             modelBuilder.Entity("PassionLib.Models.Run", b =>
                 {
-                    b.HasOne("PassionLib.Models.Servant", "Dps")
-                        .WithMany()
-                        .HasForeignKey("DpsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PassionLib.Models.MysticCode", "MysticCode")
                         .WithMany()
                         .HasForeignKey("MysticCodeId");

@@ -14,7 +14,6 @@ namespace MeltBot
         public static Run CreateRun(RunsContext context, string strQuest, string runUrl, string strDps, User user, List<PartySlot>? party, params string[] args)
         {
             Quest quest = GetQuest(context, strQuest);
-            Servant dps = GetServant(context, strDps);
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
             if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
@@ -22,7 +21,12 @@ namespace MeltBot
 
             List<PartySlot>? p = party;
 
-            Run run = new Run(quest, runUrl, dps, user);
+            Run run = new Run()
+            {
+                Quest = quest,
+                RunUrl = runUrl,
+                Submitter = user
+            };
             if (p is not null)
             {
                 run.Party = p;
@@ -215,6 +219,11 @@ namespace MeltBot
                                 else throw new Exception($"{s} is an invalid fou.");
 
                             }
+                            if (s == "main")
+                            {
+                                run.Dps = ps;
+                                ps.IsMainDps = true;
+                            }
                             if (s == "b")
                             {
                                 ps.Borrowed = true;
@@ -243,12 +252,33 @@ namespace MeltBot
 
                 if (p is not null && p.Any())
                 {
+                    if (p.Count == 6)
+                    {
+                        if (!p.Any(x => x.Borrowed == true)) throw new Exception("No servant is borrowed");
+                         
+                        run.Cost = run.Cost is not null ? run.Cost : GetCost(p);
+                        run.ServantCount = run.ServantCount is not null ? run.ServantCount : (short)p.Count(x => x.Servant is not null);
+                        run.NoCe = !p.Any(x => x.CraftEssence is not null);
+                        run.NoDupe = !p.GroupBy(x => x.Servant.Id).Any(c => c.Count() > 1);
+                    }
+                    else if (p.Count == 1)
+                    {
+                    }
+                    else throw new Exception("Enter one or six servants in the party.");
                     //if craft essence is null, sets mlb to null
+                    if (run.Dps is null)
+                    {
+                        p.First().IsMainDps = true;
+                        run.Dps = party.First();
+                    }
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
                     p.ForEach(x => x.TotalAttack = GetAttack(x));
-                    run.Cost = GetCost(p);
+
+                    run.NoCeDps = run.Dps.CraftEssence is null;
+
                     run.Party = p;
                 }
+                else throw new Exception("No servant in the party.");
 
             }
 
