@@ -12,7 +12,7 @@ namespace PassionLib.DAL
 {
     public static class RunDbInitializer
     {
-        public static async Task Initialize(RunsContext context)
+        public static async Task Initialize(RunsContext context, bool createRun = false)
         {
             if (context.Runs.Any())
             {
@@ -138,12 +138,14 @@ namespace PassionLib.DAL
             context.Users.Add(u);
             context.Servants.AddRange(skadi, charlotte, lanling, tamamo, bride);
             context.CraftEssences.AddRange(outrage, royalIcing, gentlemen, fanClub);
-            Run run = new Run()
+            if (createRun)
             {
-                RunUrl = "https://youtu.be/xqu9_kDYPvo",
-                Submitter = u,
-                Quest = woahnilandRerunCq,
-                Party = new List<PartySlot>()
+                Run run = new Run()
+                {
+                    RunUrl = "https://youtu.be/xqu9_kDYPvo",
+                    Submitter = u,
+                    Quest = woahnilandRerunCq,
+                    Party = new List<PartySlot>()
                 {
                     new PartySlot()
                     {
@@ -177,8 +179,10 @@ namespace PassionLib.DAL
                         CraftEssence = gentlemen
                     }
                 }
-            };
-            context.Runs.Add(run);
+                };
+                context.Runs.Add(run);
+            }
+            
             //User u = new User();
             //var runs = new Run[]
             //{

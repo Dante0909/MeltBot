@@ -31,7 +31,9 @@ namespace PassionLib.Models
         public int Id { get; set; }
         public virtual Quest Quest { get; set; }
         public short? Phase { get; set; }
-        //public virtual Servant Dps { get; set; }
+        [NotMapped]
+        [JsonIgnoreAttribute]
+        public virtual PartySlot Dps { get; set; }
         public virtual List<PartySlot>? Party { get; set; } = new List<PartySlot>();
         public virtual MysticCode? MysticCode { get; set; }
         public DateTime? RunDate { get; set; }

@@ -136,7 +136,7 @@ if (doDbRecreation)
         var context = scope.ServiceProvider.GetRequiredService<RunsContext>();
         context.Database.EnsureDeleted();
         context.Database.Migrate();
-        await RunDbInitializer.Initialize(context);
+        await RunDbInitializer.Initialize(context, true);
     }
 }
 if (app.Environment.IsProduction())
