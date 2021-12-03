@@ -10,16 +10,18 @@ using (var context = new RunsContext())
 // https://github.com/DSharpPlus/DSharpPlus/blob/master/docs/articles/commands/dependency_injection.md
 // msg me if you need clarification
 {
-    context.Database.EnsureDeleted();
-    context.Database.Migrate();
+    var doDbRecreation = bool.Parse(Environment.GetEnvironmentVariable("DO_DB_RECREATION") ?? "false");
+    if (doDbRecreation)
+    {
+        context.Database.EnsureDeleted();
+        context.Database.Migrate();
 
-    await RunDbInitializer.Initialize(context);//.GetAwaiter().GetResult();
+        await RunDbInitializer.Initialize(context);
 
-    //var woahnilandRerunCq = context.Quests.FirstOrDefault(o => o.Id == 94042801);
-    //context.Runs.Add(new Run(woahnilandRerunCq, "https://youtu.be/-BcOMkFBXng"));
-    context.SaveChanges();
-
-   
+        //var woahnilandRerunCq = context.Quests.FirstOrDefault(o => o.Id == 94042801);
+        //context.Runs.Add(new Run(woahnilandRerunCq, "https://youtu.be/-BcOMkFBXng"));
+        context.SaveChanges();
+    }  
     
 }
 var bot = new MeltBot.Bot();

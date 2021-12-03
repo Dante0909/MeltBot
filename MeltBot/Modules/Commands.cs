@@ -144,8 +144,12 @@ namespace MeltBot.Modules
                 Console.WriteLine(ex);
             }
         }
-
-        [Command("temprun")]
+        [Command("website")]
+        public async Task Site(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("https://combatrecords.xxil.cc/jp");
+        }
+        [Command("run")]
         public async Task TempRun(CommandContext ctx,
             [Description("Name or id of the quest")] string quest,
             [Description("Name or id of the dps")] string dps,
