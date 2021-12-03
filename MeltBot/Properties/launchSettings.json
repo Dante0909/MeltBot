@@ -1,7 +1,11 @@
 {
   "profiles": {
     "MeltBot": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "environmentVariables": {
+        "DO_DB_RECREATION": "true",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     },
     "Docker": {
       "commandName": "Docker"

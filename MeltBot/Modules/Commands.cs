@@ -149,10 +149,9 @@ namespace MeltBot.Modules
         {
             await ctx.Channel.SendMessageAsync("https://combatrecords.xxil.cc/jp");
         }
-        [Command("run")]
+        [Command("temprun")]
         public async Task TempRun(CommandContext ctx,
             [Description("Name or id of the quest")] string quest,
-            [Description("Name or id of the dps")] string dps,
             [Description("Link of the run")] string runUrl,
             [Description("Additional params")] params string[] args)
         {
@@ -160,7 +159,7 @@ namespace MeltBot.Modules
             {
                 var user = DbHelper.GetUser(ctx, Context);
                 List<PartySlot>? party = null;//Insert your program output
-                Run run = DbHelper.CreateRun(Context, quest, runUrl, dps, user, party, args);
+                Run run = DbHelper.CreateRun(Context, quest, runUrl, user, party, args);
                 //Context.Runs.Add(run);
                 //Context.SaveChanges();
                 if (args.Contains("debug"))
