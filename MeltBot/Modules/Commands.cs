@@ -194,16 +194,17 @@ namespace MeltBot.Modules
             {
                 if (ctx.User.Id == 290938252540641290 || ctx.User.Id == 91383118644154368)
                 {
-                    Context.Database.ExecuteSqlRaw("delete from \"Quests\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"Runs\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"Users\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssences\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodes\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"Servants\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssenceAliases\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodeAliases\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"QuestAliases\"");
-                    Context.Database.ExecuteSqlRaw("delete from \"ServantAliases\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"Quests\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"Runs\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"Users\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssences\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodes\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"Servants\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssenceAliases\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodeAliases\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"QuestAliases\" cascade");
+                    Context.Database.ExecuteSqlRaw("delete from \"ServantAliases\" cascade");
+                    Context.SaveChanges();
                     
                     await ctx.Channel.SendMessageAsync("Db deleted and created");
 
