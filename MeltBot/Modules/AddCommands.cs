@@ -166,7 +166,7 @@ namespace MeltBot.Modules
                 str = ex.Message;
             }
             await ctx.Channel.SendMessageAsync(str);
-            if (nickname is not null) await AddServantNickname(ctx, questId.ToString(), nickname);
+            if (nickname is not null) await AddQuestNickname(ctx, questId.ToString(), nickname);
         }
         [Command("NickQ")]
         [Description("Add a nickname to a quest")]

@@ -186,8 +186,17 @@ namespace MeltBot.Modules
             }
 
         }
-        
-        
+        [Hidden]
+        [Command("deletedb")]
+        public async Task AdminDelete(CommandContext ctx)
+        {
+            if(ctx.User.Id == 290938252540641290 || ctx.User.Id == 91383118644154368)
+            {
+                await Context.Database.EnsureDeletedAsync();
+                await Context.Database.EnsureCreatedAsync();
+            }
+            
+        }
         //These two commmands should not be in this class
 
         //I commented all the commands, I just copypastad commands that are old and outdated.
