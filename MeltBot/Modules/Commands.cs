@@ -190,11 +190,28 @@ namespace MeltBot.Modules
         [Command("deletedb")]
         public async Task AdminDelete(CommandContext ctx)
         {
-            if(ctx.User.Id == 290938252540641290 || ctx.User.Id == 91383118644154368)
+            try
             {
-                await Context.Database.EnsureDeletedAsync();
-                await Context.Database.EnsureCreatedAsync();
-                await ctx.Channel.SendMessageAsync("Db deleted and created");
+                if (ctx.User.Id == 290938252540641290 || ctx.User.Id == 91383118644154368)
+                {
+                    Context.Database.ExecuteSqlRaw("delete from \"Quests\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"Runs\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"Users\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssences\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodes\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"Servants\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssenceAliases\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodeAliases\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"QuestAliases\"");
+                    Context.Database.ExecuteSqlRaw("delete from \"ServantAliases\"");
+                    
+                    await ctx.Channel.SendMessageAsync("Db deleted and created");
+
+                }
+            }
+            catch(Exception ex)
+            {
+                await ctx.Channel.SendMessageAsync(ex.ToString());
             }
             
         }

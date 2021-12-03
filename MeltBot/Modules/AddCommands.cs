@@ -159,6 +159,10 @@ namespace MeltBot.Modules
                         str = $"Successfully added {n}";
                     }
                 }
+                else
+                {
+                    str = $"Quest {questId} already exists.";
+                }
             }
             catch (Exception ex)
             {
