@@ -15,10 +15,10 @@ namespace MeltBot.Modules
     {
         public RunsContext Context { private get; set; }
         [Command("AddServant")]
-        [Description("Add an existing servant to the database.")]
+        [Description("Add an existing servant to the database")]
         public async Task AddServant(CommandContext ctx,
             [Description("Id or collectionNo of the servant to add")] int servantId,
-            [Description("(Optional)A nickname to that servant.")] string nickname = null)
+            [Description("(Optional)A nickname to that servant")] string nickname = null)
         {
             string str = string.Empty;
             try
@@ -65,7 +65,7 @@ namespace MeltBot.Modules
 
                         Context.Servants.Add(s);
                         Context.SaveChanges();
-                        str = $"Successfully added {n}.";
+                        str = $"Successfully added {n}";
                     }
                 }
 
@@ -92,17 +92,17 @@ namespace MeltBot.Modules
                 if (int.TryParse(servant, out int id))
                 {
                     s = Context.Servants.FirstOrDefault(s => s.Id == id || s.CollectionNo == id);
-                    if (s is null) throw new Exception($"{servant} could not be found.");
+                    if (s is null) throw new Exception($"{servant} could not be found");
                 }
                 else
                 {
                     s = Context.ServantAliases.FirstOrDefault(x => x.Nickname == servant)?.Servant;
-                    if (s is null) throw new Exception($"{servant} could not be found.");
+                    if (s is null) throw new Exception($"{servant} could not be found");
                 }
                 User u = DbHelper.GetUser(ctx, Context);
                 Context.ServantAliases.Add(new ServantAlias(s, nickname) { Submitter = u });
                 Context.SaveChanges();
-                str = $"Nickname {nickname} added for servant {servant}.";
+                str = $"Nickname {nickname} added for servant {servant}";
             }
             catch (Exception ex)
             {
@@ -112,10 +112,10 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
         }
         [Command("AddQuest")]
-        [Description("Add an existing quest to the database.")]
+        [Description("Add an existing quest to the database")]
         public async Task AddQuest(CommandContext ctx,
              [Description("Id of the quest to add")] int questId,
-             [Description("(Optional)A nickname to that quest.")] string nickname = null)
+             [Description("(Optional)A nickname to that quest")] string nickname = null)
         {
             string str = string.Empty;
             try
@@ -156,7 +156,7 @@ namespace MeltBot.Modules
                         }
                         Context.Quests.Add(q);
                         Context.SaveChanges();
-                        str = $"Successfully added {n}.";
+                        str = $"Successfully added {n}";
                     }
                 }
             }
@@ -181,17 +181,17 @@ namespace MeltBot.Modules
                 if (int.TryParse(quest, out int id))
                 {
                     q = Context.Quests.FirstOrDefault(q => q.Id == id);
-                    if (q is null) throw new Exception($"{quest} could not be found.");
+                    if (q is null) throw new Exception($"{quest} could not be found");
                 }
                 else
                 {
                     q = Context.QuestAliases.FirstOrDefault(x => x.Nickname == quest)?.Quest;
-                    if (q is null) throw new Exception($"{quest} could not be found.");
+                    if (q is null) throw new Exception($"{quest} could not be found");
                 }
                 User u = DbHelper.GetUser(ctx, Context);
                 Context.QuestAliases.Add(new QuestAlias(q, nickname) { Submitter = u });
                 Context.SaveChanges();
-                str = $"Nickname {nickname} added for quest {quest}.";
+                str = $"Nickname {nickname} added for quest {quest}";
             }
             catch (Exception ex)
             {
@@ -201,10 +201,10 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
         }
         [Command("AddCe")]
-        [Description("Add an existing craft essence to the database.")]
+        [Description("Add an existing craft essence to the database")]
         public async Task AddCe(CommandContext ctx,
              [Description("Id or collectionNo of the ce to add")] int ceId,
-             [Description("(Optional)A nickname to that ce.")] string nickname = null)
+             [Description("(Optional)A nickname to that ce")] string nickname = null)
         {
             string str = string.Empty;
             try
@@ -225,7 +225,7 @@ namespace MeltBot.Modules
                         };
                         Context.CraftEssences.Add(ce);
                         Context.SaveChanges();
-                        str = $"Successfully added {n}.";
+                        str = $"Successfully added {n}";
 
                         var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/equip/{ceId}");
                         if (response.IsSuccessStatusCode)
@@ -276,17 +276,17 @@ namespace MeltBot.Modules
                 if (int.TryParse(ce, out int id))
                 {
                     c = Context.CraftEssences.FirstOrDefault(q => q.Id == id);
-                    if (c is null) throw new Exception($"{ce} could not be found.");
+                    if (c is null) throw new Exception($"{ce} could not be found");
                 }
                 else
                 {
                     c = Context.CraftEssenceAliases.FirstOrDefault(x => x.Nickname == ce)?.CraftEssence;
-                    if (c is null) throw new Exception($"{ce} could not be found.");
+                    if (c is null) throw new Exception($"{ce} could not be found");
                 }
                 User u = DbHelper.GetUser(ctx, Context);
                 Context.CraftEssenceAliases.Add(new CraftEssenceAlias(c, nickname) { Submitter = u });
                 Context.SaveChanges();
-                str = $"Nickname {nickname} added for craft essence {ce}.";
+                str = $"Nickname {nickname} added for craft essence {ce}";
             }
             catch (Exception ex)
             {
@@ -296,10 +296,10 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
         }
         [Command("AddMc")]
-        [Description("Add an existing mystic quest to the database.")]
+        [Description("Add an existing mystic quest to the database")]
         public async Task AddMc(CommandContext ctx,
              [Description("Id of the mystic code to add")] int mcId,
-             [Description("(Optional)A nickname to that mc.")] string nickname = null)
+             [Description("(Optional)A nickname to that mc")] string nickname = null)
         {
             string str = string.Empty;
             try
@@ -341,7 +341,7 @@ namespace MeltBot.Modules
                         }
                         Context.MysticCodes.Add(mc);
                         Context.SaveChanges();
-                        str = $"Successfully added {n}.";
+                        str = $"Successfully added {n}";
                     }
                 }
             }
@@ -366,17 +366,17 @@ namespace MeltBot.Modules
                 if (int.TryParse(mc, out int id))
                 {
                     m = Context.MysticCodes.FirstOrDefault(q => q.Id == id);
-                    if (m is null) throw new Exception($"{mc} could not be found.");
+                    if (m is null) throw new Exception($"{mc} could not be found");
                 }
                 else
                 {
                     m = Context.MysticCodeAliases.FirstOrDefault(x => x.Nickname == mc)?.MysticCode;
-                    if (m is null) throw new Exception($"{mc} could not be found.");
+                    if (m is null) throw new Exception($"{mc} could not be found");
                 }
                 User u = DbHelper.GetUser(ctx, Context);
                 Context.MysticCodeAliases.Add(new MysticCodeAlias(m, nickname) { Submitter = u });
                 Context.SaveChanges();
-                str = $"Nickname {nickname} added for mystic code {mc}.";
+                str = $"Nickname {nickname} added for mystic code {mc}";
             }
             catch (Exception ex)
             {

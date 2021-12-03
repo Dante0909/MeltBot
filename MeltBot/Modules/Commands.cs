@@ -122,7 +122,7 @@ namespace MeltBot.Modules
                             var gameplay = await ctx.Client.GetChannelAsync(715944125916250154).ConfigureAwait(false);
                             foreach (var t in gameplay.Threads)
                             {
-                               await t.SendMessageAsync("Weekly message to keep this thread alive.");
+                               await t.SendMessageAsync("Weekly message to keep this thread alive");
                             }
                             counter = 0;
                         }
@@ -176,7 +176,7 @@ namespace MeltBot.Modules
                 
                 Context.Runs.Add(run);
                 Context.SaveChanges();
-                await ctx.Channel.SendMessageAsync("Run successfully added.");
+                await ctx.Channel.SendMessageAsync("Run successfully added");
                 
             }
             catch (Exception ex)
@@ -194,6 +194,7 @@ namespace MeltBot.Modules
             {
                 await Context.Database.EnsureDeletedAsync();
                 await Context.Database.EnsureCreatedAsync();
+                await ctx.Channel.SendMessageAsync("Db deleted and created");
             }
             
         }

@@ -17,7 +17,7 @@ namespace MeltBot
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
             if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
-            if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists.");
+            if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists");
 
             List<PartySlot>? p = party;
 
@@ -86,7 +86,7 @@ namespace MeltBot
                         }
                         else
                         {
-                            throw new Exception($"{s} is not a valid cost.");
+                            throw new Exception($"{s} is not a valid cost");
                         }
                     }
                     if (s.StartsWith("mc"))
@@ -101,7 +101,7 @@ namespace MeltBot
                         {
                             mc = context.MysticCodeAliases.FirstOrDefault(x => x.Nickname == s)?.MysticCode;
                         }
-                        if (mc is null) throw new Exception($"{s} could not be recognized as a mystic code id or nickname.");
+                        if (mc is null) throw new Exception($"{s} could not be recognized as a mystic code id or nickname");
                         run.MysticCode = mc;
                         continue;
                     }
@@ -112,7 +112,7 @@ namespace MeltBot
                         {
                             run.ServantCount = n;
                         }
-                        else throw new Exception($"{s} is not a valid servant count.");
+                        else throw new Exception($"{s} is not a valid servant count");
                     }
                     if (s == "rta")
                     {
@@ -143,7 +143,7 @@ namespace MeltBot
                         {
                             dirtyCeCheck = false;
                             p = p is null ? new List<PartySlot>() : p;
-                            if (p.Count >= 6) throw new Exception("Cannot have seven servants.");
+                            if (p.Count >= 6) throw new Exception("Cannot have seven servants");
                             s = s.Substring(3);
                             ps = new PartySlot();
                             Servant? svt = null;
@@ -157,7 +157,7 @@ namespace MeltBot
                                 svt = context.Servants.FirstOrDefault(x => x.Id == n || x.CollectionNo == n);
                             }
                             else svt = context.ServantAliases.FirstOrDefault(x => x.Nickname == s)?.Servant;
-                            if (svt is null) throw new Exception($"{s} not recognized as servant.");
+                            if (svt is null) throw new Exception($"{s} not recognized as servant");
                             ps.Servant = svt;
                             typeCheck = svt;
 
@@ -168,7 +168,7 @@ namespace MeltBot
                             if (s.StartsWith("ce") && !dirtyCeCheck)
                             {
                                 dirtyCeCheck = true;
-                                if (ps.CraftEssence is not null) throw new Exception($"A craft essence has already been entered for that party slot.");
+                                if (ps.CraftEssence is not null) throw new Exception($"A craft essence has already been entered for that party slot");
                                 s = s.Substring(2);
                                 CraftEssence? ce = null;
                                 if (string.IsNullOrEmpty(s) || s == "null")
@@ -184,7 +184,7 @@ namespace MeltBot
                                 }
                                 else ce = context.CraftEssenceAliases.FirstOrDefault(x => x.Nickname == s)?.CraftEssence;
 
-                                if (ce is null) throw new Exception($"{s} could not be recognized as a craft essence id or nickname.");
+                                if (ce is null) throw new Exception($"{s} could not be recognized as a craft essence id or nickname");
 
                                 ps.CraftEssence = ce;
                                 typeCheck = ce;
@@ -206,7 +206,7 @@ namespace MeltBot
                                     }
                                     typeCheck = null;
                                 }
-                                else throw new Exception($"{s} is an invalid level.");
+                                else throw new Exception($"{s} is an invalid level");
 
                             }
                             if (s.StartsWith("fou"))
@@ -216,7 +216,7 @@ namespace MeltBot
                                 {
                                     ps.ServantFou = n;
                                 }
-                                else throw new Exception($"{s} is an invalid fou.");
+                                else throw new Exception($"{s} is an invalid fou");
 
                             }
                             if (s == "main")
@@ -243,7 +243,7 @@ namespace MeltBot
                                 }
                                 else
                                 {
-                                    throw new Exception($"{s} is not a valid attack number.");
+                                    throw new Exception($"{s} is not a valid attack number");
                                 }
                             }
                         }
@@ -264,7 +264,7 @@ namespace MeltBot
                     else if (p.Count == 1)
                     {
                     }
-                    else throw new Exception("Enter one or six servants in the party.");
+                    else throw new Exception("Enter one or six servants in the party");
                     //if craft essence is null, sets mlb to null
                     if (run.Dps is null)
                     {
@@ -278,7 +278,7 @@ namespace MeltBot
 
                     run.Party = p;
                 }
-                else throw new Exception("No servant in the party.");
+                else throw new Exception("No servant in the party");
 
             }
 
@@ -350,12 +350,12 @@ namespace MeltBot
             if (int.TryParse(quest, out int id))
             {
                 q = context.Quests.Where(x => x.Id == id).FirstOrDefault();
-                if (q is null) throw new Exception($"Quest {quest} could not be found.");
+                if (q is null) throw new Exception($"Quest {quest} could not be found");
             }
             else
             {
                 q = context.QuestAliases.Where(x => x.Nickname == quest).FirstOrDefault()?.Quest;
-                if (q is null) throw new Exception($"Quest {quest} could not be found.");
+                if (q is null) throw new Exception($"Quest {quest} could not be found");
 
             }
             return q;
@@ -367,12 +367,12 @@ namespace MeltBot
             if (int.TryParse(dps, out int id))
             {
                 d = context.Servants.Where(x => x.Id == id).FirstOrDefault();
-                if (d is null) throw new Exception($"Servant {dps} could not be found.");
+                if (d is null) throw new Exception($"Servant {dps} could not be found");
             }
             else
             {
                 d = context.ServantAliases.Where(x => x.Nickname == dps).FirstOrDefault()?.Servant;
-                if (d is null) throw new Exception($"Servant {dps} could not be found.");
+                if (d is null) throw new Exception($"Servant {dps} could not be found");
             }
             return d;
         }
