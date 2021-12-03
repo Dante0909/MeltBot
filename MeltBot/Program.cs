@@ -10,7 +10,7 @@ using (var context = new RunsContext())
 // https://github.com/DSharpPlus/DSharpPlus/blob/master/docs/articles/commands/dependency_injection.md
 // msg me if you need clarification
 {
-    var doDbRecreation = true;// bool.Parse(Environment.GetEnvironmentVariable("DO_DB_RECREATION") ?? "false");
+    var doDbRecreation = bool.Parse(Environment.GetEnvironmentVariable("DO_DB_RECREATION") ?? "false");
     if (doDbRecreation)
     {
         context.Database.EnsureDeleted();

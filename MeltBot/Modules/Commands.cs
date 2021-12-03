@@ -186,36 +186,36 @@ namespace MeltBot.Modules
             }
 
         }
-        [Hidden]
-        [Command("deletedb")]
-        public async Task AdminDelete(CommandContext ctx)
-        {
-            try
-            {
-                if (ctx.User.Id == 290938252540641290 || ctx.User.Id == 91383118644154368)
-                {
-                    Context.Database.ExecuteSqlRaw("delete from \"Quests\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"Runs\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"Users\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssences\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodes\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"Servants\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"CraftEssenceAliases\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"MysticCodeAliases\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"QuestAliases\" cascade");
-                    Context.Database.ExecuteSqlRaw("delete from \"ServantAliases\" cascade");
-                    Context.SaveChanges();
+        //[Hidden]
+        //[Command("deletedb")]
+        //public async Task AdminDelete(CommandContext ctx)
+        //{
+        //    try
+        //    {
+        //        if (ctx.User.Id == 290938252540641290 || ctx.User.Id == 91383118644154368)
+        //        {
+        //            Context.Database.ExecuteSqlRaw("delete from \"Quests\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"Runs\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"Users\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"CraftEssences\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"MysticCodes\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"Servants\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"CraftEssenceAliases\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"MysticCodeAliases\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"QuestAliases\" cascade");
+        //            Context.Database.ExecuteSqlRaw("delete from \"ServantAliases\" cascade");
+        //            Context.SaveChanges();
                     
-                    await ctx.Channel.SendMessageAsync("Db deleted and created");
+        //            await ctx.Channel.SendMessageAsync("Db deleted and created");
 
-                }
-            }
-            catch(Exception ex)
-            {
-                await ctx.Channel.SendMessageAsync(ex.ToString());
-            }
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        await ctx.Channel.SendMessageAsync(ex.ToString());
+        //    }
             
-        }
+        //}
         //These two commmands should not be in this class
 
         //I commented all the commands, I just copypastad commands that are old and outdated.
