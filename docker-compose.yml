@@ -9,6 +9,8 @@ services:
       - POSTGRES_DB=aecrdb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   kiarapi:
     container_name: kiarapi
