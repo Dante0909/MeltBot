@@ -13,6 +13,10 @@ namespace MeltBot
 {
     internal class Bot
     {
+        public static readonly Dictionary<ulong, string> Admin = new Dictionary<ulong, string>()
+        {
+            {290938252540641290,"_Dante09" }
+        };
         public DiscordClient Client { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
         public async Task RunAsync()

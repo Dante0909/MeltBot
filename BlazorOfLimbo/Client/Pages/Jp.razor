@@ -2,55 +2,72 @@
 @inject IRunService RunService
 @using System.Globalization
 
-@if (quests is null || quests.Count == 0)
-{
-    <span>Loading Quests...</span>
-}
-else
-{
-    <TabControl>
-        @foreach (Quest q in quests)
-        {
-            <TabPage Text=@q.JpName>
-                @if (runs is null || runs.Count == 0)
-                {
-                    <span>Loading Runs...</span>
-                }
-                else
-                {
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Dps</th>
-                                <th>Url</th>
-                                <th>Party</th>
-                                <th>Cost</th>
-                            </tr>
-                        </thead>
-                        <tbody>
 
-                            @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
-                            {
-                                {
-                                 main = run.Party.First(x=>x.IsMainDps);
-                                }
-                                <tr>
-                                    <td>@main.Servant.JpName</td>
-                                    <td>@run.RunUrl</td>
-                                    <td>@PartyToString(run.Party)</td>
-                                    <td>@run.Cost</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+
+<TabControl>
+    @foreach (int i in years)
+    {
+        <TabPage Text=@i.ToString()>
+            @if (quests is null || quests.Count == 0)
+            {
+                <span>Loading Quests...</span>
+            }
+            else
+            {
+                <TabControl>
+                    
+                        @foreach (Quest q in quests)
+                {
+                    <TabPage Text=@q.JpName>
+                        @if (runs is null || runs.Count == 0)
+                        {
+                            <span>Loading Runs...</span>
+                        }
+                        else
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Dps</th>
+                                        <th>Url</th>
+                                        <th>Party</th>
+                                        <th>Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
+                                    {
+                                        {
+                                            main = run.Party.First(x => x.IsMainDps);
+                                        }
+                                        <tr>
+                                            <td>@main.Servant.JpName</td>
+                                            <td>@run.RunUrl</td>
+                                            <td>@PartyToString(run.Party)</td>
+                                            <td>@run.Cost</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </TabPage>
                 }
-            </TabPage>
-        }
-    </TabControl>
-}
+                    
+                    
+                </TabControl>
+                
+            }
+
+
+        </TabPage>
+    }
+
+</TabControl>
 
 
 @code {
+    int[] years = new int[5] { 2016, 2017, 2018, 2019, 2020 };
     string party = string.Empty;
     List<Quest>? quests = null;
     List<Run>? runs = null;

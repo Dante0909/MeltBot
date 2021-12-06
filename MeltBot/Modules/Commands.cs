@@ -144,6 +144,61 @@ namespace MeltBot.Modules
                 Console.WriteLine(ex);
             }
         }
+        [Command("GetInfo")]
+        [Description("Get all runs submitted by a given user")]
+        public async Task GetRuns(CommandContext ctx,
+            [Description("Id or discord name+tag (ex: _Dante09#9825)")] string name)
+        {
+            try
+            {
+                if (Bot.Admin.ContainsKey(ctx.User.Id))
+                {
+                    User? u;
+                    if (long.TryParse(name, out long id))
+                    {
+                        u = Context.Users.FirstOrDefault(x => x.DiscordSnowflake == id);
+                        if (u is null) throw new Exception($"{id} could not be found");
+                    }
+                    else
+                    {
+                        u = Context.Users.FirstOrDefault(x => x.DiscordUsername + "#" + x.DiscordDiscriminator == name);
+                    }
+                    if (u is null) throw new Exception($"{id} could not be found");
+                    DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
+                    string str = string.Empty;
+                    foreach (var r in Context.Runs.Where(x => x.Submitter == u))
+                    {
+                        str += r.Id + " ";
+                        str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + " ";
+                        Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
+                        if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
+                        str += r.CreatedDate;
+                        str += "\n";
+                    }
+
+                    builder.AddField("runs", str);
+                    var l = new List<Alias>();
+                    l.AddRange(Context.QuestAliases.Where(x => x.Submitter == u));
+                    l.AddRange(Context.ServantAliases.Where(x => x.Submitter == u));
+                    l.AddRange(Context.CraftEssenceAliases.Where(x => x.Submitter == u));
+                    l.AddRange(Context.MysticCodeAliases.Where(x => x.Submitter == u));
+                    string s = string.Empty;
+                    foreach (Alias a in l)
+                    {
+                        s += a.Nickname;
+                        s += "\n";
+                    }
+                    builder.AddField("Nicknames", s);
+                    await ctx.Channel.SendMessageAsync(builder);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                await ctx.Channel.SendMessageAsync(ex.Message);
+            }
+        }
         [Command("website")]
         public async Task Site(CommandContext ctx)
         {

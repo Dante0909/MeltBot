@@ -68,6 +68,7 @@ namespace MeltBot.Modules
                         str = $"Successfully added {n}";
                     }
                 }
+                else str = $"{servantId} already exists";
 
             }
             catch (Exception ex)
@@ -88,6 +89,7 @@ namespace MeltBot.Modules
             string str = string.Empty;
             try
             {
+                if (Context.ServantAliases.Any(x => x.Nickname == nickname)) throw new Exception($"nickname {nickname} already exists");
                 Servant? s;
                 if (int.TryParse(servant, out int id))
                 {
@@ -161,7 +163,7 @@ namespace MeltBot.Modules
                 }
                 else
                 {
-                    str = $"Quest {questId} already exists.";
+                    str = $"{questId} already exists.";
                 }
             }
             catch (Exception ex)
@@ -181,6 +183,7 @@ namespace MeltBot.Modules
             string str = string.Empty;
             try
             {
+                if (Context.QuestAliases.Any(x => x.Nickname == nickname)) throw new Exception($"nickname {nickname} already exists");
                 Quest? q;
                 if (int.TryParse(quest, out int id))
                 {
@@ -257,7 +260,7 @@ namespace MeltBot.Modules
                         }
                     }
                 }
-
+                else str = $"{nickname} already exists";
             }
             catch (Exception ex)
             {
@@ -276,6 +279,7 @@ namespace MeltBot.Modules
             string str = string.Empty;
             try
             {
+                if (Context.CraftEssenceAliases.Any(x => x.Nickname == nickname)) throw new Exception($"nickname {nickname} already exists");
                 CraftEssence? c;
                 if (int.TryParse(ce, out int id))
                 {
@@ -317,7 +321,7 @@ namespace MeltBot.Modules
                         if (j is null) throw new Exception("Problem with " + mcId);
                         string n = j.Value<string>("name");
                         mc = new MysticCode(j.Value<int>("id"), n);
-                        
+
 
                         var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/MC/{mcId}");
                         if (response.IsSuccessStatusCode)
@@ -348,6 +352,7 @@ namespace MeltBot.Modules
                         str = $"Successfully added {n}";
                     }
                 }
+                else str = $"{nickname} already exists";
             }
             catch (Exception ex)
             {
@@ -366,6 +371,7 @@ namespace MeltBot.Modules
             string str = string.Empty;
             try
             {
+                if (Context.MysticCodeAliases.Any(x => x.Nickname == nickname)) throw new Exception($"nickname {nickname} already exists");
                 MysticCode? m;
                 if (int.TryParse(mc, out int id))
                 {
