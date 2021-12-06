@@ -112,7 +112,7 @@ namespace MeltBot.Modules
                 if (ctx.User.Id == 290938252540641290)
                 {
                     int counter = 0;
-                    
+
                     var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
                     while (true)
                     {
@@ -122,7 +122,7 @@ namespace MeltBot.Modules
                             var gameplay = await ctx.Client.GetChannelAsync(715944125916250154).ConfigureAwait(false);
                             foreach (var t in gameplay.Threads)
                             {
-                               await t.SendMessageAsync("Weekly message to keep this thread alive");
+                                await t.SendMessageAsync("Weekly message to keep this thread alive");
                             }
                             counter = 0;
                         }
@@ -131,11 +131,11 @@ namespace MeltBot.Modules
                         string message = "<a:woahgiver:911084288705986570>";
                         foreach (Pong p in Context.Pongs)
                         {
-                            message += " "+p.UserMention;
+                            message += " " + p.UserMention;
                         }
                         //await thread.SendMessageAsync(message);
                         //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
-                        
+
                     }
                 }
             }
@@ -157,7 +157,6 @@ namespace MeltBot.Modules
                     if (long.TryParse(name, out long id))
                     {
                         u = Context.Users.FirstOrDefault(x => x.DiscordSnowflake == id);
-                        if (u is null) throw new Exception($"{id} could not be found");
                     }
                     else
                     {
@@ -176,19 +175,35 @@ namespace MeltBot.Modules
                         str += "\n";
                     }
 
-                    builder.AddField("runs", str);
+                    if (!string.IsNullOrEmpty(str)) builder.AddField("runs", str);
                     var l = new List<Alias>();
                     l.AddRange(Context.QuestAliases.Where(x => x.Submitter == u));
                     l.AddRange(Context.ServantAliases.Where(x => x.Submitter == u));
                     l.AddRange(Context.CraftEssenceAliases.Where(x => x.Submitter == u));
                     l.AddRange(Context.MysticCodeAliases.Where(x => x.Submitter == u));
                     string s = string.Empty;
-                    foreach (Alias a in l)
+                    foreach (ServantAlias a in Context.ServantAliases.Where(x => x.Submitter == u))
                     {
-                        s += a.Nickname;
+                        s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
                         s += "\n";
                     }
-                    builder.AddField("Nicknames", s);
+                    foreach (CraftEssenceAlias a in Context.CraftEssenceAliases.Where(x => x.Submitter == u))
+                    {
+                        s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
+                        s += "\n";
+                    }
+                    foreach (QuestAlias a in Context.QuestAliases.Where(x => x.Submitter == u))
+                    {
+                        s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
+                        s += "\n";
+                    }
+                    foreach (MysticCodeAlias a in Context.MysticCodeAliases.Where(x => x.Submitter == u))
+                    {
+                        s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
+                        s += "\n";
+                    }
+                    if (!string.IsNullOrEmpty(s)) builder.AddField("Nicknames", s);
+
                     await ctx.Channel.SendMessageAsync(builder);
                 }
 
@@ -228,11 +243,11 @@ namespace MeltBot.Modules
                         await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
                     }
                 }
-                
+
                 Context.Runs.Add(run);
                 Context.SaveChanges();
                 await ctx.Channel.SendMessageAsync("Run successfully added");
-                
+
             }
             catch (Exception ex)
             {
@@ -260,7 +275,7 @@ namespace MeltBot.Modules
         //            Context.Database.ExecuteSqlRaw("delete from \"QuestAliases\" cascade");
         //            Context.Database.ExecuteSqlRaw("delete from \"ServantAliases\" cascade");
         //            Context.SaveChanges();
-                    
+
         //            await ctx.Channel.SendMessageAsync("Db deleted and created");
 
         //        }
@@ -269,7 +284,7 @@ namespace MeltBot.Modules
         //    {
         //        await ctx.Channel.SendMessageAsync(ex.ToString());
         //    }
-            
+
         //}
         //These two commmands should not be in this class
 
