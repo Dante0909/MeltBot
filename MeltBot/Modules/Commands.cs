@@ -218,7 +218,7 @@ namespace MeltBot.Modules
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.ToString());
             }
         }
         [Command("website")]
