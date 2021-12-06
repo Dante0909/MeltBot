@@ -37,3 +37,6 @@ services:
       dockerfile: MeltBot/Dockerfile
     depends_on:
       - "db"
+
+volumes:
+  pgdata:
