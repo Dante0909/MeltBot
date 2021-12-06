@@ -187,22 +187,25 @@ namespace MeltBot.Modules
                         s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
                         s += "\n";
                     }
+                    if (!string.IsNullOrEmpty(s)) builder.AddField("Servant nicknames", s);
                     foreach (CraftEssenceAlias a in Context.CraftEssenceAliases.Where(x => x.Submitter == u))
                     {
                         s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
                         s += "\n";
                     }
+                    if (!string.IsNullOrEmpty(s)) builder.AddField("Ce nicknames", s);
                     foreach (QuestAlias a in Context.QuestAliases.Where(x => x.Submitter == u))
                     {
                         s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
                         s += "\n";
                     }
+                    if (!string.IsNullOrEmpty(s)) builder.AddField("Quest nicknames", s);
                     foreach (MysticCodeAlias a in Context.MysticCodeAliases.Where(x => x.Submitter == u))
                     {
                         s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
                         s += "\n";
                     }
-                    if (!string.IsNullOrEmpty(s)) builder.AddField("Nicknames", s);
+                    if (!string.IsNullOrEmpty(s)) builder.AddField("Mc nicknames", s);
 
                     await ctx.Channel.SendMessageAsync(builder);
                 }
