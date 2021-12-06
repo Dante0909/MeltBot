@@ -9,6 +9,8 @@ services:
       - POSTGRES_DB=aecrdb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   kiarapi:
     container_name: kiarapi
@@ -16,7 +18,6 @@ services:
     environment:
       - CUSTOMCONNSTR_postgres
       - ASPNETCORE_URLS=http://+:80
-      - DO_DB_RECREATION
     ports:
       - "5000:80"
     build:
@@ -36,3 +37,6 @@ services:
       dockerfile: MeltBot/Dockerfile
     depends_on:
       - "db"
+
+volumes:
+  pgdata:
