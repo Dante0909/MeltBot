@@ -4,6 +4,7 @@ services:
   kiarapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DO_DB_RECREATION
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
