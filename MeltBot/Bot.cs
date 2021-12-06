@@ -36,7 +36,7 @@ namespace MeltBot
 
             Client.Ready += OnClientReady;
 
-            var services = new ServiceCollection().AddSingleton<RunsContext>().BuildServiceProvider();
+            var services = new ServiceCollection().AddDbContext<RunsContext>().BuildServiceProvider();
 
             var commandsConfig = new CommandsNextConfiguration
             {
