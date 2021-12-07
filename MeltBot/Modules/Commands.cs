@@ -165,7 +165,7 @@ namespace MeltBot.Modules
                     if (u is null) throw new Exception($"{id} could not be found");
                     DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
                     string str = string.Empty;
-                    var runs = Context.Runs.Include(r=>r.Quest).Include(r=>r.Party).ThenInclude(p=>p.Servant).Where(x => x.Submitter == u);
+                    var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant);
                     if (runs is not null)
                     {
                         foreach (var r in runs)
@@ -181,7 +181,7 @@ namespace MeltBot.Modules
                     }
                     string s;
 
-                    var salias = Context.ServantAliases.Where(x => x.Submitter == u);
+                    var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x=>x.Servant);
                     if (salias is not null)
                     {
                         s = string.Empty;
@@ -194,7 +194,7 @@ namespace MeltBot.Modules
                     }
 
 
-                    var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u);
+                    var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x=>x.CraftEssence);
                     if (cealias is not null)
                     {
                         await ctx.Channel.SendMessageAsync("cealias count is " + cealias.Count().ToString());
@@ -208,7 +208,7 @@ namespace MeltBot.Modules
                     }
 
 
-                    var qalias = Context.QuestAliases.Where(x => x.Submitter == u);
+                    var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x=>x.Quest);
                     if (qalias is not null)
                     {
                         s = String.Empty;
@@ -220,7 +220,7 @@ namespace MeltBot.Modules
                         if (!string.IsNullOrEmpty(s)) builder.AddField("Quest nicknames", s);
                     }
 
-                    var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u);
+                    var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x=>x.MysticCode);
                     if (mcalias is not null)
                     {
                         s = String.Empty;
