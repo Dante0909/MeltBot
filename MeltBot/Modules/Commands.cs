@@ -197,6 +197,7 @@ namespace MeltBot.Modules
                     var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u);
                     if (cealias is not null)
                     {
+                        await ctx.Channel.SendMessageAsync("cealias count is " + cealias.Count().ToString());
                         s = String.Empty;
                         foreach (CraftEssenceAlias a in cealias)
                         {
