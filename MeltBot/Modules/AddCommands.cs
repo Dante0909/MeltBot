@@ -14,6 +14,9 @@ namespace MeltBot.Modules
     internal class AddCommands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
+
+       
+
         [Command("AddServant")]
         [Description("Add an existing servant to the database")]
         public async Task AddServant(CommandContext ctx,
@@ -24,52 +27,14 @@ namespace MeltBot.Modules
             try
             {
                 Servant? s = Context.Servants.FirstOrDefault(s => s.Id == servantId || s.CollectionNo == servantId);
-                if (s is null)
-                {
-                    using (var client = new HttpClient())
-                    {
-                        JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/servant/{servantId}"));
-                        if (j is null) throw new Exception("Problem with " + servantId);
-                        string n = j.Value<string>("name");
-                        s = new Servant(j.Value<int>("id"), n, j.Value<int>("collectionNo"))
-                        {
-                            BaseMaxAttack = j.Value<short>("atkMax"),
-                            AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>(),
-                            Class = j.Value<string>("className"),
-                            Rarity = j.Value<short>("rarity")
-                        };
-                        var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/servant/{servantId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            s.NaName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/servant/{servantId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            s.CnName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/servant/{servantId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            s.KrName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/servant/{servantId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            s.TwName = j?.Value<string>("name");
-                        }
+                bool flag = s is null;
 
-                        Context.Servants.Add(s);
-                        Context.SaveChanges();
-                        str = $"Successfully added {n}";
-                    }
-                }
-                else str = $"{servantId} already exists";
+                s = await ServantData(servantId, s);
 
+                if (flag) Context.Servants.Add(s);
+
+                Context.SaveChanges();
+                str = $"Successfully added {s.JpName}";
             }
             catch (Exception ex)
             {
@@ -80,6 +45,50 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddServantNickname(ctx, servantId.ToString(), nickname);
         }
+
+        private static async Task<Servant> ServantData(int servantId, Servant? s)
+        {
+            using (var client = new HttpClient())
+            {
+                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/servant/{servantId}"));
+                if (j is null) throw new Exception("Problem with " + servantId);
+                string n = j.Value<string>("name");
+                s = s is null ? new Servant(j.Value<int>("id"), n, j.Value<int>("collectionNo")) : s;
+
+
+                s.BaseMaxAttack = j.Value<short>("atkMax");
+                s.AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>();
+                s.Class = j.Value<string>("className");
+                s.Rarity = j.Value<short>("rarity");
+
+                var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/servant/{servantId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    s.NaName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/servant/{servantId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    s.CnName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/servant/{servantId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    s.KrName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/servant/{servantId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    s.TwName = j?.Value<string>("name");
+                }
+            }
+            return s;
+        }
+
         [Command("NickS")]
         [Description("Add a nickname to a servant")]
         public async Task AddServantNickname(CommandContext ctx,
@@ -123,48 +132,12 @@ namespace MeltBot.Modules
             try
             {
                 Quest? q = Context.Quests.FirstOrDefault(s => s.Id == questId);
-                if (q is null)
-                {
-                    using (var client = new HttpClient())
-                    {
-                        JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/quest/{questId}"));
-                        if (j is null) throw new Exception("Problem with " + questId);
-                        string n = j.Value<string>("name");
-                        q = new Quest(j.Value<int>("id"), n);                        
+                bool flag = q is null;
 
-                        var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/quest/{questId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            q.NaName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/quest/{questId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            q.CnName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/quest/{questId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            q.KrName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/quest/{questId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            q.TwName = j?.Value<string>("name");
-                        }
-                        Context.Quests.Add(q);
-                        Context.SaveChanges();
-                        str = $"Successfully added {n}";
-                    }
-                }
-                else
-                {
-                    str = $"{questId} already exists.";
-                }
+                q = await QuestData(questId, q);
+                if (flag) Context.Quests.Add(q);
+                Context.SaveChanges();
+                str = $"Successfully added {q.JpName}";
             }
             catch (Exception ex)
             {
@@ -174,6 +147,46 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddQuestNickname(ctx, questId.ToString(), nickname);
         }
+
+        private static async Task<Quest> QuestData(int questId, Quest? q)
+        {
+            using (var client = new HttpClient())
+            {
+                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/quest/{questId}"));
+                if (j is null) throw new Exception("Problem with " + questId);
+                string n = j.Value<string>("name");
+                q = q is null ? new Quest(j.Value<int>("id"), n) : q;
+                q.CreatedDate = DateTime.FromFileTimeUtc(j.Value<int>("openedAt"));
+                var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/quest/{questId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    q.NaName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/quest/{questId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    q.CnName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/quest/{questId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    q.KrName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/quest/{questId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    q.TwName = j?.Value<string>("name");
+                }
+
+            }
+
+            return q;
+        }
+
         [Command("NickQ")]
         [Description("Add a nickname to a quest")]
         public async Task AddQuestNickname(CommandContext ctx,
@@ -217,50 +230,12 @@ namespace MeltBot.Modules
             try
             {
                 CraftEssence? ce = Context.CraftEssences.FirstOrDefault(s => s.Id == ceId || s.CollectionNo == ceId);
-                if (ce is null)
-                {
-                    using (var client = new HttpClient())
-                    {
-                        JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/equip/{ceId}"));
-                        if (j is null) throw new Exception("Problem with " + ceId);
-                        string n = j.Value<string>("name");
-                        ce = new CraftEssence(j.Value<int>("id"), n, j.Value<int>("collectionNo"))
-                        {
-                            BaseMaxAttack = j.Value<short>("atkMax"),
-                            AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>(),
-                            Rarity = j.Value<short>("rarity")
-                        };
-                        Context.CraftEssences.Add(ce);
-                        Context.SaveChanges();
-                        str = $"Successfully added {n}";
+                bool flag = ce is null;
+                ce = await CeData(ceId, ce);
+                if (flag) Context.CraftEssences.Add(ce);
+                Context.SaveChanges();
+                str = $"Successfully added {ce.JpName}";
 
-                        var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/equip/{ceId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            ce.NaName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/equip/{ceId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            ce.CnName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/equip/{ceId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            ce.KrName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/equip/{ceId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            ce.TwName = j?.Value<string>("name");
-                        }
-                    }
-                }
-                else str = $"{nickname} already exists";
             }
             catch (Exception ex)
             {
@@ -270,6 +245,50 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddCeNickname(ctx, ceId.ToString(), nickname);
         }
+
+        private static async Task<CraftEssence> CeData(int ceId, CraftEssence? ce)
+        {
+            using (var client = new HttpClient())
+            {
+                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/nice/JP/equip/{ceId}"));
+                if (j is null) throw new Exception("Problem with " + ceId);
+                string n = j.Value<string>("name");
+                ce = ce is null ? new CraftEssence(j.Value<int>("id"), n, j.Value<int>("collectionNo")) : ce;
+
+                ce.BaseMaxAttack = j.Value<short>("atkMax");
+                ce.AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>();
+                ce.Rarity = j.Value<short>("rarity");
+
+
+                var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/equip/{ceId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    ce.NaName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/equip/{ceId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    ce.CnName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/equip/{ceId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    ce.KrName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/equip/{ceId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    ce.TwName = j?.Value<string>("name");
+                }
+            }
+
+            return ce;
+        }
+
         [Command("NickCe")]
         [Description("Add a nickname to a craft essence")]
         public async Task AddCeNickname(CommandContext ctx,
@@ -313,46 +332,11 @@ namespace MeltBot.Modules
             try
             {
                 MysticCode? mc = Context.MysticCodes.FirstOrDefault(s => s.Id == mcId);
-                if (mc is null)
-                {
-                    using (var client = new HttpClient())
-                    {
-                        JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/MC/{mcId}"));
-                        if (j is null) throw new Exception("Problem with " + mcId);
-                        string n = j.Value<string>("name");
-                        mc = new MysticCode(j.Value<int>("id"), n);
-
-
-                        var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/MC/{mcId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            mc.NaName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/MC/{mcId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            mc.CnName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/MC/{mcId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            mc.KrName = j?.Value<string>("name");
-                        }
-                        response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/servant/{mcId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
-                            mc.TwName = j?.Value<string>("name");
-                        }
-                        Context.MysticCodes.Add(mc);
-                        Context.SaveChanges();
-                        str = $"Successfully added {n}";
-                    }
-                }
-                else str = $"{nickname} already exists";
+                bool flag = mc is null;
+                mc = await McData(mcId, mc);
+                if (flag) Context.MysticCodes.Add(mc);
+                Context.SaveChanges();
+                str = $"Successfully added {mc.JpName}";
             }
             catch (Exception ex)
             {
@@ -362,6 +346,45 @@ namespace MeltBot.Modules
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddMcNickname(ctx, mcId.ToString(), nickname);
         }
+
+        private static async Task<MysticCode> McData(int mcId, MysticCode? mc)
+        {
+            using (var client = new HttpClient())
+            {
+                JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/MC/{mcId}"));
+                if (j is null) throw new Exception("Problem with " + mcId);
+                string n = j.Value<string>("name");
+                mc = new MysticCode(j.Value<int>("id"), n);
+
+
+                var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/MC/{mcId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    mc.NaName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/CN/MC/{mcId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    mc.CnName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/KR/MC/{mcId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    mc.KrName = j?.Value<string>("name");
+                }
+                response = await client.GetAsync($"https://api.atlasacademy.io/basic/TW/servant/{mcId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+                    mc.TwName = j?.Value<string>("name");
+                }
+            }
+            return mc;
+        }
+
         [Command("NickMc")]
         [Description("Add a nickname to a mystic code")]
         public async Task AddMcNickname(CommandContext ctx,

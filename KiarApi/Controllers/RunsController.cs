@@ -35,6 +35,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace KiarApi.Controllers
 {
@@ -70,7 +72,10 @@ namespace KiarApi.Controllers
             ////Console.WriteLine(s.Quest.Id);
 
             //return str;
-            return Ok(await context.Runs.Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant).Include(r => r.Party).ThenInclude(p => p.CraftEssence).ToListAsync());
+            
+            var l = await context.Runs.Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant).Include(r => r.Party).ThenInclude(p => p.CraftEssence).ToListAsync();
+            l = l.OrderBy(x => x.Quest.CreatedDate).ToList();
+            return Ok(l);
         }
     }
 }

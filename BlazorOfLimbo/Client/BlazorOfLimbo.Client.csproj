@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PassionLib\PassionLib.csproj" />
-    <ProjectReference Include="..\Shared\BlazorOfLimbo.Shared.csproj" />
   </ItemGroup>
 
 </Project>

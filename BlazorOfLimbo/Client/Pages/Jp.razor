@@ -19,7 +19,8 @@
                 <TabControl>
                     @foreach (Quest q in quests)
                     {
-                        <TabPage Text=@q.JpName>
+                        <div class=text-nowrap>
+                            <TabPage Text=@q.JpName>
                             @if (runs is null || runs.Count == 0)
                             {
                                 <span>Loading Runs...</span>
@@ -76,6 +77,8 @@
                                 </table>
                             }
                         </TabPage>
+                        </div>
+                        
                     }
 
 

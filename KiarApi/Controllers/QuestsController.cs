@@ -70,7 +70,9 @@ namespace KiarApi.Controllers
             ////Console.WriteLine(s.Quest.Id);
 
             //return str;
-            return Ok(await context.Quests.ToListAsync());
+            var l = await context.Quests.ToListAsync();
+            l = l.OrderBy(x => x.CreatedDate).ToList();
+            return Ok(l);
         }
     }
 }

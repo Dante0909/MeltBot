@@ -8,6 +8,7 @@ namespace BlazorOfLimbo.Client.Service
     public class RunService : IRunService
     {
         private readonly HttpClient client;
+        private List<Run> runs;
 
         public RunService(HttpClient client)
         {
@@ -23,6 +24,12 @@ namespace BlazorOfLimbo.Client.Service
 
         public async Task<List<Run>> GetRuns()
         {
+            if(runs is null || runs.Count == 0)
+            {
+                var str = await client.GetStringAsync("api/runs");
+                runs = JsonConvert.DeserializeObject<List<Run>>(str);
+            }
+            return runs;
             //Run r;
             //using (var client = new HttpClient())
             //{
@@ -32,9 +39,7 @@ namespace BlazorOfLimbo.Client.Service
             //    JObject j;
             //    //j["Quest"]["Id"]
             // }
-            var str = await client.GetStringAsync("api/runs");
-            List<Run> runs = JsonConvert.DeserializeObject<List<Run>>(str);
-            return runs;
+            
 
 
         }

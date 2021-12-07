@@ -403,6 +403,7 @@ namespace MeltBot
                 };
                 Context.Users.Add(user);
             }
+            ctx.Channel.SendMessageAsync(user.DiscordUsername);
             return user;
         }
 

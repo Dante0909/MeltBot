@@ -145,9 +145,9 @@ namespace MeltBot.Modules
             }
         }
         [Command("GetInfo")]
-        [Description("Get all runs submitted by a given user")]
+        [Description("Get all info of object")]
         public async Task GetRuns(CommandContext ctx,
-            [Description("Id or discord name+tag (ex: _Dante09#9825)")] string name)
+            [Description("Id or name")] string name)
         {
             try
             {
@@ -165,51 +165,71 @@ namespace MeltBot.Modules
                     if (u is null) throw new Exception($"{id} could not be found");
                     DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
                     string str = string.Empty;
-                    foreach (var r in Context.Runs.Where(x => x.Submitter == u))
+                    var runs = Context.Runs.Where(x => x.Submitter == u);
+                    if (runs is not null)
                     {
-                        str += r.Id + " ";
-                        str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + " ";
-                        Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
-                        if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
-                        str += r.CreatedDate;
-                        str += "\n";
+                        foreach (var r in runs)
+                        {
+                            str += r.Id + " ";
+                            str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + " ";
+                            Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
+                            if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
+                            str += r.CreatedDate;
+                            str += "\n";
+                        }
+                        if (!string.IsNullOrEmpty(str)) builder.AddField("Submissions", str);
+                    }
+                    string s;
+
+                    var salias = Context.ServantAliases.Where(x => x.Submitter == u);
+                    if (salias is not null)
+                    {
+                        s = string.Empty;
+                        foreach (ServantAlias a in salias)
+                        {
+                            s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
+                            s += "\n";
+                        }
+                        if (!string.IsNullOrEmpty(s)) builder.AddField("Servant nicknames", s);
                     }
 
-                    if (!string.IsNullOrEmpty(str)) builder.AddField("runs", str);
-                    var l = new List<Alias>();
-                    l.AddRange(Context.QuestAliases.Where(x => x.Submitter == u));
-                    l.AddRange(Context.ServantAliases.Where(x => x.Submitter == u));
-                    l.AddRange(Context.CraftEssenceAliases.Where(x => x.Submitter == u));
-                    l.AddRange(Context.MysticCodeAliases.Where(x => x.Submitter == u));
-                    string s = string.Empty;
-                    foreach (ServantAlias a in Context.ServantAliases.Where(x => x.Submitter == u))
+
+                    var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u);
+                    if (cealias is not null)
                     {
-                        s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
-                        s += "\n";
+                        s = String.Empty;
+                        foreach (CraftEssenceAlias a in cealias)
+                        {
+                            s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
+                            s += "\n";
+                        }
+                        if (!string.IsNullOrEmpty(s)) builder.AddField("Ce nicknames", s);
                     }
-                    if (!string.IsNullOrEmpty(s)) builder.AddField("Servant nicknames", s);
-                    s = String.Empty;
-                    foreach (CraftEssenceAlias a in Context.CraftEssenceAliases.Where(x => x.Submitter == u))
+
+
+                    var qalias = Context.QuestAliases.Where(x => x.Submitter == u);
+                    if (qalias is not null)
                     {
-                        s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
-                        s += "\n";
+                        s = String.Empty;
+                        foreach (QuestAlias a in qalias)
+                        {
+                            s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
+                            s += "\n";
+                        }
+                        if (!string.IsNullOrEmpty(s)) builder.AddField("Quest nicknames", s);
                     }
-                    if (!string.IsNullOrEmpty(s)) builder.AddField("Ce nicknames", s);
-                    s = String.Empty;
-                    foreach (QuestAlias a in Context.QuestAliases.Where(x => x.Submitter == u))
+
+                    var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u);
+                    if (mcalias is not null)
                     {
-                        s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
-                        s += "\n";
+                        s = String.Empty;
+                        foreach (MysticCodeAlias a in mcalias)
+                        {
+                            s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
+                            s += "\n";
+                        }
+                        if (!string.IsNullOrEmpty(s)) builder.AddField("Mc nicknames", s);
                     }
-                    if (!string.IsNullOrEmpty(s)) builder.AddField("Quest nicknames", s);
-                    s = String.Empty;
-                    foreach (MysticCodeAlias a in Context.MysticCodeAliases.Where(x => x.Submitter == u))
-                    {
-                        s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
-                        s += "\n";
-                    }
-                    if (!string.IsNullOrEmpty(s)) builder.AddField("Mc nicknames", s);
-                    s = String.Empty;
 
                     await ctx.Channel.SendMessageAsync(builder);
                 }
@@ -221,6 +241,7 @@ namespace MeltBot.Modules
                 await ctx.Channel.SendMessageAsync(ex.ToString());
             }
         }
+
         [Command("website")]
         public async Task Site(CommandContext ctx)
         {
