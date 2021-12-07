@@ -73,7 +73,7 @@ namespace KiarApi.Controllers
 
             //return str;
             
-            var l = await context.Runs.Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant).Include(r => r.Party).ThenInclude(p => p.CraftEssence).ToListAsync();
+            var l = await context.Runs.Include(r=>r.MysticCode).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant).Include(r => r.Party).ThenInclude(p => p.CraftEssence).ToListAsync();
             l = l.OrderBy(x => x.Quest.CreatedDate).ToList();
             return Ok(l);
         }

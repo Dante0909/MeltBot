@@ -50,7 +50,7 @@ namespace MeltBot.Modules
             try
             {
                 Context.Pongs.Add(new Pong() { UserMention = ctx.User.Mention });
-                await ctx.Channel.SendMessageAsync("Embrace woah");
+                await ctx.Channel.SendMessageAsync(":woah:");
                 Context.SaveChanges();
             }
             catch (Exception ex)
@@ -133,7 +133,7 @@ namespace MeltBot.Modules
                         {
                             message += " " + p.UserMention;
                         }
-                        //await thread.SendMessageAsync(message);
+                        await thread.SendMessageAsync(message);
                         //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
 
                     }
@@ -145,9 +145,9 @@ namespace MeltBot.Modules
             }
         }
         [Command("GetInfo")]
-        [Description("Get all info of object")]
+        [Description("Get all info of user")]
         public async Task GetRuns(CommandContext ctx,
-            [Description("Id or name")] string name)
+            [Description("Id or name of user (Ex: _Dante09#9825)")] string name)
         {
             try
             {
@@ -165,7 +165,7 @@ namespace MeltBot.Modules
                     if (u is null) throw new Exception($"{id} could not be found");
                     DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
                     string str = string.Empty;
-                    var runs = Context.Runs.Where(x => x.Submitter == u);
+                    var runs = Context.Runs.Include(r=>r.Quest).Include(r=>r.Party).ThenInclude(p=>p.Servant).Where(x => x.Submitter == u);
                     if (runs is not null)
                     {
                         foreach (var r in runs)
