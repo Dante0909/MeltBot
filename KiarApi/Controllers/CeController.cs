@@ -40,7 +40,7 @@ using Newtonsoft.Json.Linq;
 namespace KiarApi.Controllers
 {
     [ApiController]
-    [Route("api/alias")]
+    [Route("api/ce")]
     public class CeController : BaseApiController
     {
         private readonly RunsContext context;
