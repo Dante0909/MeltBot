@@ -52,13 +52,10 @@ namespace MeltBot.Modules
         {
             try
             {
-                var t = Context.Pongs.Take(Context.Pongs.Count());
-                Context.Pongs.RemoveRange(t);
-                Context.SaveChanges();
                 Context.Pongs.Add(new Pong(ctx.User.Mention));
                 
                 Context.SaveChanges();
-                await ctx.Channel.SendMessageAsync(":woah:");
+                await ctx.Channel.SendMessageAsync("added <:woah:802188856686411783>");
             }
             catch (Exception ex)
             {
