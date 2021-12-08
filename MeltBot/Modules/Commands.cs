@@ -116,6 +116,12 @@ namespace MeltBot.Modules
                     var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
                     while (true)
                     {
+                        string message = "<a:woahgiver:911084288705986570>";
+                        foreach (Pong p in Context.Pongs)
+                        {
+                            message += " " + p.UserMention;
+                        }
+                        await thread.SendMessageAsync(message);
                         await Task.Delay(995 * 60 * 60 * 24).ConfigureAwait(false);
                         if (counter == 7)
                         {
@@ -128,14 +134,8 @@ namespace MeltBot.Modules
                         }
                         else counter++;
 
-                        string message = "<a:woahgiver:911084288705986570>";
-                        foreach (Pong p in Context.Pongs)
-                        {
-                            message += " " + p.UserMention;
-                        }
-                        await thread.SendMessageAsync(message);
-                        //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
 
+                        //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
                     }
                 }
             }
@@ -180,7 +180,7 @@ namespace MeltBot.Modules
                     }
                     string s;
 
-                    var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x=>x.Servant);
+                    var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant);
                     if (salias is not null)
                     {
                         s = string.Empty;
@@ -193,7 +193,7 @@ namespace MeltBot.Modules
                     }
 
 
-                    var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x=>x.CraftEssence);
+                    var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x => x.CraftEssence);
                     if (cealias is not null)
                     {
                         await ctx.Channel.SendMessageAsync("cealias count is " + cealias.Count().ToString());
@@ -207,7 +207,7 @@ namespace MeltBot.Modules
                     }
 
 
-                    var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x=>x.Quest);
+                    var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x => x.Quest);
                     if (qalias is not null)
                     {
                         s = String.Empty;
@@ -219,7 +219,7 @@ namespace MeltBot.Modules
                         if (!string.IsNullOrEmpty(s)) builder.AddField("Quest nicknames", s);
                     }
 
-                    var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x=>x.MysticCode);
+                    var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode);
                     if (mcalias is not null)
                     {
                         s = String.Empty;
