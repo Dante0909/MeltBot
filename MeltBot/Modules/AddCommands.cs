@@ -55,7 +55,7 @@ namespace MeltBot.Modules
                 string n = j.Value<string>("name");
                 s = s is null ? new Servant(j.Value<int>("id"), n, j.Value<int>("collectionNo")) : s;
 
-
+                s.Cost = j.Value<short>("cost");
                 s.BaseMaxAttack = j.Value<short>("atkMax");
                 s.AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>();
                 s.Class = j.Value<string>("className");

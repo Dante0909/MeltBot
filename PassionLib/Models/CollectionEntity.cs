@@ -13,6 +13,7 @@ namespace PassionLib.Models
         public short? BaseMaxAttack { get; set; }
         [JsonIgnoreAttribute]
         public short[]? AttackScaling { get; set; }
+        public short? Cost { get; set; }
         public int CollectionNo { get; set; }
         protected CollectionEntity(int id, string jpName, int collectionNo) : base(id, jpName)
         {

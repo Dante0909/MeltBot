@@ -259,7 +259,7 @@ namespace MeltBot
                         run.Cost = run.Cost is not null ? run.Cost : GetCost(p);
                         run.ServantCount = run.ServantCount is not null ? run.ServantCount : (short)p.Count(x => x.Servant is not null);
                         run.NoCe = !p.Any(x => x.CraftEssence is not null);
-                        run.NoDupe = !p.GroupBy(x => x.Servant.Id).Any(c => c.Count() > 1);
+                        run.NoDupe = !p.GroupBy(x => x.Servant?.Id).Any(c => c.Count() > 1);
                     }
                     else if (p.Count == 1)
                     {
@@ -269,7 +269,7 @@ namespace MeltBot
                     if (run.Dps is null)
                     {
                         p.First().IsMainDps = true;
-                        run.Dps = party.First();
+                        run.Dps = p.First();
                     }
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
                     p.ForEach(x => x.TotalAttack = GetAttack(x));
@@ -298,12 +298,12 @@ namespace MeltBot
                     int? cost = 0;
                     if (ps.Servant is not null)
                     {
-                        cost += ps.Servant.Rarity is not null ? ServantCost[(short)ps.Servant.Rarity] : 0;
+                        cost += ps.Servant.Cost;
                     }
 
                     if (ps.CraftEssence is not null)
                     {
-                        cost += ps.CraftEssence.Rarity is not null ? CraftEssenceCost[(short)ps.CraftEssence.Rarity] : 0;
+                        cost += ps.CraftEssence.Cost;
                     }
                     totalCost += cost;
                 }
@@ -326,24 +326,7 @@ namespace MeltBot
             }
             return (short?)atk;
         }
-        private static Dictionary<short, short> ServantCost = new Dictionary<short, short>()
-        {
-            {5,16 },
-            {4,12 },
-            {3,7 },
-            {2,4 },
-            {1,3 },
-            {0,4 }
-        };
-        private static Dictionary<short, short> CraftEssenceCost = new Dictionary<short, short>()
-        {
-            {5,12 },
-            {4,9 },
-            {3,5 },
-            {2,3 },
-            {1,1 }
-
-        };
+        
         private static Quest GetQuest(RunsContext context, string quest)
         {
             Quest? q = null;

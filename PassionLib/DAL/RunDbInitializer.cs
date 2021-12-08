@@ -94,6 +94,7 @@ namespace PassionLib.DAL
             //    imaginaryScramble = new Quest(94053435, "【高難易度】聖女を呼ぶ声");
             //    context.Quests.Add(imaginaryScramble);
             //}
+
             User u = new User();
             Servant skadi = null;
             Servant charlotte = null;
@@ -206,7 +207,10 @@ namespace PassionLib.DAL
             //};
             //context.Users.Add(u);
             //context.Runs.AddRange(runs);
-
+            ServantAlias charlottealias = new ServantAlias(charlotte, "charlotte") { Submitter = u};
+            QuestAlias oniland = new QuestAlias(woahnilandRerunCq, "onilandrerun") { Submitter = u};
+            context.QuestAliases.Add(oniland);
+            context.ServantAliases.Add(charlottealias);
             context.SaveChanges();
         }
         public static async Task<CraftEssence> AddCraftEssence(RunsContext context, int ceId)
