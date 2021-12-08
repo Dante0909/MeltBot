@@ -156,7 +156,8 @@ namespace MeltBot.Modules
                 if (j is null) throw new Exception("Problem with " + questId);
                 string n = j.Value<string>("name");
                 q = q is null ? new Quest(j.Value<int>("id"), n) : q;
-                q.CreatedDate = DateTime.FromFileTimeUtc(j.Value<int>("openedAt"));
+                DateTimeOffset d = DateTimeOffset.FromUnixTimeSeconds(j.Value<int>("openedAt"));
+                q.CreatedDate = d.UtcDateTime;
                 var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/quest/{questId}");
                 if (response.IsSuccessStatusCode)
                 {

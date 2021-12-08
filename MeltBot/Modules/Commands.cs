@@ -170,11 +170,10 @@ namespace MeltBot.Modules
                     {
                         foreach (var r in runs)
                         {
-                            str += r.Id + " ";
-                            str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + " ";
+                            str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + "\n";
                             Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
                             if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
-                            str += r.CreatedDate;
+                            str += "\n" + r.CreatedDate + ", Run id : " + r.Id;
                             str += "\n";
                         }
                         if (!string.IsNullOrEmpty(str)) builder.AddField("Submissions", str);

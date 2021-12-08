@@ -33,14 +33,15 @@ namespace PassionLib.DAL
                         Quest? q = context.Quests.FirstOrDefault(s => s.Id == 94042801);
                         if (q is null)
                         {
+                            var questId = 94042801;
                             using (var client = new HttpClient())
                             {
-                                var questId = 94042801;
                                 JObject? j = JsonConvert.DeserializeObject<JObject>(await client.GetStringAsync($"https://api.atlasacademy.io/basic/JP/quest/{questId}"));
-                                if (j is null) throw new Exception("Problem with " + 94042801);
+                                if (j is null) throw new Exception("Problem with " + questId);
                                 string n = j.Value<string>("name");
-                                q = new Quest(j.Value<int>("id"), n);
-
+                                q = q is null ? new Quest(j.Value<int>("id"), n) : q;
+                                DateTimeOffset d = DateTimeOffset.FromUnixTimeSeconds(j.Value<int>("openedAt"));
+                                q.CreatedDate = d.UtcDateTime;
                                 var response = await client.GetAsync($"https://api.atlasacademy.io/basic/NA/quest/{questId}");
                                 if (response.IsSuccessStatusCode)
                                 {
@@ -65,7 +66,9 @@ namespace PassionLib.DAL
                                     j = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
                                     q.TwName = j?.Value<string>("name");
                                 }
+
                             }
+
                         }
                         woahnilandRerunCq = q;
                     }
@@ -182,7 +185,7 @@ namespace PassionLib.DAL
                 };
                 context.Runs.Add(run);
             }
-            
+
             //User u = new User();
             //var runs = new Run[]
             //{

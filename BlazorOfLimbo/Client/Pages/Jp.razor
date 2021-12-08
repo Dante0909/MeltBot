@@ -17,7 +17,7 @@
                 <br>
                 <br>
                 <TabControl>
-                    @foreach (Quest q in quests)
+                    @foreach (Quest q in quests.Where(x=>x.CreatedDate.Value.Year == i))
                     {
                         <div class=text-nowrap>
                             <TabPage Text=@q.JpName>
@@ -97,6 +97,8 @@
     int[] years = new int[5] { 2016, 2017, 2018, 2019, 2020 };
     string party = string.Empty;
     List<Quest>? quests = null;
+    DateTime t = DateTime.UtcNow;
+    
     List<Run>? runs = null;
     PartySlot main;
     public RenderFragment PartyToString(List<PartySlot> l)
