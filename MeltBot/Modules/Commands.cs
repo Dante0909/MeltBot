@@ -120,11 +120,20 @@ namespace MeltBot.Modules
             {
                 if (ctx.User.Id == 290938252540641290)
                 {
-                    int counter = 0;
                     await ctx.Channel.SendMessageAsync("accepted");
+                    
+                    int counter = 0;
+                    
                     var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
+                    
                     while (true)
-                    {                       
+                    {
+                        string message = "<a:woahgiver:911084288705986570>";
+                        foreach (Pong p in Context.Pongs)
+                        {
+                            message += " " + p.UserMention;
+                        }
+                        await thread.SendMessageAsync(message);
                         await Task.Delay(995 * 60 * 60 * 24).ConfigureAwait(false);
                         if (counter == 3)
                         {
@@ -138,12 +147,7 @@ namespace MeltBot.Modules
                             counter = 0;
                         }
                         else counter++;
-                        string message = "<a:woahgiver:911084288705986570>";
-                        foreach (Pong p in Context.Pongs)
-                        {
-                            message += " " + p.UserMention;
-                        }
-                        await thread.SendMessageAsync(message);
+                        
 
                         //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
                     }
