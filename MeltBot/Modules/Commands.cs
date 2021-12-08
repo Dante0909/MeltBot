@@ -32,14 +32,17 @@ namespace MeltBot.Modules
             {
                 if (ctx.User.Id == 290938252540641290)
                 {
-                    Context.Pongs.Add(new Pong() { UserMention = mention });
+                    await ctx.Channel.SendMessageAsync(ctx.User.Mention);
+                    await ctx.Channel.SendMessageAsync(mention);
+
+                    Context.Pongs.Add(new Pong(mention));
                     Context.SaveChanges();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
+                await ctx.Channel.SendMessageAsync(ex.ToString());
             }
         }
 
@@ -49,14 +52,19 @@ namespace MeltBot.Modules
         {
             try
             {
-                Context.Pongs.Add(new Pong() { UserMention = ctx.User.Mention });
-                await ctx.Channel.SendMessageAsync(":woah:");
+                var t = Context.Pongs.Take(Context.Pongs.Count());
+                Context.Pongs.RemoveRange(t);
                 Context.SaveChanges();
+                Context.Pongs.Add(new Pong(ctx.User.Mention));
+                
+                Context.SaveChanges();
+                await ctx.Channel.SendMessageAsync(":woah:");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
+                await ctx.Channel.SendMessageAsync(ex.ToString());
+
             }
         }
         [Hidden]
@@ -77,8 +85,9 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
+                await ctx.Channel.SendMessageAsync(ex.ToString());
+
             }
         }
 
@@ -92,14 +101,15 @@ namespace MeltBot.Modules
                 if (p is not null)
                 {
                     Context.Pongs.Remove(p);
-                    await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:");
+                   
                     Context.SaveChanges();
+                    await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
+                await ctx.Channel.SendMessageAsync(ex.ToString());
             }
         }
 
@@ -112,28 +122,29 @@ namespace MeltBot.Modules
                 if (ctx.User.Id == 290938252540641290)
                 {
                     int counter = 0;
-
+                    await ctx.Channel.SendMessageAsync("accepted");
                     var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
                     while (true)
-                    {
+                    {                       
+                        await Task.Delay(995 * 60 * 60 * 24).ConfigureAwait(false);
+                        if (counter == 3)
+                        {
+                            var gameplay = await ctx.Client.GetChannelAsync(715944125916250154).ConfigureAwait(false);
+                            foreach (var t in gameplay.Threads)
+                            {
+                                var d = await t.SendMessageAsync("Weekly message to keep this thread alive");
+                                await Task.Delay(1000);
+                                await d.DeleteAsync();
+                            }
+                            counter = 0;
+                        }
+                        else counter++;
                         string message = "<a:woahgiver:911084288705986570>";
                         foreach (Pong p in Context.Pongs)
                         {
                             message += " " + p.UserMention;
                         }
                         await thread.SendMessageAsync(message);
-                        await Task.Delay(995 * 60 * 60 * 24).ConfigureAwait(false);
-                        if (counter == 7)
-                        {
-                            var gameplay = await ctx.Client.GetChannelAsync(715944125916250154).ConfigureAwait(false);
-                            foreach (var t in gameplay.Threads)
-                            {
-                                await t.SendMessageAsync("Weekly message to keep this thread alive");
-                            }
-                            counter = 0;
-                        }
-                        else counter++;
-
 
                         //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
                     }

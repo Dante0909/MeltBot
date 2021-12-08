@@ -60,7 +60,7 @@ namespace PassionLib.Migrations
                     b.HasIndex("CollectionNo")
                         .IsUnique();
 
-                    b.ToTable("CraftEssences");
+                    b.ToTable("CraftEssences", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.CraftEssenceAlias", b =>
@@ -80,7 +80,7 @@ namespace PassionLib.Migrations
 
                     b.HasIndex("SubmitterId");
 
-                    b.ToTable("CraftEssenceAliases");
+                    b.ToTable("CraftEssenceAliases", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.MysticCode", b =>
@@ -106,7 +106,7 @@ namespace PassionLib.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MysticCodes");
+                    b.ToTable("MysticCodes", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.MysticCodeAlias", b =>
@@ -126,7 +126,7 @@ namespace PassionLib.Migrations
 
                     b.HasIndex("SubmitterId");
 
-                    b.ToTable("MysticCodeAliases");
+                    b.ToTable("MysticCodeAliases", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.Pong", b =>
@@ -136,7 +136,7 @@ namespace PassionLib.Migrations
 
                     b.HasKey("UserMention");
 
-                    b.ToTable("Pongs");
+                    b.ToTable("Pongs", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.Quest", b =>
@@ -165,7 +165,7 @@ namespace PassionLib.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Quests");
+                    b.ToTable("Quests", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.QuestAlias", b =>
@@ -185,7 +185,7 @@ namespace PassionLib.Migrations
 
                     b.HasIndex("SubmitterId");
 
-                    b.ToTable("QuestAliases");
+                    b.ToTable("QuestAliases", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.Run", b =>
@@ -266,7 +266,7 @@ namespace PassionLib.Migrations
 
                     b.HasIndex("SubmitterId");
 
-                    b.ToTable("Runs");
+                    b.ToTable("Runs", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.Servant", b =>
@@ -310,7 +310,7 @@ namespace PassionLib.Migrations
                     b.HasIndex("CollectionNo")
                         .IsUnique();
 
-                    b.ToTable("Servants");
+                    b.ToTable("Servants", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.ServantAlias", b =>
@@ -330,7 +330,7 @@ namespace PassionLib.Migrations
 
                     b.HasIndex("SubmitterId");
 
-                    b.ToTable("ServantAliases");
+                    b.ToTable("ServantAliases", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.User", b =>
@@ -352,7 +352,7 @@ namespace PassionLib.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PassionLib.Models.CraftEssenceAlias", b =>
@@ -430,7 +430,7 @@ namespace PassionLib.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("PassionLib.Models.PartySlot", "Party", b1 =>
+                    b.OwnsMany("PassionLib.Models.Run.Party#PassionLib.Models.PartySlot", "Party", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -476,7 +476,7 @@ namespace PassionLib.Migrations
 
                             b1.HasIndex("ServantId");
 
-                            b1.ToTable("PartySlot");
+                            b1.ToTable("PartySlot", (string)null);
 
                             b1.HasOne("PassionLib.Models.CraftEssence", "CraftEssence")
                                 .WithMany()

@@ -9,7 +9,8 @@ namespace PassionLib.Models
 {
     public class Pong
     {
+        public Pong(string userMention) => UserMention = userMention;
         [Key]
-        public string? UserMention { get; set; }
+        public string UserMention { get; set; }
     }
 }
