@@ -52,15 +52,17 @@ namespace MeltBot.Modules
         {
             try
             {
+                if (Context.Pongs.Any(x => x.UserMention == ctx.User.Mention)) throw new Exception("You are already added <:woah:802188856686411783>");
                 Context.Pongs.Add(new Pong(ctx.User.Mention));
                 
                 Context.SaveChanges();
-                await ctx.Channel.SendMessageAsync("added <:woah:802188856686411783>");
+                await ctx.Channel.SendMessageAsync("Added <:woah:802188856686411783>");
             }
             catch (Exception ex)
             {
-                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
-                await ctx.Channel.SendMessageAsync(ex.ToString());
+                await ctx.Channel.SendMessageAsync(ex.Message);
+                if(ctx.User.Id == 290938252540641290) await ctx.Channel.SendMessageAsync("\n" + ex.StackTrace);
+                
 
             }
         }
