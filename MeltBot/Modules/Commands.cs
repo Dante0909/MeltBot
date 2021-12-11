@@ -317,8 +317,6 @@ namespace MeltBot.Modules
                 if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
                 {
                     r = DbHelper.CreateRun(Context, r.Quest, r.RunUrl, r.Submitter, null, r, args);
-                    Context.SaveChanges();
-                    await ctx.Channel.SendMessageAsync("Run edited");
                     if (args.Contains("debug"))
                     {
                         string obj = JsonConvert.SerializeObject(r, Formatting.Indented);
@@ -330,6 +328,9 @@ namespace MeltBot.Modules
                             await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
                         }
                     }
+                    Context.SaveChanges();
+                    await ctx.Channel.SendMessageAsync("Run edited");
+                    
                 }
                 else throw new Exception("You do not have permission to edit this run");
             }

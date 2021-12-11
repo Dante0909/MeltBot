@@ -107,7 +107,7 @@ namespace MeltBot
                         }
                         else
                         {
-                            mc = context.MysticCodeAliases.FirstOrDefault(x => x.Nickname == s)?.MysticCode;
+                            mc = context.MysticCodeAliases.Include(x => x.MysticCode).FirstOrDefault(x => x.Nickname == s)?.MysticCode;
                         }
                         if (mc is null) throw new Exception($"{s} could not be recognized as a mystic code id or nickname");
                         run.MysticCode = mc;
