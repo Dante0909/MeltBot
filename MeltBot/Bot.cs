@@ -54,7 +54,7 @@ namespace MeltBot
             Commands.RegisterCommands<Modules.AddCommands>();
             Commands.RegisterCommands<Modules.DeleteCommands>();
 
-            var activity = new DSharpPlus.Entities.DiscordActivity("%help", DSharpPlus.Entities.ActivityType.ListeningTo);
+            var activity = new DiscordActivity("%help", ActivityType.ListeningTo);
 
 
             await Client.ConnectAsync(activity);

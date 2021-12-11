@@ -15,14 +15,14 @@ namespace MeltBot
         {
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
-            if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
-            if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists");
+            if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");            
 
             List<PartySlot>? p = party;
 
             Run run;
             if(r is null)
             {
+                if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists");
                 run = new Run()
                 {
                     Quest = q,
@@ -35,7 +35,6 @@ namespace MeltBot
                 run = r;
                 run.UpdatedDate = DateTime.UtcNow;
             }
-
             if (p is not null)
             {
                 run.Party = p;
