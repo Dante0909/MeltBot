@@ -34,7 +34,6 @@ namespace MeltBot
             else
             {
                 run = r;
-                run.UpdatedDate = DateTime.UtcNow;
             }
             if (p is not null)
             {
@@ -165,7 +164,7 @@ namespace MeltBot
                             {
                                 svt = context.Servants.FirstOrDefault(x => x.Id == n || x.CollectionNo == n);
                             }
-                            else svt = context.ServantAliases.Include(x=>x.Servant).FirstOrDefault(x => x.Nickname == s)?.Servant;
+                            else svt = context.ServantAliases.Include(x => x.Servant).FirstOrDefault(x => x.Nickname == s)?.Servant;
                             if (svt is null) throw new Exception($"{s} not recognized as servant");
                             ps.Servant = svt;
                             typeCheck = svt;
@@ -191,7 +190,7 @@ namespace MeltBot
                                 {
                                     ce = context.CraftEssences.FirstOrDefault(x => x.Id == n || x.CollectionNo == n);
                                 }
-                                else ce = context.CraftEssenceAliases.FirstOrDefault(x => x.Nickname == s)?.CraftEssence;
+                                else ce = context.CraftEssenceAliases.Include(x => x.CraftEssence).FirstOrDefault(x => x.Nickname == s)?.CraftEssence;
 
                                 if (ce is null) throw new Exception($"{s} could not be recognized as a craft essence id or nickname");
 
@@ -354,7 +353,7 @@ namespace MeltBot
             return q;
         }
 
-       
+
         public static User GetUser(CommandContext ctx, RunsContext Context)
         {
             User? user = null;
