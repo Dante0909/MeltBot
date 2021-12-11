@@ -261,6 +261,7 @@ namespace MeltBot.Modules
             Console.WriteLine(ex);
             await ctx.Channel.SendMessageAsync(ex.Message);
             await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace);
+            await d.SendMessageAsync(ex?.InnerException?.ToString());
         }
         [Command("website")]
         public async Task Site(CommandContext ctx)
