@@ -38,6 +38,7 @@ namespace MeltBot.Modules
                     str += n.Nickname + "\n";
                 }
                 builder.AddField("Nicknames for servant " + svt.NaName is null ? svt.JpName : svt.NaName, str);
+                await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
             {
@@ -65,6 +66,7 @@ namespace MeltBot.Modules
                     str += n.Nickname + "\n";
                 }
                 builder.AddField("Nicknames for craft essence " + ce.NaName is null ? ce.JpName : ce.NaName, str);
+                await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
             {
@@ -92,6 +94,7 @@ namespace MeltBot.Modules
                     str += n.Nickname + "\n";
                 }
                 builder.AddField("Nicknames for craft essence " + q.NaName is null ? q.JpName : q.NaName, str);
+                await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
             {
@@ -119,6 +122,7 @@ namespace MeltBot.Modules
                     str += n.Nickname + "\n";
                 }
                 builder.AddField("Nicknames for craft essence " + mc.NaName is null ? mc.JpName : mc.NaName, str);
+                await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
             {
