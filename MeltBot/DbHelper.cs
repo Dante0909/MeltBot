@@ -188,7 +188,7 @@ namespace MeltBot
                                 }
                                 else if (int.TryParse(s, out int n) && n > 0)
                                 {
-                                    ce = context.CraftEssences.FirstOrDefault(x => x.Id == n);
+                                    ce = context.CraftEssences.FirstOrDefault(x => x.Id == n || x.CollectionNo == n);
                                 }
                                 else ce = context.CraftEssenceAliases.FirstOrDefault(x => x.Nickname == s)?.CraftEssence;
 

@@ -72,15 +72,15 @@ namespace KiarApi.Controllers
 
             //return str;
             string str = "";
-            var s = await context.ServantAliases.Include(x => x.Servant).ToListAsync();
-            str += JsonConvert.SerializeObject(s,Formatting.Indented) + "\n";
-            var ce = await context.CraftEssenceAliases.Include(x => x.CraftEssence).ToListAsync();
-            str += JsonConvert.SerializeObject(ce,Formatting.Indented) + "\n";
-            var q = await context.QuestAliases.Include(x => x.Quest).ToListAsync();
-            str += JsonConvert.SerializeObject(q,Formatting.Indented) + "\n";
-            var mc = await context.MysticCodeAliases.Include(x => x.MysticCode).ToListAsync();
-            str += JsonConvert.SerializeObject(mc,Formatting.Indented);
-            
+            var s = await context.ServantAliases.Include(x => x.Servant).Include(x => x.Submitter).ToListAsync();
+            str += JsonConvert.SerializeObject(s, Formatting.Indented) + "\n";
+            var ce = await context.CraftEssenceAliases.Include(x => x.CraftEssence).Include(x => x.Submitter).ToListAsync();
+            str += JsonConvert.SerializeObject(ce, Formatting.Indented) + "\n";
+            var q = await context.QuestAliases.Include(x => x.Quest).Include(x => x.Submitter).ToListAsync();
+            str += JsonConvert.SerializeObject(q, Formatting.Indented) + "\n";
+            var mc = await context.MysticCodeAliases.Include(x => x.MysticCode).Include(x => x.Submitter).ToListAsync();
+            str += JsonConvert.SerializeObject(mc, Formatting.Indented);
+
 
 
             return Ok(str);
