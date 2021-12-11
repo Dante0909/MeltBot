@@ -259,7 +259,7 @@ namespace MeltBot.Modules
         {
             Console.WriteLine(ex);
             await ctx.Channel.SendMessageAsync(ex.Message);
-            await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace+"\n"+ ex.InnerException);
+            await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace);
         }
         [Command("website")]
         public async Task Site(CommandContext ctx)
@@ -279,7 +279,7 @@ namespace MeltBot.Modules
                 List<PartySlot>? party = null;//Insert your program output
                 Quest q = DbHelper.GetQuest(Context, quest);
                 Run run = DbHelper.CreateRun(Context, q, runUrl, user, party, null, args);
-                
+
                 if (args.Contains("debug"))
                 {
                     string obj = JsonConvert.SerializeObject(run, Formatting.Indented);
@@ -307,12 +307,12 @@ namespace MeltBot.Modules
         [Command("Edit")]
         [Description("Edit existing submission")]
         public async Task Edit(CommandContext ctx,
-            [Description("Id of the run")]int id,
-            [Description("Same params as %run")]params string[] args)
+            [Description("Id of the run")] int id,
+            [Description("Same params as %run")] params string[] args)
         {
             try
             {
-                var r = Context.Runs.Include(x=>x.Quest).Include(x=>x.MysticCode).FirstOrDefault(x=>x.Id == id);
+                var r = Context.Runs.Include(x => x.Quest).Include(x => x.MysticCode).FirstOrDefault(x => x.Id == id);
                 if (r is null) throw new Exception("Run id could not be found");
                 if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
                 {
@@ -333,7 +333,7 @@ namespace MeltBot.Modules
                 }
                 else throw new Exception("You do not have permission to edit this run");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await SendDebug(ctx, ex, DebugChannel);
             }

@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.CommandsNext;
+using Microsoft.EntityFrameworkCore;
 using PassionLib.DAL;
 using PassionLib.Models;
 using System;
@@ -15,12 +16,12 @@ namespace MeltBot
         {
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
-            if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");            
+            if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
 
             List<PartySlot>? p = party;
 
             Run run;
-            if(r is null)
+            if (r is null)
             {
                 if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists");
                 run = new Run()
@@ -263,7 +264,7 @@ namespace MeltBot
                     if (p.Count == 6)
                     {
                         if (!p.Any(x => x.Borrowed == true)) throw new Exception("No servant is borrowed");
-                         
+
                         run.Cost = run.Cost is not null ? run.Cost : GetCost(p);
                         run.ServantCount = run.ServantCount is not null ? run.ServantCount : (short)p.Count(x => x.Servant is not null);
                         run.NoCe = !p.Any(x => x.CraftEssence is not null);
@@ -325,27 +326,28 @@ namespace MeltBot
             if (p.TotalAttack is not null) atk = p.TotalAttack;
             else
             {
-                if (p.Servant is not null) {
+                if (p.Servant is not null)
+                {
                     atk += p.ServantLevel is not null ? p.Servant.AttackScaling?[(int)p.ServantLevel - 1] : p.Servant.BaseMaxAttack;
                     atk += p.ServantFou;
-                } 
+                }
 
                 if (p.CraftEssence is not null) atk += p.CraftEssenceLevel is not null ? p.CraftEssence.AttackScaling?[(int)p.CraftEssenceLevel - 1] : p.CraftEssence.BaseMaxAttack;
             }
             return (short?)atk;
         }
-        
+
         public static Quest GetQuest(RunsContext context, string quest)
         {
             Quest? q = null;
             if (int.TryParse(quest, out int id))
             {
-                q = context.Quests.Where(x => x.Id == id).FirstOrDefault();
+                q = context.Quests.FirstOrDefault(x => x.Id == id);
                 if (q is null) throw new Exception($"Quest {quest} could not be found");
             }
             else
             {
-                q = context.QuestAliases.Where(x => x.Nickname == quest).FirstOrDefault()?.Quest;
+                q = context.QuestAliases.Where(x => x.Nickname == quest).Include(x => x.Quest).FirstOrDefault()?.Quest;
                 if (q is null) throw new Exception($"Quest {quest} could not be found");
 
             }
@@ -362,7 +364,7 @@ namespace MeltBot
             }
             else
             {
-                d = context.ServantAliases.Where(x => x.Nickname == dps).FirstOrDefault()?.Servant;
+                d = context.ServantAliases.Where(x => x.Nickname == dps).Include(x => x.Servant).FirstOrDefault()?.Servant;
                 if (d is null) throw new Exception($"Servant {dps} could not be found");
             }
             return d;
