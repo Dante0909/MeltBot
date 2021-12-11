@@ -38,7 +38,7 @@ namespace MeltBot
             Client.Ready += OnClientReady;
 
             DiscordChannel d = await Client.GetChannelAsync(918986606864629810);
-            var services = new ServiceCollection().AddTransient<RunsContext>().AddSingleton<DiscordChannel>(d).BuildServiceProvider();
+            var services = new ServiceCollection().AddTransient<RunsContext>((sp) => new RunsContext()).AddSingleton<DiscordChannel>(d).BuildServiceProvider();
 
             var commandsConfig = new CommandsNextConfiguration
             {

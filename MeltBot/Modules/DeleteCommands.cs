@@ -23,6 +23,7 @@ namespace MeltBot.Modules
         {
             try
             {
+                
                 Run? r = Context.Runs.FirstOrDefault(x => x.Id == runId);
                 if (r is null) throw new Exception($"{r} could not be found");
                 if (r.Submitter.DiscordSnowflake == (long)ctx.User.Id || Bot.Admin.ContainsKey(ctx.User.Id))
