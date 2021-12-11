@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace MeltBot.Modules
 {
+    [ModuleLifespan(ModuleLifespan.Transient)]
     internal class Commands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
