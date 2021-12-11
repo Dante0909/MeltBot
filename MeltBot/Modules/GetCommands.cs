@@ -33,7 +33,7 @@ namespace MeltBot.Modules
                 if (svt is null) throw new Exception("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
-                foreach(var n in Context.ServantAliases.Where(x=>x.Servant.Id == id))
+                foreach(var n in Context.ServantAliases.Where(x=>x.Servant.Id == svt.Id))
                 {
                     str += n.Nickname + "\n";
                 }
@@ -60,7 +60,7 @@ namespace MeltBot.Modules
                 if (ce is null) throw new Exception("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
-                foreach (var n in Context.CraftEssenceAliases.Where(x => x.CraftEssence.Id == id))
+                foreach (var n in Context.CraftEssenceAliases.Where(x => x.CraftEssence.Id == ce.Id))
                 {
                     str += n.Nickname + "\n";
                 }
@@ -87,7 +87,7 @@ namespace MeltBot.Modules
                 if (q is null) throw new Exception("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
-                foreach (var n in Context.QuestAliases.Where(x => x.Quest.Id == id))
+                foreach (var n in Context.QuestAliases.Where(x => x.Quest.Id == q.Id))
                 {
                     str += n.Nickname + "\n";
                 }
@@ -114,7 +114,7 @@ namespace MeltBot.Modules
                 if (mc is null) throw new Exception("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
-                foreach (var n in Context.MysticCodeAliases.Where(x => x.MysticCode.Id == id))
+                foreach (var n in Context.MysticCodeAliases.Where(x => x.MysticCode.Id == mc.Id))
                 {
                     str += n.Nickname + "\n";
                 }
