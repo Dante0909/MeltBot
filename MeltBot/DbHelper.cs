@@ -12,7 +12,7 @@ namespace MeltBot
 {
     internal static class DbHelper
     {
-        public static async Run CreateRun(RunsContext context, Quest q, string runUrl, User user, List<PartySlot>? party, Run? r, params string[] args)
+        public static Run CreateRun(RunsContext context, Quest q, string runUrl, User user, List<PartySlot>? party, Run? r, params string[] args)
         {
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
