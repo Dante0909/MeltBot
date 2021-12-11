@@ -11,7 +11,7 @@ using PassionLib.DAL;
 using PassionLib.Models;
 namespace MeltBot.Modules
 {
-    [ModuleLifespan(ModuleLifespan.Transient)]
+    //[ModuleLifespan(ModuleLifespan.Transient)]
     internal class AddCommands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }

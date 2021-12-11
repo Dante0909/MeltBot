@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace MeltBot.Modules
 {
-    [ModuleLifespan(ModuleLifespan.Transient)]
+    //[ModuleLifespan(ModuleLifespan.Transient)]
     internal class Commands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
@@ -353,8 +353,8 @@ namespace MeltBot.Modules
                 if (r is null) throw new Exception("Run id could not be found");
                 if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
                 {
-                   r.Cost = cost;
-
+                    r.Cost = cost;
+                    Context.Runs.Update(r);
                     Context.SaveChanges();
                     await ctx.Channel.SendMessageAsync("Run edited");
 

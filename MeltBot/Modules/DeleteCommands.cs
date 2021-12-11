@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MeltBot.Modules
 {
-    [ModuleLifespan(ModuleLifespan.Transient)]
+    //[ModuleLifespan(ModuleLifespan.Transient)]
     internal class DeleteCommands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
