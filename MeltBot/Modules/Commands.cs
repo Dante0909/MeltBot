@@ -160,102 +160,7 @@ namespace MeltBot.Modules
                 Console.WriteLine(ex);
             }
         }
-        [Command("GetInfo")]
-        [Description("Get all info of user")]
-        public async Task GetRuns(CommandContext ctx,
-            [Description("Id or name of user (Ex: _Dante09#9825)")] string name)
-        {
-            try
-            {
-                User? u;
-                if (long.TryParse(name, out long id))
-                {
-                    u = Context.Users.FirstOrDefault(x => x.DiscordSnowflake == id);
-                }
-                else
-                {
-                    u = Context.Users.FirstOrDefault(x => x.DiscordUsername + "#" + x.DiscordDiscriminator == name);
-                }
-                if (u is null) throw new Exception($"{id} could not be found");
-
-
-                var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant);
-                if (runs is not null)
-                {
-                    string str = string.Empty;
-                    DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
-                    foreach (var r in runs)
-                    {
-                        str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + "\n";
-                        Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
-                        if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
-                        str += "\n" + r.CreatedDate + ", Run id : " + r.Id;
-                        str += "\n";
-                    }
-                    if (!string.IsNullOrEmpty(str)) builder.AddField("Submissions", str);
-                    await ctx.Channel.SendMessageAsync(builder);
-                }
-                string s;
-                DiscordEmbedBuilder aliasBuilder = new DiscordEmbedBuilder();
-                var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant);
-                if (salias is not null)
-                {
-                    s = string.Empty;
-                    foreach (ServantAlias a in salias)
-                    {
-                        s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
-                        s += "\n";
-                    }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Servant nicknames", s);
-                }
-
-
-                var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x => x.CraftEssence);
-                if (cealias is not null)
-                {
-                    s = String.Empty;
-                    foreach (CraftEssenceAlias a in cealias)
-                    {
-                        s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
-                        s += "\n";
-                    }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Ce nicknames", s);
-                }
-
-
-                var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x => x.Quest);
-                if (qalias is not null)
-                {
-                    s = String.Empty;
-                    foreach (QuestAlias a in qalias)
-                    {
-                        s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
-                        s += "\n";
-                    }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Quest nicknames", s);
-                }
-
-                var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode);
-                if (mcalias is not null)
-                {
-                    s = String.Empty;
-                    foreach (MysticCodeAlias a in mcalias)
-                    {
-                        s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
-                        s += "\n";
-                    }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Mc nicknames", s);
-                }
-
-                await ctx.Channel.SendMessageAsync(aliasBuilder);
-
-
-            }
-            catch (Exception ex)
-            {
-                await SendDebug(ctx, ex, DebugChannel);
-            }
-        }
+        
         public static async Task SendDebug(CommandContext ctx, Exception ex, DiscordChannel d)
         {
             Console.WriteLine(ex);
@@ -342,31 +247,7 @@ namespace MeltBot.Modules
                 await SendDebug(ctx, ex, DebugChannel);
             }
         }
-        [Command("Edittest")]
-        [Description("Edit existing submission")]
-        public async Task EditTest(CommandContext ctx,
-           [Description("Id of the run")] int id,
-           short cost)
-        {
-            try
-            {
-                var r = Context.Runs.Include(x => x.Party).Include(x => x.Quest).Include(x => x.MysticCode).FirstOrDefault(x => x.Id == id);
-                if (r is null) throw new Exception("Run id could not be found");
-                if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
-                {
-                    r.Cost = cost;
-                    Context.Runs.Update(r);
-                    Context.SaveChanges();
-                    await ctx.Channel.SendMessageAsync("Run edited");
-
-                }
-                else throw new Exception("You do not have permission to edit this run");
-            }
-            catch (Exception ex)
-            {
-                await SendDebug(ctx, ex, DebugChannel);
-            }
-        }
+        
 
         //[Hidden]
         //[Command("deletedb")]

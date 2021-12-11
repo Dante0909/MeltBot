@@ -54,6 +54,7 @@ namespace MeltBot
             Commands.RegisterCommands<Modules.Commands>();
             Commands.RegisterCommands<Modules.AddCommands>();
             Commands.RegisterCommands<Modules.DeleteCommands>();
+            Commands.RegisterCommands<Modules.GetCommands>();
 
             var activity = new DiscordActivity("%help", ActivityType.ListeningTo);
 
