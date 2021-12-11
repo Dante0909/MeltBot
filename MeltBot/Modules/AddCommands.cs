@@ -29,6 +29,14 @@ namespace MeltBot.Modules
                 {
                     await AddServant(ctx, s.Id);
                 }
+                foreach(var q in Context.Quests)
+                {
+                    await AddQuest(ctx, q.Id);
+                }
+                foreach(var mc in Context.MysticCodes)
+                {
+                    await AddMc(ctx, mc.Id);
+                }
                 await ctx.Channel.SendMessageAsync("Done updating");
             }
         }
@@ -49,7 +57,7 @@ namespace MeltBot.Modules
 
                 if (flag) Context.Servants.Add(s);
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 str = $"Successfully added {s.JpName}";
             }
             catch (Exception ex)
@@ -250,7 +258,7 @@ namespace MeltBot.Modules
                 bool flag = ce is null;
                 ce = await CeData(ceId, ce);
                 if (flag) Context.CraftEssences.Add(ce);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 str = $"Successfully added {ce.JpName}";
 
             }
@@ -330,7 +338,7 @@ namespace MeltBot.Modules
                 }
                 User u = DbHelper.GetUser(ctx, Context);
                 Context.CraftEssenceAliases.Add(new CraftEssenceAlias(c, nickname) { Submitter = u });
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 str = $"Nickname {nickname} added for craft essence {ce}";
             }
             catch (Exception ex)
@@ -353,7 +361,7 @@ namespace MeltBot.Modules
                 bool flag = mc is null;
                 mc = await McData(mcId, mc);
                 if (flag) Context.MysticCodes.Add(mc);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 str = $"Successfully added {mc.JpName}";
             }
             catch (Exception ex)
