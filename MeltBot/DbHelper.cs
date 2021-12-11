@@ -165,7 +165,7 @@ namespace MeltBot
                             {
                                 svt = context.Servants.FirstOrDefault(x => x.Id == n || x.CollectionNo == n);
                             }
-                            else svt = context.ServantAliases.FirstOrDefault(x => x.Nickname == s)?.Servant;
+                            else svt = context.ServantAliases.Include(x=>x.Servant).FirstOrDefault(x => x.Nickname == s)?.Servant;
                             if (svt is null) throw new Exception($"{s} not recognized as servant");
                             ps.Servant = svt;
                             typeCheck = svt;
@@ -354,21 +354,7 @@ namespace MeltBot
             return q;
         }
 
-        private static Servant GetServant(RunsContext context, string dps)
-        {
-            Servant? d = null;
-            if (int.TryParse(dps, out int id))
-            {
-                d = context.Servants.Where(x => x.Id == id).FirstOrDefault();
-                if (d is null) throw new Exception($"Servant {dps} could not be found");
-            }
-            else
-            {
-                d = context.ServantAliases.Where(x => x.Nickname == dps).Include(x => x.Servant).FirstOrDefault()?.Servant;
-                if (d is null) throw new Exception($"Servant {dps} could not be found");
-            }
-            return d;
-        }
+       
         public static User GetUser(CommandContext ctx, RunsContext Context)
         {
             User? user = null;
