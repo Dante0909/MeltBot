@@ -272,6 +272,7 @@ namespace MeltBot.Modules
                 }
                 await ctx.Channel.SendMessageAsync(str);
                 if (nickname is not null) await AddCeNickname(ctx, ceId.ToString(), nickname);
+                c.Dispose();
             }
             
         }
