@@ -34,6 +34,18 @@ namespace MeltBot
             else
             {
                 run = r;
+                run.Cost = null;
+                run.CsUsed = null;
+                run.RevivesUsed = null;
+                run.Failure = null;
+                run.Rta = null;
+                run.Cost = null;
+                run.ServantCount = null;
+                run.NoCe = null;
+                run.NoCeDps = null;
+                run.NoEventCeDps = null;
+                run.NoDupe = null;
+                run.Party = null;
             }
             if (p is not null)
             {
