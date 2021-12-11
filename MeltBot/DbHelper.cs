@@ -20,11 +20,10 @@ namespace MeltBot
 
             List<PartySlot>? p = party;
 
-            Run run;
             if (r is null)
             {
                 if (context.Runs.Where(x => x.RunUrl == runUrl).Any()) throw new Exception("A run with the provided link already exists");
-                run = new Run()
+                r = new Run()
                 {
                     Quest = q,
                     RunUrl = runUrl,
@@ -33,24 +32,23 @@ namespace MeltBot
             }
             else
             {
-                run = r;
-                run.CsUsed = null;
-                run.RevivesUsed = null;
-                run.Failure = false;
-                run.Rta = false;
-                run.Cost = null;
-                run.ServantCount = null;
-                run.NoCe = null;
-                run.NoCeDps = null;
-                run.NoEventCeDps = null;
-                run.NoDupe = null;
-                run.Party = null;
-                run.MysticCode = null;
+                r.CsUsed = null;
+                r.RevivesUsed = null;
+                r.Failure = false;
+                r.Rta = false;
+                r.Cost = null;
+                r.ServantCount = null;
+                r.NoCe = null;
+                r.NoCeDps = null;
+                r.NoEventCeDps = null;
+                r.NoDupe = null;
+                r.Party = null;
+                r.MysticCode = null;
                 
             }
             if (p is not null)
             {
-                run.Party = p;
+                r.Party = p;
 
                 //ask if craft essence/servant are null
             }
@@ -68,7 +66,7 @@ namespace MeltBot
                     string s = args[i].ToLower();
                     if (s == "f")
                     {
-                        run.Failure = true;
+                        r.Failure = true;
                         continue;
                     }
                     if (s.StartsWith("cs"))
@@ -76,11 +74,11 @@ namespace MeltBot
                         s = s.Substring(2);
                         if (short.TryParse(s, out short n))
                         {
-                            run.CsUsed = n;
+                            r.CsUsed = n;
                         }
                         else
                         {
-                            run.CsUsed = 1;
+                            r.CsUsed = 1;
                         }
                         continue;
                     }
@@ -89,11 +87,11 @@ namespace MeltBot
                         s = s.Substring(3);
                         if (short.TryParse(s, out short n))
                         {
-                            run.RevivesUsed = n;
+                            r.RevivesUsed = n;
                         }
                         else
                         {
-                            run.RevivesUsed = 1;
+                            r.RevivesUsed = 1;
                         }
                         continue;
                     }
@@ -102,7 +100,7 @@ namespace MeltBot
                         s = s.Substring(4);
                         if (short.TryParse(s, out short n) && n >= 0)
                         {
-                            run.Cost = n;
+                            r.Cost = n;
                             continue;
                         }
                         else
@@ -123,7 +121,7 @@ namespace MeltBot
                             mc = context.MysticCodeAliases.Include(x => x.MysticCode).FirstOrDefault(x => x.Nickname == s)?.MysticCode;
                         }
                         if (mc is null) throw new Exception($"{s} could not be recognized as a mystic code id or nickname");
-                        run.MysticCode = mc;
+                        r.MysticCode = mc;
                         continue;
                     }
                     if (s.StartsWith("n"))
@@ -131,31 +129,31 @@ namespace MeltBot
                         s = s.Substring(1);
                         if (short.TryParse(s, out short n) && n >= 1 && n <= 6)
                         {
-                            run.ServantCount = n;
+                            r.ServantCount = n;
                         }
                         else throw new Exception($"{s} is not a valid servant count");
                     }
                     if (s == "rta")
                     {
-                        run.Rta = true;
+                        r.Rta = true;
                         continue;
                     }
                     if (s == "noce")
                     {
-                        run.NoCe = true;
-                        run.NoCeDps = true;
-                        run.NoEventCeDps = true;
+                        r.NoCe = true;
+                        r.NoCeDps = true;
+                        r.NoEventCeDps = true;
                         continue;
                     }
                     if (s == "nocedps")
                     {
-                        run.NoCeDps = true;
-                        run.NoEventCeDps = true;
+                        r.NoCeDps = true;
+                        r.NoEventCeDps = true;
                         continue;
                     }
                     if (s == "noeventce")
                     {
-                        run.NoEventCeDps = true;
+                        r.NoEventCeDps = true;
                         continue;
                     }
                     if (party is null)
@@ -242,7 +240,7 @@ namespace MeltBot
                             }
                             if (s == "main")
                             {
-                                run.Dps = ps;
+                                r.Dps = ps;
                                 ps.IsMainDps = true;
                             }
                             if (s == "b")
@@ -277,33 +275,33 @@ namespace MeltBot
                     {
                         if (!p.Any(x => x.Borrowed == true)) throw new Exception("No servant is borrowed");
                         
-                        run.Cost = run.Cost is not null ? run.Cost : GetCost(p);
-                        run.ServantCount = run.ServantCount is not null ? run.ServantCount : (short)p.Count(x => x.Servant is not null);
-                        run.NoCe = !p.Any(x => x.CraftEssence is not null);
-                        run.NoDupe = !p.GroupBy(x => x.Servant?.Id).Any(c => c.Count() > 1);
+                        r.Cost = r.Cost is not null ? r.Cost : GetCost(p);
+                        r.ServantCount = r.ServantCount is not null ? r.ServantCount : (short)p.Count(x => x.Servant is not null);
+                        r.NoCe = !p.Any(x => x.CraftEssence is not null);
+                        r.NoDupe = !p.GroupBy(x => x.Servant?.Id).Any(c => c.Count() > 1);
                     }
                     else if (p.Count == 1)
                     {
                     }
                     else throw new Exception("Enter one or six servants in the party");
                     //if craft essence is null, sets mlb to null
-                    if (run.Dps is null)
+                    if (r.Dps is null)
                     {
                         p.First().IsMainDps = true;
-                        run.Dps = p.First();
+                        r.Dps = p.First();
                     }
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
                     p.ForEach(x => x.TotalAttack = GetAttack(x));
 
-                    run.NoCeDps = run.Dps.CraftEssence is null;
+                    r.NoCeDps = r.Dps.CraftEssence is null;
 
-                    run.Party = p;
+                    r.Party = p;
                 }
                 else throw new Exception("No servant in the party");
 
             }
 
-            return run;
+            return r;
         }
         private static short? GetCost(List<PartySlot> l)
         {

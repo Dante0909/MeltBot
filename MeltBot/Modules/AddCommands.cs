@@ -25,7 +25,6 @@ namespace MeltBot.Modules
                 foreach (var ce in Context.CraftEssences)
                 {
                     await AddCe(ctx, ce.Id);
-                    await Task.Delay(10000);
                 }
                 //foreach (var s in Context.Servants)
                 //{
