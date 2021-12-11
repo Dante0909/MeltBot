@@ -17,6 +17,7 @@ namespace MeltBot.Modules
     internal class Commands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
+        public DiscordChannel DebugChannel { private get; set; }
 
         [Command("ping")]
         [Description("Returns pong")]
@@ -54,15 +55,15 @@ namespace MeltBot.Modules
             {
                 if (Context.Pongs.Any(x => x.UserMention == ctx.User.Mention)) throw new Exception("You are already added <:woah:802188856686411783>");
                 Context.Pongs.Add(new Pong(ctx.User.Mention));
-                
+
                 Context.SaveChanges();
-                await ctx.Channel.SendMessageAsync("Added <:woah:802188856686411783>");
+                await ctx.Channel.SendMessageAsync("Added " + ctx.User.Mention + " <:woah:802188856686411783>");
             }
             catch (Exception ex)
             {
                 await ctx.Channel.SendMessageAsync(ex.Message);
-                if(ctx.User.Id == 290938252540641290) await ctx.Channel.SendMessageAsync("\n" + ex.StackTrace);
-                
+                if (ctx.User.Id == 290938252540641290) await ctx.Channel.SendMessageAsync("\n" + ex.StackTrace);
+
 
             }
         }
@@ -100,7 +101,7 @@ namespace MeltBot.Modules
                 if (p is not null)
                 {
                     Context.Pongs.Remove(p);
-                   
+
                     Context.SaveChanges();
                     await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:");
                 }
@@ -121,11 +122,11 @@ namespace MeltBot.Modules
                 if (ctx.User.Id == 290938252540641290)
                 {
                     await ctx.Channel.SendMessageAsync("accepted");
-                    
+
                     int counter = 0;
-                    
+
                     var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
-                    
+
                     while (true)
                     {
                         string message = "<a:woahgiver:911084288705986570>";
@@ -147,7 +148,7 @@ namespace MeltBot.Modules
                             counter = 0;
                         }
                         else counter++;
-                        
+
 
                         //await thread.SendMessageAsync(":woahgiver: " + "<@!91383118644154368> <@!383990559070486529> <@!231155913430401035> <@!273449958152077312> <@!357729894765035520> <@!285701533583015936>").ConfigureAwait(false);
                     }
@@ -165,104 +166,109 @@ namespace MeltBot.Modules
         {
             try
             {
-                if (Bot.Admin.ContainsKey(ctx.User.Id))
+                User? u;
+                if (long.TryParse(name, out long id))
                 {
-                    User? u;
-                    if (long.TryParse(name, out long id))
-                    {
-                        u = Context.Users.FirstOrDefault(x => x.DiscordSnowflake == id);
-                    }
-                    else
-                    {
-                        u = Context.Users.FirstOrDefault(x => x.DiscordUsername + "#" + x.DiscordDiscriminator == name);
-                    }
-                    if (u is null) throw new Exception($"{id} could not be found");
-                    DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
+                    u = Context.Users.FirstOrDefault(x => x.DiscordSnowflake == id);
+                }
+                else
+                {
+                    u = Context.Users.FirstOrDefault(x => x.DiscordUsername + "#" + x.DiscordDiscriminator == name);
+                }
+                if (u is null) throw new Exception($"{id} could not be found");
+
+
+                var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant);
+                if (runs is not null)
+                {
                     string str = string.Empty;
-                    var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant);
-                    if (runs is not null)
+                    DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
+                    foreach (var r in runs)
                     {
-                        foreach (var r in runs)
-                        {
-                            str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + "\n";
-                            Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
-                            if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
-                            str += "\n" + r.CreatedDate + ", Run id : " + r.Id;
-                            str += "\n";
-                        }
-                        if (!string.IsNullOrEmpty(str)) builder.AddField("Submissions", str);
+                        str += r.Quest.NaName is null ? r.Quest.JpName : r.Quest.NaName + "\n";
+                        Servant? svt = r.Party?.FirstOrDefault(x => x.IsMainDps == true)?.Servant;
+                        if (svt is not null) str += svt.NaName is null ? svt.JpName : svt.NaName;
+                        str += "\n" + r.CreatedDate + ", Run id : " + r.Id;
+                        str += "\n";
                     }
-                    string s;
-
-                    var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant);
-                    if (salias is not null)
-                    {
-                        s = string.Empty;
-                        foreach (ServantAlias a in salias)
-                        {
-                            s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
-                            s += "\n";
-                        }
-                        if (!string.IsNullOrEmpty(s)) builder.AddField("Servant nicknames", s);
-                    }
-
-
-                    var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x => x.CraftEssence);
-                    if (cealias is not null)
-                    {
-                        await ctx.Channel.SendMessageAsync("cealias count is " + cealias.Count().ToString());
-                        s = String.Empty;
-                        foreach (CraftEssenceAlias a in cealias)
-                        {
-                            s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
-                            s += "\n";
-                        }
-                        if (!string.IsNullOrEmpty(s)) builder.AddField("Ce nicknames", s);
-                    }
-
-
-                    var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x => x.Quest);
-                    if (qalias is not null)
-                    {
-                        s = String.Empty;
-                        foreach (QuestAlias a in qalias)
-                        {
-                            s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
-                            s += "\n";
-                        }
-                        if (!string.IsNullOrEmpty(s)) builder.AddField("Quest nicknames", s);
-                    }
-
-                    var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode);
-                    if (mcalias is not null)
-                    {
-                        s = String.Empty;
-                        foreach (MysticCodeAlias a in mcalias)
-                        {
-                            s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
-                            s += "\n";
-                        }
-                        if (!string.IsNullOrEmpty(s)) builder.AddField("Mc nicknames", s);
-                    }
-
+                    if (!string.IsNullOrEmpty(str)) builder.AddField("Submissions", str);
                     await ctx.Channel.SendMessageAsync(builder);
                 }
+                string s;
+                DiscordEmbedBuilder aliasBuilder = new DiscordEmbedBuilder();
+                var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant);
+                if (salias is not null)
+                {
+                    s = string.Empty;
+                    foreach (ServantAlias a in salias)
+                    {
+                        s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
+                        s += "\n";
+                    }
+                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Servant nicknames", s);
+                }
+
+
+                var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x => x.CraftEssence);
+                if (cealias is not null)
+                {
+                    s = String.Empty;
+                    foreach (CraftEssenceAlias a in cealias)
+                    {
+                        s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
+                        s += "\n";
+                    }
+                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Ce nicknames", s);
+                }
+
+
+                var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x => x.Quest);
+                if (qalias is not null)
+                {
+                    s = String.Empty;
+                    foreach (QuestAlias a in qalias)
+                    {
+                        s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
+                        s += "\n";
+                    }
+                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Quest nicknames", s);
+                }
+
+                var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode);
+                if (mcalias is not null)
+                {
+                    s = String.Empty;
+                    foreach (MysticCodeAlias a in mcalias)
+                    {
+                        s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
+                        s += "\n";
+                    }
+                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Mc nicknames", s);
+                }
+
+                await ctx.Channel.SendMessageAsync(aliasBuilder);
+
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                await ctx.Channel.SendMessageAsync(ex.ToString());
+                await SendDebug(ctx, ex, DebugChannel);
             }
         }
-
+        public static async Task SendDebug(CommandContext ctx, Exception ex, DiscordChannel d)
+        {
+            Console.WriteLine(ex);
+            await ctx.Channel.SendMessageAsync(ex.Message);
+            await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace);
+        }
         [Command("website")]
         public async Task Site(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("https://combatrecords.xxil.cc/jp");
         }
-        [Command("temprun")]
-        public async Task TempRun(CommandContext ctx,
+        [Command("run")]
+        [Description("Submit run into database")]
+        public async Task Run(CommandContext ctx,
             [Description("Name or id of the quest")] string quest,
             [Description("Link of the run")] string runUrl,
             [Description("Additional params")] params string[] args)
@@ -271,9 +277,9 @@ namespace MeltBot.Modules
             {
                 var user = DbHelper.GetUser(ctx, Context);
                 List<PartySlot>? party = null;//Insert your program output
-                Run run = DbHelper.CreateRun(Context, quest, runUrl, user, party, args);
-                //Context.Runs.Add(run);
-                //Context.SaveChanges();
+                Quest q = DbHelper.GetQuest(Context, quest);
+                Run run = DbHelper.CreateRun(Context, q, runUrl, user, party, null, args);
+                
                 if (args.Contains("debug"))
                 {
                     string obj = JsonConvert.SerializeObject(run, Formatting.Indented);
@@ -288,7 +294,7 @@ namespace MeltBot.Modules
 
                 Context.Runs.Add(run);
                 Context.SaveChanges();
-                await ctx.Channel.SendMessageAsync("Run successfully added");
+                await ctx.Channel.SendMessageAsync("Run successfully added, run id is " + run.Id);
 
             }
             catch (Exception ex)
@@ -297,6 +303,40 @@ namespace MeltBot.Modules
                 await ctx.Channel.SendMessageAsync(ex.Message);
             }
 
+        }
+        [Command("Edit")]
+        [Description("Edit existing submission")]
+        public async Task Edit(CommandContext ctx,
+            [Description("Id of the run")]int id,
+            [Description("Same params as %run")]params string[] args)
+        {
+            try
+            {
+                var r = Context.Runs.Include(x=>x.Quest).Include(x=>x.MysticCode).FirstOrDefault(x=>x.Id == id);
+                if (r is null) throw new Exception("Run id could not be found");
+                if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
+                {
+                    r = DbHelper.CreateRun(Context, r.Quest, r.RunUrl, r.Submitter, null, r, args);
+                    Context.SaveChanges();
+                    await ctx.Channel.SendMessageAsync("Run edited");
+                    if (args.Contains("debug"))
+                    {
+                        string obj = JsonConvert.SerializeObject(r, Formatting.Indented);
+                        byte[] t = Encoding.UTF8.GetBytes(obj);
+                        using (var stream = new MemoryStream(t))
+                        {
+                            var builder = new DiscordMessageBuilder();
+                            builder.WithFile("run.txt", stream);
+                            await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
+                        }
+                    }
+                }
+                else throw new Exception("You do not have permission to edit this run");
+            }
+            catch(Exception ex)
+            {
+                await SendDebug(ctx, ex, DebugChannel);
+            }
         }
         //[Hidden]
         //[Command("deletedb")]

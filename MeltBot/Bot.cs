@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 using PassionLib.DAL;
@@ -36,7 +37,8 @@ namespace MeltBot
 
             Client.Ready += OnClientReady;
 
-            var services = new ServiceCollection().AddSingleton<RunsContext>().BuildServiceProvider();
+            DiscordChannel d = await Client.GetChannelAsync(918986606864629810);
+            var services = new ServiceCollection().AddSingleton<RunsContext>().AddSingleton<DiscordChannel>(d).BuildServiceProvider();
 
             var commandsConfig = new CommandsNextConfiguration
             {

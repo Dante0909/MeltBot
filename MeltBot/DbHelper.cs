@@ -11,9 +11,8 @@ namespace MeltBot
 {
     internal static class DbHelper
     {
-        public static Run CreateRun(RunsContext context, string strQuest, string runUrl, User user, List<PartySlot>? party, params string[] args)
+        public static Run CreateRun(RunsContext context, Quest q, string runUrl, User user, List<PartySlot>? party, Run? r, params string[] args)
         {
-            Quest quest = GetQuest(context, strQuest);
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
             if (!Uri.IsWellFormedUriString(runUrl, UriKind.Absolute)) throw new Exception($"Invalid Url format : <{runUrl}>");
@@ -21,12 +20,22 @@ namespace MeltBot
 
             List<PartySlot>? p = party;
 
-            Run run = new Run()
+            Run run;
+            if(r is null)
             {
-                Quest = quest,
-                RunUrl = runUrl,
-                Submitter = user
-            };
+                run = new Run()
+                {
+                    Quest = q,
+                    RunUrl = runUrl,
+                    Submitter = user
+                };
+            }
+            else
+            {
+                run = r;
+                run.UpdatedDate = DateTime.UtcNow;
+            }
+
             if (p is not null)
             {
                 run.Party = p;
@@ -327,7 +336,7 @@ namespace MeltBot
             return (short?)atk;
         }
         
-        private static Quest GetQuest(RunsContext context, string quest)
+        public static Quest GetQuest(RunsContext context, string quest)
         {
             Quest? q = null;
             if (int.TryParse(quest, out int id))
