@@ -67,7 +67,7 @@ namespace PassionLib.DAL
             var entries = ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is Run && (e.State == EntityState.Modified));
-            var utcNow = DateTime.Now;
+            var utcNow = DateTime.UtcNow;
 
             foreach (var entityEntry in entries)
             {
