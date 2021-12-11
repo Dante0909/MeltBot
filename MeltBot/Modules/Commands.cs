@@ -313,7 +313,7 @@ namespace MeltBot.Modules
         {
             try
             {
-                var r = Context.Runs.Include(x => x.Quest).Include(x => x.MysticCode).FirstOrDefault(x => x.Id == id);
+                var r = Context.Runs.Include(x => x.Party).Include(x => x.Quest).Include(x => x.MysticCode).FirstOrDefault(x => x.Id == id);
                 if (r is null) throw new Exception("Run id could not be found");
                 if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
                 {
@@ -329,9 +329,10 @@ namespace MeltBot.Modules
                             await ctx.Channel.SendMessageAsync(builder).ConfigureAwait(false);
                         }
                     }
+
                     Context.SaveChanges();
                     await ctx.Channel.SendMessageAsync("Run edited");
-                    
+
                 }
                 else throw new Exception("You do not have permission to edit this run");
             }
@@ -340,7 +341,32 @@ namespace MeltBot.Modules
                 await SendDebug(ctx, ex, DebugChannel);
             }
         }
-        
+        [Command("Edittest")]
+        [Description("Edit existing submission")]
+        public async Task EditTest(CommandContext ctx,
+           [Description("Id of the run")] int id,
+           short cost)
+        {
+            try
+            {
+                var r = Context.Runs.Include(x => x.Party).Include(x => x.Quest).Include(x => x.MysticCode).FirstOrDefault(x => x.Id == id);
+                if (r is null) throw new Exception("Run id could not be found");
+                if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
+                {
+                   r.Cost = cost;
+
+                    Context.SaveChanges();
+                    await ctx.Channel.SendMessageAsync("Run edited");
+
+                }
+                else throw new Exception("You do not have permission to edit this run");
+            }
+            catch (Exception ex)
+            {
+                await SendDebug(ctx, ex, DebugChannel);
+            }
+        }
+
         //[Hidden]
         //[Command("deletedb")]
         //public async Task AdminDelete(CommandContext ctx)
