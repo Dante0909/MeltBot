@@ -26,18 +26,18 @@ namespace MeltBot.Modules
                 {
                     await AddCe(ctx, ce.Id);
                 }
-                foreach (var s in Context.Servants)
-                {
-                    await AddServant(ctx, s.Id);
-                }
-                foreach(var q in Context.Quests)
-                {
-                    await AddQuest(ctx, q.Id);
-                }
-                foreach(var mc in Context.MysticCodes)
-                {
-                    await AddMc(ctx, mc.Id);
-                }
+                //foreach (var s in Context.Servants)
+                //{
+                //    await AddServant(ctx, s.Id);
+                //}
+                //foreach(var q in Context.Quests)
+                //{
+                //    await AddQuest(ctx, q.Id);
+                //}
+                //foreach(var mc in Context.MysticCodes)
+                //{
+                //    await AddMc(ctx, mc.Id);
+                //}
                 await ctx.Channel.SendMessageAsync("Done updating");
             }
         }
@@ -252,24 +252,28 @@ namespace MeltBot.Modules
              [Description("Id or collectionNo of the ce to add")] int ceId,
              [Description("(Optional)A nickname to that ce")] string nickname = null)
         {
-            string str = string.Empty;
-            try
+            using (var c = new RunsContext())
             {
-                CraftEssence? ce = Context.CraftEssences.FirstOrDefault(s => s.Id == ceId || s.CollectionNo == ceId);
-                bool flag = ce is null;
-                ce = await CeData(ceId, ce);
-                if (flag) Context.CraftEssences.Add(ce);
-                await Context.SaveChangesAsync();
-                str = $"Successfully added {ce.JpName}";
+                string str = string.Empty;
+                try
+                {
+                    CraftEssence? ce = Context.CraftEssences.FirstOrDefault(s => s.Id == ceId || s.CollectionNo == ceId);
+                    bool flag = ce is null;
+                    ce = await CeData(ceId, ce);
+                    if (flag) Context.CraftEssences.Add(ce);
+                    await Context.SaveChangesAsync();
+                    str = $"Successfully added {ce.JpName}";
 
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    str = ex.Message;
+                }
+                await ctx.Channel.SendMessageAsync(str);
+                if (nickname is not null) await AddCeNickname(ctx, ceId.ToString(), nickname);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                str = ex.Message;
-            }
-            await ctx.Channel.SendMessageAsync(str);
-            if (nickname is not null) await AddCeNickname(ctx, ceId.ToString(), nickname);
+            
         }
 
         private static async Task<CraftEssence> CeData(int ceId, CraftEssence? ce)
