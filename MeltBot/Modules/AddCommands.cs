@@ -15,7 +15,23 @@ namespace MeltBot.Modules
     {
         public RunsContext Context { private get; set; }
 
-       
+        [Hidden]
+        [Command("Update")]
+        public async Task Update(CommandContext ctx)
+        {
+            if (Bot.Admin.ContainsKey(ctx.User.Id))
+            {
+                foreach (var ce in Context.CraftEssences)
+                {
+                    await AddCe(ctx, ce.Id);
+                }
+                foreach (var s in Context.Servants)
+                {
+                    await AddServant(ctx, s.Id);
+                }
+                await ctx.Channel.SendMessageAsync("Done updating");
+            }
+        }
 
         [Command("AddServant")]
         [Description("Add an existing servant to the database")]
@@ -256,6 +272,7 @@ namespace MeltBot.Modules
                 string n = j.Value<string>("name");
                 ce = ce is null ? new CraftEssence(j.Value<int>("id"), n, j.Value<int>("collectionNo")) : ce;
 
+                ce.Cost = j.Value<short>("cost");
                 ce.BaseMaxAttack = j.Value<short>("atkMax");
                 ce.AttackScaling = j.GetValue("atkGrowth").ToObject<short[]>();
                 ce.Rarity = j.Value<short>("rarity");

@@ -12,7 +12,7 @@ namespace MeltBot
 {
     internal static class DbHelper
     {
-        public static Run CreateRun(RunsContext context, Quest q, string runUrl, User user, List<PartySlot>? party, Run? r, params string[] args)
+        public static async Run CreateRun(RunsContext context, Quest q, string runUrl, User user, List<PartySlot>? party, Run? r, params string[] args)
         {
             if (runUrl.StartsWith("<")) runUrl = runUrl.Substring(1);
             if (runUrl.EndsWith(">")) runUrl = runUrl.Substring(0, runUrl.Length - 1);
@@ -34,11 +34,10 @@ namespace MeltBot
             else
             {
                 run = r;
-                run.Cost = null;
                 run.CsUsed = null;
                 run.RevivesUsed = null;
-                run.Failure = null;
-                run.Rta = null;
+                run.Failure = false;
+                run.Rta = false;
                 run.Cost = null;
                 run.ServantCount = null;
                 run.NoCe = null;
@@ -46,6 +45,8 @@ namespace MeltBot
                 run.NoEventCeDps = null;
                 run.NoDupe = null;
                 run.Party = null;
+                run.MysticCode = null;
+                
             }
             if (p is not null)
             {
@@ -275,7 +276,7 @@ namespace MeltBot
                     if (p.Count == 6)
                     {
                         if (!p.Any(x => x.Borrowed == true)) throw new Exception("No servant is borrowed");
-
+                        
                         run.Cost = run.Cost is not null ? run.Cost : GetCost(p);
                         run.ServantCount = run.ServantCount is not null ? run.ServantCount : (short)p.Count(x => x.Servant is not null);
                         run.NoCe = !p.Any(x => x.CraftEssence is not null);

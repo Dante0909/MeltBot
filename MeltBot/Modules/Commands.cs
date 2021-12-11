@@ -339,6 +339,7 @@ namespace MeltBot.Modules
                 await SendDebug(ctx, ex, DebugChannel);
             }
         }
+        
         //[Hidden]
         //[Command("deletedb")]
         //public async Task AdminDelete(CommandContext ctx)
