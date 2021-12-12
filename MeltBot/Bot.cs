@@ -67,7 +67,7 @@ namespace MeltBot
         private async Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
             Console.WriteLine("Ready");
-            Console.WriteLine(DateTime.SpecifyKind(DateTime.Today,DateTimeKind.Utc).AddMinutes(1423).Subtract(DateTime.UtcNow).TotalMilliseconds);
+            
             //Console.WriteLine(DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc).AddMinutes(1423).Subtract(DateTime.UtcNow).TotalHours);
             Modules.Commands.Init(sender);
             //while (true)
