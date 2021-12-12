@@ -124,10 +124,10 @@ namespace MeltBot.Modules
             int counter = 0;
             while (sender is not null)
             {
-                DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
+                //DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
 
-                if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
-                await Task.Delay((int)pingtime.Subtract(DateTime.UtcNow).TotalMilliseconds);
+                //if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
+                //await Task.Delay((int)pingtime.Subtract(DateTime.UtcNow).TotalMilliseconds);
                 var thread = await sender.GetChannelAsync(878138355945185334).ConfigureAwait(false);
                 using (var r = new RunsContext())
                 {
@@ -142,18 +142,19 @@ namespace MeltBot.Modules
                     }
                     if (counter == 0)
                     {
-                        var gameplay = await sender.GetChannelAsync(715944125916250154).ConfigureAwait(false);
-                        foreach (var t in gameplay.Threads)
-                        {
-                            var d = await t.SendMessageAsync("Weekly message to keep this thread alive");
-                            await Task.Delay(1000);
-                            await d.DeleteAsync();
-                        }
-                        counter++;
+                        //var gameplay = await sender.GetChannelAsync(715944125916250154).ConfigureAwait(false);
+                        //foreach (var t in gameplay.Threads)
+                        //{
+                        //    var d = await t.SendMessageAsync("Weekly message to keep this thread alive");
+                        //    await Task.Delay(1000);
+                        //    await d.DeleteAsync();
+                        //}
+                        //counter++;
                     }
                     else if (counter == 6) counter = 0;
 
                 }
+                await Task.Delay(100000000);
             }
         }
         [Hidden]
