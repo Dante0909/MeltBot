@@ -120,10 +120,11 @@ namespace MeltBot.Modules
         }
         public static async Task Init(DiscordClient sender)
         {
-
+            await sender.SendMessageAsync(await sender.GetChannelAsync(878138355945185334), "ack");
             int counter = 0;
             while (sender is not null)
             {
+                
                 DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
 
                 if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
