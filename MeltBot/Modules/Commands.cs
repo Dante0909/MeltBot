@@ -97,7 +97,7 @@ namespace MeltBot.Modules
         [Command("woahditch")]
         public async Task ByePing(CommandContext ctx)
         {
-            if(ctx.Channel.Id == 875075360587403304)
+            if (ctx.Channel.Id == 875075360587403304)
             {
                 try
                 {
@@ -116,7 +116,7 @@ namespace MeltBot.Modules
                     await ctx.Channel.SendMessageAsync(ex.ToString());
                 }
             }
-            
+
         }
         public static async Task Init(DiscordClient sender)
         {
@@ -124,13 +124,17 @@ namespace MeltBot.Modules
             int counter = 0;
             while (sender is not null)
             {
+                DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
+
+                if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
+                await Task.Delay((int)pingtime.Subtract(DateTime.UtcNow).TotalMilliseconds);
                 var thread = await sender.GetChannelAsync(878138355945185334).ConfigureAwait(false);
                 using (var r = new RunsContext())
                 {
                     if (thread is not null)
                     {
                         string message = "<a:woahgiver:911084288705986570>";
-                        foreach (Pong p in r.Pongs.Include(x=>x.UserMention))
+                        foreach (Pong p in r.Pongs)
                         {
                             message += " " + p.UserMention;
                         }
@@ -148,12 +152,8 @@ namespace MeltBot.Modules
                         counter++;
                     }
                     else if (counter == 6) counter = 0;
-                    await Task.Delay(10000000);
-                }
-                //DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
 
-                //if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
-                //await Task.Delay((int)pingtime.Subtract(DateTime.UtcNow).TotalMilliseconds);
+                }
             }
         }
         [Hidden]
