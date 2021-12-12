@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -96,24 +97,65 @@ namespace MeltBot.Modules
         [Command("woahditch")]
         public async Task ByePing(CommandContext ctx)
         {
-            try
+            if(ctx.Channel.Id == 875075360587403304)
             {
-                Pong? p = Context.Pongs.Where(x => x.UserMention == ctx.User.Mention).FirstOrDefault();
-                if (p is not null)
+                try
                 {
-                    Context.Pongs.Remove(p);
+                    Pong? p = Context.Pongs.Where(x => x.UserMention == ctx.User.Mention).FirstOrDefault();
+                    if (p is not null)
+                    {
+                        Context.Pongs.Remove(p);
 
-                    Context.SaveChanges();
-                    await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:");
+                        Context.SaveChanges();
+                        await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
+                    await ctx.Channel.SendMessageAsync(ex.ToString());
                 }
             }
-            catch (Exception ex)
+            
+        }
+        public static async Task Init(DiscordClient sender)
+        {
+
+            int counter = 0;
+            while (sender is not null)
             {
-                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
-                await ctx.Channel.SendMessageAsync(ex.ToString());
+                var thread = await sender.GetChannelAsync(878138355945185334).ConfigureAwait(false);
+                using (var r = new RunsContext())
+                {
+                    if (thread is not null)
+                    {
+                        string message = "<a:woahgiver:911084288705986570>";
+                        foreach (Pong p in r.Pongs.Include(x=>x.UserMention))
+                        {
+                            message += " " + p.UserMention;
+                        }
+                        await thread.SendMessageAsync(message);
+                    }
+                    if (counter == 0)
+                    {
+                        var gameplay = await sender.GetChannelAsync(715944125916250154).ConfigureAwait(false);
+                        foreach (var t in gameplay.Threads)
+                        {
+                            var d = await t.SendMessageAsync("Weekly message to keep this thread alive");
+                            await Task.Delay(1000);
+                            await d.DeleteAsync();
+                        }
+                        counter++;
+                    }
+                    else if (counter == 6) counter = 0;
+                    await Task.Delay(10000000);
+                }
+                //DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
+
+                //if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
+                //await Task.Delay((int)pingtime.Subtract(DateTime.UtcNow).TotalMilliseconds);
             }
         }
-
         [Hidden]
         [Command("start")]
         public async Task Start(CommandContext ctx)
@@ -160,7 +202,7 @@ namespace MeltBot.Modules
                 Console.WriteLine(ex);
             }
         }
-        
+
         public static async Task SendDebug(CommandContext ctx, Exception ex, DiscordChannel d)
         {
             Console.WriteLine(ex);
@@ -247,7 +289,7 @@ namespace MeltBot.Modules
                 await SendDebug(ctx, ex, DebugChannel);
             }
         }
-        
+
 
         //[Hidden]
         //[Command("deletedb")]

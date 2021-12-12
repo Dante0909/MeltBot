@@ -15,8 +15,8 @@ using (var context = new RunsContext())
     {
         context.Database.EnsureDeleted();
         context.Database.Migrate();
-
-        //await RunDbInitializer.Initialize(context);
+        //Console.WriteLine("here");
+        await RunDbInitializer.Initialize(context);
 
         //var woahnilandRerunCq = context.Quests.FirstOrDefault(o => o.Id == 94042801);
         //context.Runs.Add(new Run(woahnilandRerunCq, "https://youtu.be/-BcOMkFBXng"));
