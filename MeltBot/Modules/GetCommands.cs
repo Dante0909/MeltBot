@@ -37,8 +37,11 @@ namespace MeltBot.Modules
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for servant " + (svt.NaName is null ? svt.JpName : svt.NaName), str);
-                await ctx.Channel.SendMessageAsync(builder);
+                if (string.IsNullOrEmpty(str))
+                {
+                    builder.AddField("Nicknames for servant " + (svt.NaName is null ? svt.JpName : svt.NaName), str);
+                    await ctx.Channel.SendMessageAsync(builder);
+                }
             }
             catch (Exception ex)
             {
@@ -65,8 +68,11 @@ namespace MeltBot.Modules
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for craft essence " + (ce.NaName is null ? ce.JpName : ce.NaName), str);
-                await ctx.Channel.SendMessageAsync(builder);
+                if (string.IsNullOrEmpty(str))
+                {
+                    builder.AddField("Nicknames for craft essence " + (ce.NaName is null ? ce.JpName : ce.NaName), str);
+                    await ctx.Channel.SendMessageAsync(builder);
+                }
             }
             catch (Exception ex)
             {
@@ -93,8 +99,11 @@ namespace MeltBot.Modules
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for craft essence " + (q.NaName is null ? q.JpName : q.NaName), str);
-                await ctx.Channel.SendMessageAsync(builder);
+                if (string.IsNullOrEmpty(str))
+                {
+                    builder.AddField("Nicknames for craft essence " + (q.NaName is null ? q.JpName : q.NaName), str);
+                    await ctx.Channel.SendMessageAsync(builder);
+                }
             }
             catch (Exception ex)
             {
@@ -162,8 +171,11 @@ namespace MeltBot.Modules
                         str += "\n" + r.CreatedDate + ", Run id : " + r.Id;
                         str += "\n";
                     }
-                    if (!string.IsNullOrEmpty(str)) builder.AddField("Submissions", str);
-                    await ctx.Channel.SendMessageAsync(builder);
+                    if (!string.IsNullOrEmpty(str))
+                    {
+                        builder.AddField("Submissions", str);
+                        await ctx.Channel.SendMessageAsync(builder);
+                    }
                 }
                 string s;
                 var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant).ToList();
@@ -192,6 +204,7 @@ namespace MeltBot.Modules
                         s += "\n";
                     }
                     if (!string.IsNullOrEmpty(s)) ceBuilder.AddField("Ce nicknames", s);
+                    await ctx.Channel.SendMessageAsync(ceBuilder);
                 }
 
 
@@ -206,6 +219,7 @@ namespace MeltBot.Modules
                         s += "\n";
                     }
                     if (!string.IsNullOrEmpty(s)) qBuilder.AddField("Quest nicknames", s);
+                    await ctx.Channel.SendMessageAsync(qBuilder);
                 }
 
                 var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode).ToList();
@@ -219,6 +233,7 @@ namespace MeltBot.Modules
                         s += "\n";
                     }
                     if (!string.IsNullOrEmpty(s)) mcBuilder.AddField("Mc nicknames", s);
+                    await ctx.Channel.SendMessageAsync(mcBuilder);
                 }
 
             }
