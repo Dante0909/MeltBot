@@ -52,7 +52,7 @@ namespace MeltBot.Modules
                 if (a is null) a = Context.QuestAliases.FirstOrDefault(alias => alias.Nickname == nickname);
                 if (a is null) a = Context.MysticCodeAliases.FirstOrDefault(alias => alias.Nickname == nickname);
                 if (a is null) throw new Exception($"{nickname} could not be found");
-                Type t
+                Type t;
                 if (a.Submitter.DiscordSnowflake == (long)ctx.User.Id || Bot.Admin.ContainsKey(ctx.User.Id))
                 {
                     t = a.GetType();
