@@ -218,8 +218,6 @@ namespace MeltBot.Modules
                 }
 
                 await ctx.Channel.SendMessageAsync(aliasBuilder);
-
-
             }
             catch (Exception ex)
             {

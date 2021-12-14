@@ -57,7 +57,6 @@ namespace KiarApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetServants()
         {
-
             return Ok(await context.Servants.ToListAsync());
         }
     }

@@ -56,20 +56,6 @@ namespace KiarApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetQuests()
         {
-            ////Run r = context.Runs.Take(1).First();
-            //User u = new User()
-            //{
-            //    Id = 1
-            //};
-
-            //Run r = new Run(new Quest(94042801, "【高難易度】護法少女スペシャルヒーローショー"), "link", new Servant(603800, "シャルロット・コルデー"), u);
-
-            //string str = JsonConvert.SerializeObject(r, Formatting.Indented);
-
-            ////Run s = JsonConvert.DeserializeObject<Run>(str);
-            ////Console.WriteLine(s.Quest.Id);
-
-            //return str;
             var l = await context.Quests.ToListAsync();
             l = l.OrderBy(x => x.CreatedDate).ToList();
             return Ok(l);

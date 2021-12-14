@@ -56,20 +56,6 @@ namespace KiarApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPongs()
         {
-            ////Run r = context.Runs.Take(1).First();
-            //User u = new User()
-            //{
-            //    Id = 1
-            //};
-
-            //Run r = new Run(new Quest(94042801, "【高難易度】護法少女スペシャルヒーローショー"), "link", new Servant(603800, "シャルロット・コルデー"), u);
-
-            //string str = JsonConvert.SerializeObject(r, Formatting.Indented);
-
-            ////Run s = JsonConvert.DeserializeObject<Run>(str);
-            ////Console.WriteLine(s.Quest.Id);
-
-            //return str;
             return Ok(await context.Pongs.ToListAsync());
         }
     }

@@ -45,10 +45,6 @@ namespace KiarApi.Controllers
     {
         private readonly RunsContext context;
 
-        //public RunsController(IConfiguration configuration, RunsContext context) : this(context)
-        //{
-        //    this.context = context;
-        //}
         public CeController(RunsContext context)
         {
             this.context = context;
@@ -57,7 +53,6 @@ namespace KiarApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetServants()
         {
-
             return Ok(await context.CraftEssences.ToListAsync());
         }
     }

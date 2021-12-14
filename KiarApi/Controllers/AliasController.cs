@@ -57,33 +57,22 @@ namespace KiarApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAlias()
         {
-            ////Run r = context.Runs.Take(1).First();
-            //User u = new User()
-            //{
-            //    Id = 1
-            //};
+            var a = new AliasContainer()
+            {
+                servantAliases = await context.ServantAliases.Include(x => x.Servant).ToListAsync(),
+                craftEssenceAliases = await context.CraftEssenceAliases.Include(x => x.CraftEssence).ToListAsync(),
+                questAliases = await context.QuestAliases.Include(x => x.Quest).ToListAsync(),
+                mysticCodeAliases = await context.MysticCodeAliases.Include(x => x.MysticCode).ToListAsync()
+            };
 
-            //Run r = new Run(new Quest(94042801, "【高難易度】護法少女スペシャルヒーローショー"), "link", new Servant(603800, "シャルロット・コルデー"), u);
-
-            //string str = JsonConvert.SerializeObject(r, Formatting.Indented);
-
-            ////Run s = JsonConvert.DeserializeObject<Run>(str);
-            ////Console.WriteLine(s.Quest.Id);
-
-            //return str;
-            string str = "";
-            var s = await context.ServantAliases.Include(x => x.Servant).Include(x => x.Submitter).ToListAsync();
-            str += JsonConvert.SerializeObject(s, Formatting.Indented) + "\n";
-            var ce = await context.CraftEssenceAliases.Include(x => x.CraftEssence).Include(x => x.Submitter).ToListAsync();
-            str += JsonConvert.SerializeObject(ce, Formatting.Indented) + "\n";
-            var q = await context.QuestAliases.Include(x => x.Quest).Include(x => x.Submitter).ToListAsync();
-            str += JsonConvert.SerializeObject(q, Formatting.Indented) + "\n";
-            var mc = await context.MysticCodeAliases.Include(x => x.MysticCode).Include(x => x.Submitter).ToListAsync();
-            str += JsonConvert.SerializeObject(mc, Formatting.Indented);
-
-
-
-            return Ok(str);
+            return Ok(JsonConvert.SerializeObject(a, Formatting.Indented));
+        }
+        private class AliasContainer
+        {
+            public List<ServantAlias> servantAliases;
+            public List<CraftEssenceAlias> craftEssenceAliases;
+            public List<QuestAlias> questAliases;
+            public List<MysticCodeAlias> mysticCodeAliases;
         }
     }
 }
