@@ -24,7 +24,7 @@ namespace MeltBot.Modules
         {
             try
             {
-                
+
                 Run? r = Context.Runs.FirstOrDefault(x => x.Id == runId);
                 if (r is null) throw new Exception($"{r} could not be found");
                 if (r.Submitter.DiscordSnowflake == (long)ctx.User.Id || Bot.Admin.ContainsKey(ctx.User.Id))
@@ -40,7 +40,7 @@ namespace MeltBot.Modules
                 await Commands.SendDebug(ctx, ex, DebugChannel);
             }
         }
-        
+
         [Command("DeleteNick")]
         public async Task DeleteNick(CommandContext ctx,
             [Description("Nickname to be removed")] string nickname)
@@ -52,23 +52,25 @@ namespace MeltBot.Modules
                 if (a is null) a = Context.QuestAliases.FirstOrDefault(alias => alias.Nickname == nickname);
                 if (a is null) a = Context.MysticCodeAliases.FirstOrDefault(alias => alias.Nickname == nickname);
                 if (a is null) throw new Exception($"{nickname} could not be found");
+                Type t
                 if (a.Submitter.DiscordSnowflake == (long)ctx.User.Id || Bot.Admin.ContainsKey(ctx.User.Id))
                 {
-                    if (a.GetType() == typeof(CraftEssenceAlias)) Context.CraftEssenceAliases.Remove((CraftEssenceAlias)a);
-                    if (a.GetType() == typeof(QuestAlias)) Context.QuestAliases.Remove((QuestAlias)a);
-                    if (a.GetType() == typeof(ServantAlias)) Context.ServantAliases.Remove((ServantAlias)a);
-                    if (a.GetType() == typeof(MysticCodeAlias)) Context.MysticCodeAliases.Remove((MysticCodeAlias)a);
+                    t = a.GetType();
+                    if (t == typeof(CraftEssenceAlias)) Context.CraftEssenceAliases.Remove((CraftEssenceAlias)a);
+                    if (t == typeof(QuestAlias)) Context.QuestAliases.Remove((QuestAlias)a);
+                    if (t == typeof(ServantAlias)) Context.ServantAliases.Remove((ServantAlias)a);
+                    if (t == typeof(MysticCodeAlias)) Context.MysticCodeAliases.Remove((MysticCodeAlias)a);
                 }
                 else throw new Exception("You do not have permissions to delete this nickname");
                 Context.SaveChanges();
+                await ctx.Channel.SendMessageAsync($"Nickname {nickname} was removed for type " + t.ToString());
             }
             catch (Exception ex)
             {
-                await ctx.Channel.SendMessageAsync(ex.Message);
-                Console.WriteLine(ex);
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
 
         }
-       
+
     }
 }

@@ -25,7 +25,7 @@ namespace MeltBot.Modules
             try
             {
                 Servant? svt;
-                if (short.TryParse(servant, out short id))
+                if (int.TryParse(servant, out int id))
                 {
                     svt = Context.Servants.FirstOrDefault(x => x.Id == id || x.CollectionNo == id);
                 }
@@ -33,11 +33,11 @@ namespace MeltBot.Modules
                 if (svt is null) throw new Exception("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
-                foreach(var n in Context.ServantAliases.Where(x=>x.Servant.Id == svt.Id))
+                foreach (var n in Context.ServantAliases.Where(x => x.Servant.Id == svt.Id))
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for servant " + svt.NaName is null ? svt.JpName : svt.NaName, str);
+                builder.AddField("Nicknames for servant " + (svt.NaName is null ? svt.JpName : svt.NaName), str);
                 await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace MeltBot.Modules
             try
             {
                 CraftEssence? ce;
-                if (short.TryParse(craftessence, out short id))
+                if (int.TryParse(craftessence, out int id))
                 {
                     ce = Context.CraftEssences.FirstOrDefault(x => x.Id == id || x.CollectionNo == id);
                 }
@@ -65,7 +65,7 @@ namespace MeltBot.Modules
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for craft essence " + ce.NaName is null ? ce.JpName : ce.NaName, str);
+                builder.AddField("Nicknames for craft essence " + (ce.NaName is null ? ce.JpName : ce.NaName), str);
                 await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
@@ -81,19 +81,19 @@ namespace MeltBot.Modules
             try
             {
                 Quest? q;
-                if (short.TryParse(quest, out short id))
+                if (int.TryParse(quest, out int id))
                 {
                     q = Context.Quests.FirstOrDefault(x => x.Id == id);
                 }
                 else q = Context.QuestAliases.Include(x => x.Quest).FirstOrDefault(x => x.Nickname == quest)?.Quest;
-                if (q is null) throw new Exception("Servant could not be found");
+                if (q is null) throw new Exception("Quest could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
                 foreach (var n in Context.QuestAliases.Where(x => x.Quest.Id == q.Id))
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for craft essence " + q.NaName is null ? q.JpName : q.NaName, str);
+                builder.AddField("Nicknames for craft essence " + (q.NaName is null ? q.JpName : q.NaName), str);
                 await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace MeltBot.Modules
             try
             {
                 MysticCode? mc;
-                if (short.TryParse(mysticCode, out short id))
+                if (int.TryParse(mysticCode, out int id))
                 {
                     mc = Context.MysticCodes.FirstOrDefault(x => x.Id == id);
                 }
@@ -121,7 +121,7 @@ namespace MeltBot.Modules
                 {
                     str += n.Nickname + "\n";
                 }
-                builder.AddField("Nicknames for craft essence " + mc.NaName is null ? mc.JpName : mc.NaName, str);
+                builder.AddField("Nicknames for craft essence " + (mc.NaName is null ? mc.JpName : mc.NaName), str);
                 await ctx.Channel.SendMessageAsync(builder);
             }
             catch (Exception ex)
@@ -149,8 +149,8 @@ namespace MeltBot.Modules
                 if (u is null) throw new Exception($"{id} could not be found");
 
 
-                var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.CraftEssence);
-                if (runs is not null)
+                var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant).ToList();
+                if (runs is not null && runs.Count > 0)
                 {
                     string str = string.Empty;
                     DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
@@ -166,58 +166,61 @@ namespace MeltBot.Modules
                     await ctx.Channel.SendMessageAsync(builder);
                 }
                 string s;
-                DiscordEmbedBuilder aliasBuilder = new DiscordEmbedBuilder();
-                var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant);
-                if (salias is not null)
+                var salias = Context.ServantAliases.Where(x => x.Submitter == u).Include(x => x.Servant).ToList();
+                if (salias is not null && salias.Count > 0)
                 {
+                    var sBuilder = new DiscordEmbedBuilder();
                     s = string.Empty;
                     foreach (ServantAlias a in salias)
                     {
                         s += a.Nickname + " -> " + (a.Servant.NaName is null ? a.Servant.JpName : a.Servant.NaName);
                         s += "\n";
                     }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Servant nicknames", s);
+                    if (!string.IsNullOrEmpty(s)) sBuilder.AddField("Servant nicknames", s);
+                    await ctx.Channel.SendMessageAsync(sBuilder);
                 }
 
 
-                var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x => x.CraftEssence);
-                if (cealias is not null)
+                var cealias = Context.CraftEssenceAliases.Where(x => x.Submitter == u).Include(x => x.CraftEssence).ToList();
+                if (cealias is not null && cealias.Count > 0)
                 {
+                    var ceBuilder = new DiscordEmbedBuilder();
                     s = String.Empty;
                     foreach (CraftEssenceAlias a in cealias)
                     {
                         s += a.Nickname + " -> " + (a.CraftEssence.NaName is null ? a.CraftEssence.JpName : a.CraftEssence.NaName);
                         s += "\n";
                     }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Ce nicknames", s);
+                    if (!string.IsNullOrEmpty(s)) ceBuilder.AddField("Ce nicknames", s);
                 }
 
 
-                var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x => x.Quest);
-                if (qalias is not null)
+                var qalias = Context.QuestAliases.Where(x => x.Submitter == u).Include(x => x.Quest).ToList();
+                if (qalias is not null && qalias.Count > 0)
                 {
+                    var qBuilder = new DiscordEmbedBuilder();
                     s = String.Empty;
                     foreach (QuestAlias a in qalias)
                     {
                         s += a.Nickname + " -> " + (a.Quest.NaName is null ? a.Quest.JpName : a.Quest.NaName);
                         s += "\n";
                     }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Quest nicknames", s);
+                    if (!string.IsNullOrEmpty(s)) qBuilder.AddField("Quest nicknames", s);
                 }
 
-                var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode);
-                if (mcalias is not null)
+                var mcalias = Context.MysticCodeAliases.Where(x => x.Submitter == u).Include(x => x.MysticCode).ToList();
+                if (mcalias is not null && mcalias.Count > 0)
                 {
+                    var mcBuilder = new DiscordEmbedBuilder();
                     s = String.Empty;
                     foreach (MysticCodeAlias a in mcalias)
                     {
                         s += a.Nickname + " -> " + (a.MysticCode.NaName is null ? a.MysticCode.JpName : a.MysticCode.NaName);
                         s += "\n";
                     }
-                    if (!string.IsNullOrEmpty(s)) aliasBuilder.AddField("Mc nicknames", s);
+                    if (!string.IsNullOrEmpty(s)) mcBuilder.AddField("Mc nicknames", s);
                 }
 
-                await ctx.Channel.SendMessageAsync(aliasBuilder);
             }
             catch (Exception ex)
             {
