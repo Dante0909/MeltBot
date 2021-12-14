@@ -16,6 +16,7 @@ namespace MeltBot.Modules
     internal class DeleteCommands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
+        public DiscordChannel DebugChannel { private get; set; }
         [Command("DeleteRun")]
         [Description("Deletes a run with a given id")]
         public async Task DeleteRun(CommandContext ctx,
@@ -36,8 +37,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
         }
         

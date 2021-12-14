@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PassionLib.DAL;
@@ -15,6 +16,7 @@ namespace MeltBot.Modules
     internal class AddCommands : BaseCommandModule
     {
         public RunsContext Context { private get; set; }
+        public DiscordChannel DebugChannel { private get; set; }
 
         [Hidden]
         [Command("Update")]
@@ -63,8 +65,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
 
             await ctx.Channel.SendMessageAsync(str);
@@ -142,8 +143,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
         }
@@ -166,8 +166,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddQuestNickname(ctx, questId.ToString(), nickname);
@@ -241,8 +240,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
         }
@@ -265,8 +263,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddCeNickname(ctx, ceId.ToString(), nickname);
@@ -346,8 +343,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
         }
@@ -369,8 +365,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
             if (nickname is not null) await AddMcNickname(ctx, mcId.ToString(), nickname);
@@ -442,8 +437,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                str = ex.Message;
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
             await ctx.Channel.SendMessageAsync(str);
         }

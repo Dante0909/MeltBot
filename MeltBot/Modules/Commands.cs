@@ -63,10 +63,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                await ctx.Channel.SendMessageAsync(ex.Message);
-                if (ctx.User.Id == 290938252540641290) await ctx.Channel.SendMessageAsync("\n" + ex.StackTrace);
-
-
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
         }
         [Hidden]
@@ -87,9 +84,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
-                await ctx.Channel.SendMessageAsync(ex.ToString());
-
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
         }
 
@@ -112,8 +107,7 @@ namespace MeltBot.Modules
                 }
                 catch (Exception ex)
                 {
-                    await ctx.Channel.SendMessageAsync(ex.Message + "\n" + ex.StackTrace);
-                    await ctx.Channel.SendMessageAsync(ex.ToString());
+                    await Commands.SendDebug(ctx, ex, DebugChannel);
                 }
             }
 
@@ -124,7 +118,7 @@ namespace MeltBot.Modules
             int counter = 0;
             while (sender is not null)
             {
-                
+
                 DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
 
                 if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
@@ -209,14 +203,21 @@ namespace MeltBot.Modules
         public static async Task SendDebug(CommandContext ctx, Exception ex, DiscordChannel d)
         {
             Console.WriteLine(ex);
-            await ctx.Channel.SendMessageAsync(ex.Message);
+            await ctx.Channel.SendMessageAsync(ex.Message + "\nMessage _Dante09#9825 if more help is needed");
             await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace);
             await d.SendMessageAsync(ex?.InnerException?.ToString());
         }
         [Command("website")]
         public async Task Site(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync("https://combatrecords.xxil.cc/jp");
+            try
+            {
+                await ctx.Channel.SendMessageAsync("https://combatrecords.xxil.cc/jp");
+            }
+            catch (Exception ex)
+            {
+                await Commands.SendDebug(ctx, ex, DebugChannel);
+            }
         }
         [Command("run")]
         [Description("Submit run into database")]
@@ -251,8 +252,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                await ctx.Channel.SendMessageAsync(ex.Message);
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
 
         }
@@ -289,7 +289,7 @@ namespace MeltBot.Modules
             }
             catch (Exception ex)
             {
-                await SendDebug(ctx, ex, DebugChannel);
+                await Commands.SendDebug(ctx, ex, DebugChannel);
             }
         }
 
