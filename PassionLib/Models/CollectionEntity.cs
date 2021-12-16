@@ -11,6 +11,7 @@ namespace PassionLib.Models
     {
         public short? Rarity { get; set; }
         public short? BaseMaxAttack { get; set; }
+        public short? BaseMaxLvl { get; set; }
         [JsonIgnoreAttribute]
         public short[]? AttackScaling { get; set; }
         public short? Cost { get; set; }

@@ -55,7 +55,7 @@ namespace MeltBot.Modules
         {
             try
             {
-                if (Context.Pongs.Any(x => x.UserMention == ctx.User.Mention)) throw new Exception("You are already added <:woah:802188856686411783>");
+                if (Context.Pongs.Any(x => x.UserMention == ctx.User.Mention)) throw new CustomException("You are already added <:woah:802188856686411783>");
                 Context.Pongs.Add(new Pong(ctx.User.Mention));
 
                 Context.SaveChanges();
@@ -204,8 +204,12 @@ namespace MeltBot.Modules
         {
             Console.WriteLine(ex);
             await ctx.Channel.SendMessageAsync(ex.Message + "\nMessage _Dante09#9825 if more help is needed");
-            await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace);
-            await d.SendMessageAsync(ex?.InnerException?.ToString());
+            if(ex is not CustomException)
+            {
+                await d.SendMessageAsync("Time : " + DateTime.UtcNow + "\nUser : " + ctx.User.Username + "#" + ctx.User.Discriminator + " " + ctx.User.Id + "\nGuild : " + ctx?.Guild?.Name + "\n" + ex.Message + "\n" + ex.StackTrace);
+                await d.SendMessageAsync(ex?.InnerException?.ToString());
+            }
+            
         }
         [Command("website")]
         public async Task Site(CommandContext ctx)
@@ -265,7 +269,7 @@ namespace MeltBot.Modules
             try
             {
                 var r = Context.Runs.Include(x => x.Party).Include(x => x.Quest).Include(x => x.MysticCode).FirstOrDefault(x => x.Id == id);
-                if (r is null) throw new Exception("Run id could not be found");
+                if (r is null) throw new CustomException("Run id could not be found");
                 if (Bot.Admin.ContainsKey(ctx.User.Id) || ctx.User.Id == (ulong)r.Submitter.DiscordSnowflake)
                 {
                     r = DbHelper.CreateRun(Context, r.Quest, r.RunUrl, r.Submitter, null, r, args);
@@ -285,7 +289,7 @@ namespace MeltBot.Modules
                     await ctx.Channel.SendMessageAsync("Run edited");
 
                 }
-                else throw new Exception("You do not have permission to edit this run");
+                else throw new CustomException("You do not have permission to edit this run");
             }
             catch (Exception ex)
             {

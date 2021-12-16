@@ -30,7 +30,7 @@ namespace MeltBot.Modules
                     svt = Context.Servants.FirstOrDefault(x => x.Id == id || x.CollectionNo == id);
                 }
                 else svt = Context.ServantAliases.Include(x => x.Servant).FirstOrDefault(x => x.Nickname == servant)?.Servant;
-                if (svt is null) throw new Exception("Servant could not be found");
+                if (svt is null) throw new CustomException("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
                 foreach (var n in Context.ServantAliases.Where(x => x.Servant.Id == svt.Id))
@@ -61,7 +61,7 @@ namespace MeltBot.Modules
                     ce = Context.CraftEssences.FirstOrDefault(x => x.Id == id || x.CollectionNo == id);
                 }
                 else ce = Context.CraftEssenceAliases.Include(x => x.CraftEssence).FirstOrDefault(x => x.Nickname == craftessence)?.CraftEssence;
-                if (ce is null) throw new Exception("Servant could not be found");
+                if (ce is null) throw new CustomException("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
                 foreach (var n in Context.CraftEssenceAliases.Where(x => x.CraftEssence.Id == ce.Id))
@@ -92,7 +92,7 @@ namespace MeltBot.Modules
                     q = Context.Quests.FirstOrDefault(x => x.Id == id);
                 }
                 else q = Context.QuestAliases.Include(x => x.Quest).FirstOrDefault(x => x.Nickname == quest)?.Quest;
-                if (q is null) throw new Exception("Quest could not be found");
+                if (q is null) throw new CustomException("Quest could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
                 foreach (var n in Context.QuestAliases.Where(x => x.Quest.Id == q.Id))
@@ -123,7 +123,7 @@ namespace MeltBot.Modules
                     mc = Context.MysticCodes.FirstOrDefault(x => x.Id == id);
                 }
                 else mc = Context.MysticCodeAliases.Include(x => x.MysticCode).FirstOrDefault(x => x.Nickname == mysticCode)?.MysticCode;
-                if (mc is null) throw new Exception("Servant could not be found");
+                if (mc is null) throw new CustomException("Servant could not be found");
                 var builder = new DiscordEmbedBuilder();
                 string str = string.Empty;
                 foreach (var n in Context.MysticCodeAliases.Where(x => x.MysticCode.Id == mc.Id))
@@ -155,7 +155,7 @@ namespace MeltBot.Modules
                 {
                     u = Context.Users.FirstOrDefault(x => x.DiscordUsername + "#" + x.DiscordDiscriminator == name);
                 }
-                if (u is null) throw new Exception($"{id} could not be found");
+                if (u is null) throw new CustomException($"{id} could not be found");
 
 
                 var runs = Context.Runs.Where(x => x.Submitter == u).Include(r => r.Quest).Include(r => r.Party).ThenInclude(p => p.Servant).ToList();

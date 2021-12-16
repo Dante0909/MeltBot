@@ -1,5 +1,21 @@
 How to use:
 
-%temprun <quest> <servant> <url> <params>
+%temprun <quest> <url> <params>
 
-quest can be the id of the quest or a nicknam, use %nickq <questId> nickname to add a q
+Quest can be the id of the quest or a nicknam, use %nickq <questId> nickname to add a q
+
+Url is the link of the run, you can surround the link with <> to avoid the embed in the chat.
+While the system tries to avoid storing duplicate links, please be try to avoid sending already
+existing runs.
+
+Params is the bulk of the commands, you are building the party of the submission. All data here is
+to then be able to filter runs with certain attributes. For example, searching for runs where the
+main dps is x servant.
+Building the party starts by entering 'svt<servantId or nickname>', this means that the leftmost
+servant in the party is that servant. 
+Following svt, you can enter different arguments to modify that servant
+'l100' to set their level to 100, defaults to their base max lvl
+'fou2000' to set their fou to 2000, defaults to 1000
+'main' sets this servant as the main dps
+'b' sets this servant as the borrowed servant
+The servant is acompagnied by a craft essence

@@ -26,13 +26,13 @@ namespace MeltBot.Modules
             {
 
                 Run? r = Context.Runs.FirstOrDefault(x => x.Id == runId);
-                if (r is null) throw new Exception($"{r} could not be found");
+                if (r is null) throw new CustomException($"{r} could not be found");
                 if (r.Submitter.DiscordSnowflake == (long)ctx.User.Id || Bot.Admin.ContainsKey(ctx.User.Id))
                 {
                     Context.Runs.Remove(r);
                     Context.SaveChanges();
                 }
-                else throw new Exception("You do not have the required permissions to delete this run");
+                else throw new CustomException("You do not have the required permissions to delete this run");
                 await ctx.Channel.SendMessageAsync("Run successfully deleted");
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace MeltBot.Modules
                 if (a is null) a = Context.ServantAliases.FirstOrDefault(alias => alias.Nickname == nickname);
                 if (a is null) a = Context.QuestAliases.FirstOrDefault(alias => alias.Nickname == nickname);
                 if (a is null) a = Context.MysticCodeAliases.FirstOrDefault(alias => alias.Nickname == nickname);
-                if (a is null) throw new Exception($"{nickname} could not be found");
+                if (a is null) throw new CustomException($"{nickname} could not be found");
                 Type t;
                 if (a.Submitter.DiscordSnowflake == (long)ctx.User.Id || Bot.Admin.ContainsKey(ctx.User.Id))
                 {
@@ -61,7 +61,7 @@ namespace MeltBot.Modules
                     if (t == typeof(ServantAlias)) Context.ServantAliases.Remove((ServantAlias)a);
                     if (t == typeof(MysticCodeAlias)) Context.MysticCodeAliases.Remove((MysticCodeAlias)a);
                 }
-                else throw new Exception("You do not have permissions to delete this nickname");
+                else throw new CustomException("You do not have permissions to delete this nickname");
                 Context.SaveChanges();
                 await ctx.Channel.SendMessageAsync($"Nickname {nickname} was removed for type " + t.ToString());
             }
