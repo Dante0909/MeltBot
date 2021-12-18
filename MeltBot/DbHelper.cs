@@ -156,9 +156,14 @@ namespace MeltBot
                         r.NoEventCeDps = true;
                         continue;
                     }
+                    if(s == "solo")
+                    {
+                        r.Solo = true;
+                        continue;
+                    }
                     if (party is null)
                     {
-                        if (s.StartsWith("svt"))
+                        if (s.StartsWith("s"))
                         {
                             dirtyCeCheck = false;
                             p = p is null ? new List<PartySlot>() : p;
@@ -282,14 +287,16 @@ namespace MeltBot
                     }
                     else if (p.Count == 1)
                     {
+
                     }
                     else throw new CustomException("Enter one or six servants in the party");
-                    //if craft essence is null, sets mlb to null
+                    
                     if (r.Dps is null)
                     {
                         p.First().IsMainDps = true;
                         r.Dps = p.First();
                     }
+                    //if craft essence is null, sets mlb to null
                     p.ForEach(x => x.CraftEssenceMlb = x.CraftEssence is null ? null : x.CraftEssenceMlb);
                     p.ForEach(x => x.TotalAttack = GetAttack(x));
 

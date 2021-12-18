@@ -2,20 +2,45 @@ How to use:
 
 %temprun <quest> <url> <params>
 
-Quest can be the id of the quest or a nicknam, use %nickq <questId> nickname to add a q
+Quest can be the id of the quest or a nickname, use %nickq <questId> nickname to add a quest
 
-Url is the link of the run, you can surround the link with <> to avoid the embed in the chat.
+Url is the link of the run, you can surround the link with <> to avoid the embed in the chat
 While the system tries to avoid storing duplicate links, please be try to avoid sending already
 existing runs.
 
-Params is the bulk of the commands, you are building the party of the submission. All data here is
+Params is the bulk of the command, you are building the party of the submission. All data here is
 to then be able to filter runs with certain attributes. For example, searching for runs where the
 main dps is x servant.
-Building the party starts by entering 'svt<servantId or nickname>', this means that the leftmost
+
+Building the party starts by entering 's<servantId, collectionNo or nickname>', this means that the leftmost
 servant in the party is that servant. 
-Following svt, you can enter different arguments to modify that servant
+Following s, you can enter different arguments to modify that servant :
 'l100' to set their level to 100, defaults to their base max lvl
 'fou2000' to set their fou to 2000, defaults to 1000
-'main' sets this servant as the main dps
+'main' sets this servant as the main dps, the leftmost servant is assumed to be the main if no 'main' is entered
 'b' sets this servant as the borrowed servant
-The servant is acompagnied by a craft essence
+
+The servant is acompagnied by a craft essence, 'ce<ceId, collectionNo or nickname>'. You must include a ce to
+complete this partyslot, to indicate that the servant is not equiping a craft essencer, enter 'cenull' or 'ce'
+Following ce, you can enter different arguments to modify that ce :
+'l15' to set their level to 15, defaults to their base max lvl
+'mlb' to indicate that it is NOT mlb, defaults to being mlb
+
+Note that 'fou', 'b' and 'main' can be entered anywhere for that party slot as long as it is before the next servant
+It is possible to enter 'ta<total attack value> into this party slot. The value will override the otherwise calculated
+total attack, ideal if the servant fou or other stats are unknown.
+
+The command may end there, this would be as barebone as it can be, %temprun <quest> <url> sdantes cebg
+This heavily limits filters options and should preferably be avoided. However, it is ideal for solo runs.
+In those cases, enter 'solo' as an argument.
+You may still enter filter arguments without filling the party, those include :
+'cost<cost>'
+'n<servant count(3,4,5,6)>'
+'mc<mcId or nickname>
+'rev<number of revives>' or just 'rev' to set to 1
+'cs<number of cs>' or just 'cs' to set to 1. Only for cs that do more than reset rng
+'f' to indicate the run failed
+
+
+If the party is not full, for example avant-garde. enter snull and cenull for the remaining party slots.
+For example : %temprun <quest> <url> sskadi cecarp b sdantes l100 fou2000 cebg sskadi l70 ceoutrage s ce s ce sce

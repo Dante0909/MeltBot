@@ -42,6 +42,7 @@ namespace PassionLib.Models
         public int? RevivesUsed { get; set; }
         public bool? Failure { get; set; } = false;
         public bool? Rta { get; set; } = false;
+        public bool? Solo { get; set; } = false;
         public string? Misc { get; set; }
 
         //These can be inferred from party or entered through argument
