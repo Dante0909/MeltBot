@@ -75,7 +75,7 @@ namespace MeltBot.Modules
                 if (flag) Context.Servants.Add(s);
 
                 await Context.SaveChangesAsync();
-                str = $"Successfully added {s.JpName}";
+                str = $"Successfully added {(s.NaName is null ? s.JpName : s.NaName)}";
             }
             catch (Exception ex)
             {
@@ -177,7 +177,7 @@ namespace MeltBot.Modules
                 q = await QuestData(questId, q);
                 if (flag) Context.Quests.Add(q);
                 Context.SaveChanges();
-                str = $"Successfully added {q.JpName}";
+                str = $"Successfully added {(q.NaName is null ? q.JpName : q.NaName)}";
             }
             catch (Exception ex)
             {
@@ -273,7 +273,7 @@ namespace MeltBot.Modules
                 ce = await CeData(ceId, ce);
                 if (flag) Context.CraftEssences.Add(ce);
                 await Context.SaveChangesAsync();
-                str = $"Successfully added {ce.JpName}";
+                str = $"Successfully added {(ce.NaName is null ? ce.JpName : ce.NaName)}";
 
             }
             catch (Exception ex)
@@ -377,7 +377,7 @@ namespace MeltBot.Modules
                 mc = await McData(mcId, mc);
                 if (flag) Context.MysticCodes.Add(mc);
                 await Context.SaveChangesAsync();
-                str = $"Successfully added {mc.JpName}";
+                str = $"Successfully added {(mc.NaName is null ? mc.JpName : mc.NaName)}";
             }
             catch (Exception ex)
             {
