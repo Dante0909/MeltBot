@@ -102,7 +102,7 @@ namespace MeltBot.Modules
                         Context.Pongs.Remove(p);
 
                         Context.SaveChanges();
-                        await ctx.Channel.SendMessageAsync("Sad to see you leave :woahpium:").ConfigureAwait(false);
+                        await ctx.Channel.SendMessageAsync("Sad to see you leave " + ctx.User.Mention + " :woahpium:").ConfigureAwait(false);
                     }
                 }
                 catch (Exception ex)
@@ -137,6 +137,7 @@ namespace MeltBot.Modules
                         message += " \n use %woahreceive to get blessed by melt";
                         await thread.SendMessageAsync(message).ConfigureAwait(false);
                     }
+                    await Task.Delay(1000);
                     if (counter == 0)
                     {
                         var gameplay = await sender.GetChannelAsync(715944125916250154).ConfigureAwait(false);
