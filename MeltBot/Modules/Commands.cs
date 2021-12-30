@@ -137,7 +137,7 @@ namespace MeltBot.Modules
                         message += " \n use %woahreceive to get blessed by melt";
                         await thread.SendMessageAsync(message).ConfigureAwait(false);
                     }
-                    await Task.Delay(1000);
+                    await Task.Delay(60000);
                     if (counter == 0)
                     {
                         var gameplay = await sender.GetChannelAsync(715944125916250154).ConfigureAwait(false);
