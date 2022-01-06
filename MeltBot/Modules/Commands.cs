@@ -128,16 +128,19 @@ namespace MeltBot.Modules
                 {
                     if (thread is not null)
                     {
-
-                        string message = "<a:woahgiver:911084288705986570>";
-                        foreach (Pong p in r.Pongs)
+                        if(sender?.CurrentUser?.Presence?.Status == UserStatus.Online)
                         {
-                            message += " " + p.UserMention;
+                            string message = "<a:woahgiver:911084288705986570>";
+                            foreach (Pong p in r.Pongs)
+                            {
+                                message += " " + p.UserMention;
+                            }
+                            message += " \n use %woahreceive to get blessed by melt";
+                            await thread.SendMessageAsync(message).ConfigureAwait(false);
                         }
-                        message += " \n use %woahreceive to get blessed by melt";
-                        await thread.SendMessageAsync(message).ConfigureAwait(false);
+                        await Task.Delay(60000);
                     }
-                    await Task.Delay(60000);
+                    
                     if (counter == 0)
                     {
                         var gameplay = await sender.GetChannelAsync(715944125916250154).ConfigureAwait(false);
