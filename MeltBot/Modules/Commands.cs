@@ -138,6 +138,10 @@ namespace MeltBot.Modules
                             message += " \n use %woahreceive to get blessed by melt";
                             await thread.SendMessageAsync(message).ConfigureAwait(false);
                         }
+                        else
+                        {
+                            break;
+                        }
                         await Task.Delay(60000);
                     }
                     

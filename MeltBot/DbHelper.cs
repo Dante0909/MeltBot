@@ -44,6 +44,7 @@ namespace MeltBot
                 r.NoDupe = null;
                 r.Party = null;
                 r.MysticCode = null;
+                r.Solo = null;
                 
             }
             if (p is not null)
