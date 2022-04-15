@@ -14,6 +14,11 @@ namespace PassionLib.DAL
     {
         public static async Task Initialize(RunsContext context, bool createRun = false)
         {
+            if (!context.Cereal.Any())
+            {
+                context.Add(new CerealShrine());
+                context.SaveChanges();
+            }
             if (context.Runs.Any())
             {
                 Console.WriteLine("herre");

@@ -21,12 +21,36 @@ namespace MeltBot.Modules
         public RunsContext Context { private get; set; }
         public DiscordChannel DebugChannel { private get; set; }
 
+        [Hidden]
         [Command("ping")]
         [Description("Returns pong")]
         public async Task Ping(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
         }
+
+        [Hidden]
+        [Command("cereal")]
+        public async Task Cereal(CommandContext ctx)
+        {
+            if(ctx.Channel.Id == 875075360587403304)
+            {
+                await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
+                if (Context.Cereal.First().SendPrayer())
+                {
+
+                    await ctx.Channel.SendMessageAsync("<@141381999674785792> :dalaobow:");
+                }
+                Context.SaveChanges();
+            }
+        }
+        [Hidden]
+        [Command("cerealtest")]
+        public async Task Cerealtest(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync(Context.Cereal.First().Prayers.ToString());
+        }
+
         [Hidden]
         [Command("woahreceive")]
         public async Task AddPing(CommandContext ctx, string mention)
