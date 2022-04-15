@@ -33,16 +33,21 @@ namespace MeltBot.Modules
         [Command("cereal")]
         public async Task Cereal(CommandContext ctx)
         {
-            if(ctx.Channel.Id == 875075360587403304)
+            if (ctx.Channel.Id == 875075360587403304)
             {
                 await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
-                if (Context.Cereal.First().SendPrayer())
-                {
-
-                    await ctx.Channel.SendMessageAsync("<@141381999674785792> :dalaobow:");
-                }
-                Context.SaveChanges();
+                
             }
+            else
+            {
+                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pray:", false));
+            }
+            if (Context.Cereal.First().SendPrayer())
+            {
+
+                await ctx.Channel.SendMessageAsync("<@141381999674785792> :dalaobow:");
+            }
+            Context.SaveChanges();
         }
         [Hidden]
         [Command("cerealtest")]

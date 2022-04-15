@@ -15,7 +15,7 @@ namespace PassionLib.Models
         public bool SendPrayer()
         {
             Prayers++;
-            if(Prayers > 20)
+            if(Prayers > 12)
             {
                 Prayers = 0;
                 return true;
