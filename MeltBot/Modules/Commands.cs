@@ -33,6 +33,11 @@ namespace MeltBot.Modules
         [Command("cereal")]
         public async Task Cereal(CommandContext ctx)
         {
+            if (!Context.Cereal.Any())
+            {
+                Context.Add(new CerealShrine());
+                Context.SaveChanges();
+            }
             if (ctx.Channel.Id == 875075360587403304)
             {
                 await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
@@ -44,21 +49,17 @@ namespace MeltBot.Modules
             }
             if (Context.Cereal.First().SendPrayer())
             {
-                Random r = new Random(ctx.Message.Timestamp.Millisecond);
-                if(r.Next(0, 15) == 1)
-                {
                     var c = await ctx.Client.GetChannelAsync(875075360587403304);
-                    await c.SendMessageAsync("<@141381999674785792> :dalaobow:");
-                }                
+                    await c.SendMessageAsync("<@141381999674785792> :dalaobow:");         
             }
             Context.SaveChanges();
         }
-        //[Hidden]
-        //[Command("cerealtest")]
-        //public async Task Cerealtest(CommandContext ctx)
-        //{
-        //    await ctx.Channel.SendMessageAsync("count : " + Context.Cereal.First().Prayers.ToString());
-        //}
+        [Hidden]
+        [Command("cerealtest")]
+        public async Task Cerealtest(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("count : " + Context.Cereal.First().Prayers.ToString());
+        }
 
         [Hidden]
         [Command("woahreceive")]
