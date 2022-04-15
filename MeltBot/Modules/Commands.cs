@@ -44,8 +44,8 @@ namespace MeltBot.Modules
             }
             if (Context.Cereal.First().SendPrayer())
             {
-
-                await ctx.Channel.SendMessageAsync("<@141381999674785792> :dalaobow:");
+                var c = await ctx.Client.GetChannelAsync(875075360587403304);
+                await c.SendMessageAsync("<@141381999674785792> :dalaobow:");
             }
             Context.SaveChanges();
         }
