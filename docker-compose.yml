@@ -37,6 +37,7 @@ services:
       dockerfile: MeltBot/Dockerfile
     depends_on:
       - "db"
+      - "kiarapi"
 
 volumes:
   pgdata:
