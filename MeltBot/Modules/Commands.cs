@@ -53,7 +53,7 @@ namespace MeltBot.Modules
         [Command("cerealtest")]
         public async Task Cerealtest(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync(Context.Cereal.First().Prayers.ToString());
+            await ctx.Channel.SendMessageAsync("count : " + Context.Cereal.First().Prayers.ToString());
         }
 
         [Hidden]
