@@ -9,8 +9,14 @@ namespace PassionLib.Models
 {
     public class Pong
     {
-        public Pong(string userMention) => UserMention = userMention;
+        public Pong(string userMention, bool toBePinged = true)
+        {
+            UserMention = userMention;
+            ToBePinged = toBePinged;
+        }
         [Key]
         public string UserMention { get; set; }
+        public bool ToBePinged { get; set; } = false;
+        public int LastSummonCount { get; set; } = 0;
     }
 }

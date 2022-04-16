@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PassionLib.DAL;
@@ -11,9 +12,10 @@ using PassionLib.DAL;
 namespace PassionLib.Migrations
 {
     [DbContext(typeof(RunsContext))]
-    partial class RunsContextModelSnapshot : ModelSnapshot
+    [Migration("20220416164947_Summon")]
+    partial class Summon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

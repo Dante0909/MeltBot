@@ -24,10 +24,10 @@ namespace MeltBot
         {
             var config = new DiscordConfiguration
             {
-
+                Token = Environment.GetEnvironmentVariable("TOKEN"),
                 //Token = Environment.GetEnvironmentVariable("TOKEN"),
                 //Couldn't get the environment variable 
-                Token = "ODc4MTM3MjQ3NzA1MjEwODkw.YR8zCg.41ZpvG40rApxzQrt5C-4FwKLsf8",
+                
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
@@ -36,9 +36,10 @@ namespace MeltBot
             Client = new DiscordClient(config);
 
             Client.Ready += OnClientReady;
-
+            
             DiscordChannel d = await Client.GetChannelAsync(918986606864629810);
-           // var services = new ServiceCollection().AddTransient<RunsContext>((sp) => new RunsContext()).AddSingleton<DiscordChannel>(d).BuildServiceProvider();
+            // var services = new ServiceCollection().AddTransient<RunsContext>((sp) => new RunsContext()).AddSingleton<DiscordChannel>(d).BuildServiceProvider();
+            
             var services = new ServiceCollection().AddSingleton<RunsContext>().AddSingleton<DiscordChannel>(d).BuildServiceProvider();
 
             var commandsConfig = new CommandsNextConfiguration

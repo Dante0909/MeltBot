@@ -21,6 +21,8 @@ namespace MeltBot.Modules
         public RunsContext Context { private get; set; }
         public DiscordChannel DebugChannel { private get; set; }
 
+
+
         [Hidden]
         [Command("ping")]
         [Description("Returns pong")]
@@ -40,12 +42,19 @@ namespace MeltBot.Modules
             }
             Random random = new Random(ctx.Message.Timestamp.Millisecond);
             
+            Pong? p = Context.Pongs.Where(x=>x.UserMention == ctx.Member.Mention).FirstOrDefault();
+            if(p is null)
+            {
+                p = new Pong(ctx.Member.Mention, false);
+                Context.Pongs.Add(p);
+                Context.SaveChanges();
+            }
             if (ctx.Channel.Id == 875075360587403304)
             {
                 if (random.Next(0, 12) == 0)
                 {
                     await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine");
-                    if (Context.Cereal.First().SendPrayer())
+                    if (Context.Cereal.First().SendPrayer(p))
                     {
                         var c = await ctx.Client.GetChannelAsync(875075360587403304);
                         await c.SendMessageAsync("<@141381999674785792> :dalaobow:");
@@ -62,7 +71,7 @@ namespace MeltBot.Modules
             {
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pray:", false));
             }
-            if (Context.Cereal.First().SendPrayer())
+            if (Context.Cereal.First().SendPrayer(p))
             {
                     var c = await ctx.Client.GetChannelAsync(875075360587403304);
                     await c.SendMessageAsync("<@141381999674785792> <a:DalaoBow:875090629292613742>");         
@@ -159,15 +168,16 @@ namespace MeltBot.Modules
                     await Commands.SendDebug(ctx, ex, DebugChannel);
                 }
             }
-
+           
         }
+        public static Pong? Last = null;
         public static async Task Init(DiscordClient sender)
         {
             await sender.SendMessageAsync(await sender.GetChannelAsync(878138355945185334), "ack");
             int counter = 0;
             while (sender is not null)
             {
-
+                
                 DateTime pingtime = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc).AddMinutes(1423);
 
                 if (DateTime.UtcNow > pingtime) pingtime = pingtime.AddDays(1);
@@ -179,6 +189,7 @@ namespace MeltBot.Modules
                     {
                         if(sender?.CurrentUser?.Presence?.Status == UserStatus.Online)
                         {
+                            //Pong last = Context.Cereal.First().LastPong;
                             string message = "<a:woahgiver:911084288705986570>";
                             foreach (Pong p in r.Pongs)
                             {

@@ -12,10 +12,12 @@ namespace PassionLib.Models
         [Key]
         public int Id { get; set; }
         public int Prayers { get; set; }
-        public bool SendPrayer()
+        public Pong? LastPong { get; set; }
+        public bool SendPrayer(Pong p)
         {
+            LastPong = p;
             Prayers++;
-            if(Prayers > 29)
+            if(Prayers >= 29)
             {
                 Prayers = 0;
                 return true;
