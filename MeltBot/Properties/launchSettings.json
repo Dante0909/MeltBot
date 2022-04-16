@@ -4,7 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "DO_DB_RECREATION": "true",
-        "TOKEN": "ODc4MTM3MjQ3NzA1MjEwODkw.YR8zCg.41ZpvG40rApxzQrt5C-4FwKLsf8",
+        "TOKEN": "ODc4MTM3MjQ3NzA1MjEwODkw.YR8zCg.RLMNkJlip_Fd372IVkGboJQvmcw",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
