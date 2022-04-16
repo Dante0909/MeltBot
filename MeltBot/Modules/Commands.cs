@@ -38,9 +38,24 @@ namespace MeltBot.Modules
                 Context.Add(new CerealShrine());
                 Context.SaveChanges();
             }
+            Random random = new Random(ctx.Message.Timestamp.Millisecond);
+            
             if (ctx.Channel.Id == 875075360587403304)
             {
-                await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
+                if (random.Next(0, 12) == 0)
+                {
+                    await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine");
+                    if (Context.Cereal.First().SendPrayer())
+                    {
+                        var c = await ctx.Client.GetChannelAsync(875075360587403304);
+                        await c.SendMessageAsync("<@141381999674785792> :dalaobow:");
+                    }
+
+                }
+                else
+                {
+                    await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
+                }               
                 
             }
             else
@@ -50,7 +65,7 @@ namespace MeltBot.Modules
             if (Context.Cereal.First().SendPrayer())
             {
                     var c = await ctx.Client.GetChannelAsync(875075360587403304);
-                    await c.SendMessageAsync("<@141381999674785792> :dalaobow:");         
+                    await c.SendMessageAsync("<@141381999674785792> <a:DalaoBow:875090629292613742>");         
             }
             Context.SaveChanges();
         }
