@@ -22,9 +22,12 @@ namespace MeltBot
         public CommandsNextExtension Commands { get; private set; }
         public async Task RunAsync()
         {
+            string s = Environment.GetEnvironmentVariable("TOKEN") ?? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+            Console.WriteLine(s);
             var config = new DiscordConfiguration
             {
                 Token = Environment.GetEnvironmentVariable("TOKEN"),
+                
                 //Token = Environment.GetEnvironmentVariable("TOKEN"),
                 //Couldn't get the environment variable 
                 
