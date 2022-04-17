@@ -33,10 +33,6 @@ bld/
 [Ll]og/
 [Ll]ogs/
 [Dd]ump/
-#MeltBot/Properties/launchSettings.json
-#KiarApi/Properties/launchSettings.json
-
-#*.env*
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
