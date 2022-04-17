@@ -170,7 +170,19 @@ namespace MeltBot.Modules
             }
            
         }
-        public static Pong? Last = null;
+        [Hidden]
+        [Command("psa")]
+        public async Task Psa(CommandContext ctx, string message)
+        {
+            if(ctx.User.Id == 290938252540641290)
+            {
+                var thread = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
+                if(thread is not null)
+                {
+                    await thread.SendMessageAsync(message).ConfigureAwait(false);
+                }
+            }
+        }
         public static async Task Init(DiscordClient sender)
         {
             await sender.SendMessageAsync(await sender.GetChannelAsync(878138355945185334), "ack");
@@ -187,9 +199,10 @@ namespace MeltBot.Modules
                 {
                     if (thread is not null)
                     {
-                        if(sender?.CurrentUser?.Presence?.Status == UserStatus.Online)
+                        if (sender?.CurrentUser?.Presence?.Status == UserStatus.Online)
                         {
-                            //Pong last = Context.Cereal.First().LastPong;
+                            Pong? last = r.Cereal.First().LastPong;
+                            last.LastSummonCount++;
                             string message = "<a:woahgiver:911084288705986570>";
                             foreach (Pong p in r.Pongs)
                             {
@@ -197,12 +210,24 @@ namespace MeltBot.Modules
                             }
                             message += " \n use %woahreceive to get blessed by melt";
                             await thread.SendMessageAsync(message).ConfigureAwait(false);
+                            await Task.Delay(60000);
+                            await thread.SendMessageAsync($"The last person to send a prayer is {last.UserMention}");
+                            var c = r.Cereal.First();
+                            if (c.LowerCountdown() <= 0)
+                            {
+                                var most = r.Pongs.MaxBy(x => x.LastSummonCount);
+                                c.Countdown = 29;
+                                await r.Pongs.ForEachAsync(x => x.LastSummonCount = 0);
+                                await thread.SendMessageAsync($"The follower with the most last prayer is {most.UserMention}. A gift awaits you..").ConfigureAwait(false);
+                            }
+                            r.SaveChanges();
+
                         }
                         else
                         {
                             break;
                         }
-                        await Task.Delay(60000);
+                        
                     }
                     
                     if (counter == 0)
