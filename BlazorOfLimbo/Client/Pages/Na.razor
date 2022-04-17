@@ -1,0 +1,133 @@
+﻿@page "/Na"
+@inject IRunService RunService
+@using System.Globalization
+
+
+
+<TabControl>
+    @foreach (int i in years)
+    {
+        <TabPage Text=@i.ToString()>
+            @if (quests is null || quests.Count == 0)
+            {
+                <span>Loading Quests...</span>
+            }
+            else
+            {
+                <br>
+                <br>
+                <TabControl>
+                    @foreach (Quest q in quests.Where(x => x.CreatedDate.Value.Year == i))
+                    {
+                        <div class=text-nowrap>
+                            <TabPage Text=@(q.NaName is null ? q.JpName : q.NaName)>
+                                @if (runs is null || runs.Count == 0)
+                                {
+                                    <span>Loading Runs...</span>
+                                }
+                                else
+                                {
+                                    <table class="table-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap px-3">Dps</th>
+                                                <th class="text-nowrap px-3">Url</th>
+                                                <th class="text-nowrap px-3">Party</th>
+                                                <th class="text-nowrap px-3">Cost</th>
+                                                <th class="text-nowrap px-3">Servant Count</th>
+                                                <th class="text-nowrap px-3">Mystic Code</th>
+                                                <th class="text-nowrap px-3">No dupe</th>
+                                                <th class="text-nowrap px-3">No event ce</th>
+                                                <th class="text-nowrap px-3">No Ce Dps</th>
+                                                <th class="text-nowrap px-3">No Ce</th>
+                                                <th class="text-nowrap px-3">Rta</th>
+                                                <th class="text-nowrap px-3">Entry Date</th>
+                                                <th class="text-nowrap px-3">Cs Used</th>
+                                                <th class="text-nowrap px-3">Revives Used</th>
+                                                <th class="text-nowrap px-3">Id</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach (var run in runs.Where(r => r.Quest.Id == q.Id))
+                                            {
+                                                {
+                                                    main = run.Party.First(x => x.IsMainDps);
+                                                }
+                                                <tr>
+                                                    <td class="text-nowrap px-3">@(main.Servant.NaName is null ? main.Servant.JpName : main.Servant.NaName)</td>
+                                                    <td class="text-nowrap px-3">@run.RunUrl</td>
+                                                    <td class="text-nowrap px-3">@PartyToString(run.Party)</td>
+                                                    <td class="text-nowrap px-3">@run.Cost</td>
+                                                    <td class="text-nowrap px-3">@run?.ServantCount</td>
+                                                    <td class="text-nowrap px-3">@(run?.MysticCode?.NaName is null ? run?.MysticCode?.JpName : run?.MysticCode?.NaName)</td>
+                                                    <td class="text-nowrap px-3">@run?.NoDupe</td>
+                                                    <td class="text-nowrap px-3">@run?.NoEventCeDps</td>
+                                                    <td class="text-nowrap px-3">@run?.NoCeDps</td>
+                                                    <td class="text-nowrap px-3">@run?.NoCe</td>
+                                                    <td class="text-nowrap px-3">@run?.Rta</td>
+                                                    <td class="text-nowrap px-3">@run?.CreatedDate</td>
+                                                    <td class="text-nowrap px-3">@run?.CsUsed</td>
+                                                    <td class="text-nowrap px-3">@run?.RevivesUsed</td>
+                                                    <td class="text-nowrap px-3">@run.Id</td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                            </TabPage>
+                        </div>
+
+                    }
+
+
+                </TabControl>
+
+            }
+
+
+        </TabPage>
+    }
+
+</TabControl>
+
+
+@code {
+    int[] years
+    {
+        get
+        {
+            List<int> t = new List<int>();
+            for (int i = 2015; i <= DateTime.UtcNow.Year; ++i)
+            {
+                t.Add(i);
+            }
+            return t.ToArray();
+        }
+    }
+
+    List<Quest>? quests = null;
+
+    List<Run>? runs = null;
+    PartySlot main;
+    public RenderFragment PartyToString(List<PartySlot> l)
+    {
+        return
+    @<text>
+        @foreach (var ps in l)
+            {
+                <p>@((ps?.Servant?.NaName is null ? ps?.Servant?.JpName : ps.Servant.NaName)
+                    + " -> " +
+                    (ps?.CraftEssence?.NaName is null ? ps?.CraftEssence?.JpName : ps?.CraftEssence?.NaName))</p>
+            }
+        </text>;
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        quests = await RunService.GetQuests();
+        runs = await RunService.GetRuns();
+    }
+
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      //"applicationUrl": "http://localhost:1034",
+      "applicationUrl": "http://localhost:45983",
+      //^
+      //"sslPort": 44300
+      "sslPort": 44368
+       //^
+    }
+  },
+  "profiles": {
+    "KiarApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      //"launchUrl": "swagger",
+      "environmentVariables": {
+        "DO_DB_RECREATION": "true",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      //^
+      "applicationUrl": "https://localhost:7209;http://localhost:5209",
+      //^
+      //"applicationUrl": "http://localhost:7000",
+      "dotnetRunMessages": true
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      //"launchUrl": "swagger",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      //^
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:5000/api/Runs",
+      "publishAllPorts": true,
+      "useSSL": true
+    }
+  }
+}

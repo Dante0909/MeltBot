@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: aecr_postgres
+    image: postgres:14.1
+    restart: always
+    environment: 
+      - POSTGRES_DB=aecrdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  kiarapi:
+    container_name: kiarapi
+    image: ${DOCKER_REGISTRY-}kiarapi
+    environment:
+      - CUSTOMCONNSTR_postgres
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "5000:80"
+    build:
+      context: .
+      dockerfile: KiarApi/Dockerfile
+    depends_on:
+      - "db"
+    restart: on-failure
+
+  meltbot:
+    container_name: meltbot
+    image: ${DOCKER_REGISTRY-}meltbot
+    environment:
+      - CUSTOMCONNSTR_postgres
+      - TOKEN
+    build:
+      context: .
+      dockerfile: MeltBot/Dockerfile
+    depends_on:
+      - "db"
+      - "kiarapi"
+
+volumes:
+  pgdata:
