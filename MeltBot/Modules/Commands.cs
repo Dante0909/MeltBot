@@ -220,6 +220,10 @@ namespace MeltBot.Modules
                                 await r.Pongs.ForEachAsync(x => x.LastSummonCount = 0);
                                 await thread.SendMessageAsync($"The follower with the most last prayer is {most.UserMention}. A gift awaits you..").ConfigureAwait(false);
                             }
+                            else
+                            {
+                                await thread.SendMessageAsync($"{c.Countdown} more day(s) remaining");
+                            }
                             r.SaveChanges();
 
                         }
