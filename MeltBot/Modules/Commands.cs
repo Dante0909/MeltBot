@@ -29,6 +29,8 @@ namespace MeltBot.Modules
         public async Task Ping(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
+            Random random = new Random(ctx.Message.Timestamp.Millisecond);
+            Console.WriteLine(random.Next(0,12));
         }
 
         [Hidden]
@@ -59,13 +61,11 @@ namespace MeltBot.Modules
                         var c = await ctx.Client.GetChannelAsync(875075360587403304);
                         await c.SendMessageAsync("<@141381999674785792> :dalaobow:");
                     }
-
                 }
                 else
                 {
                     await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
-                }               
-                
+                }          
             }
             else
             {
@@ -113,8 +113,15 @@ namespace MeltBot.Modules
         {
             try
             {
-                if (Context.Pongs.Any(x => x.UserMention == ctx.User.Mention)) throw new CustomException("You are already added <:woah:802188856686411783>");
-                Context.Pongs.Add(new Pong(ctx.User.Mention));
+                var a = Context.Pongs.First(x=>x.UserMention == ctx.User.Mention);
+                if (a is null) Context.Pongs.Add(new Pong(ctx.User.Mention, true));
+                else
+                {
+                    if (a.ToBePinged == true) throw new CustomException("You are already added <:woah:802188856686411783>");
+                    else a.ToBePinged = true;
+                }
+                
+                
 
                 Context.SaveChanges();
                 await ctx.Channel.SendMessageAsync("Added " + ctx.User.Mention + " <:woah:802188856686411783>");
@@ -135,7 +142,7 @@ namespace MeltBot.Modules
                     Pong? p = Context.Pongs.Where(x => x.UserMention == mention).FirstOrDefault();
                     if (p is not null)
                     {
-                        Context.Pongs.Remove(p);
+                        p.ToBePinged = false;
                         Context.SaveChanges();
                     }
                 }
@@ -157,7 +164,7 @@ namespace MeltBot.Modules
                     Pong? p = Context.Pongs.Where(x => x.UserMention == ctx.User.Mention).FirstOrDefault();
                     if (p is not null)
                     {
-                        Context.Pongs.Remove(p);
+                        p.ToBePinged = false;
 
                         Context.SaveChanges();
                         await ctx.Channel.SendMessageAsync("Sad to see you leave " + ctx.User.Mention + " :woahpium:").ConfigureAwait(false);
