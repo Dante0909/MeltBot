@@ -12,6 +12,7 @@ namespace PassionLib.Models
         [Key]
         public int Id { get; set; }
         public int Prayers { get; set; }
+        
         public Pong? LastPong { get; set; }
         public int Countdown { get; set; } = 29;
         public bool SendPrayer(Pong p)

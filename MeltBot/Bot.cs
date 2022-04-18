@@ -41,8 +41,8 @@ namespace MeltBot
             
             DiscordChannel d = await Client.GetChannelAsync(918986606864629810);
             // var services = new ServiceCollection().AddTransient<RunsContext>((sp) => new RunsContext()).AddSingleton<DiscordChannel>(d).BuildServiceProvider();
-            
-            var services = new ServiceCollection().AddSingleton<RunsContext>().AddSingleton<DiscordChannel>(d).BuildServiceProvider();
+            Random r = new Random(DateTime.UtcNow.Millisecond);
+            var services = new ServiceCollection().AddSingleton<RunsContext>().AddSingleton<DiscordChannel>(d).AddSingleton<Random>(r).BuildServiceProvider();
 
             var commandsConfig = new CommandsNextConfiguration
             {

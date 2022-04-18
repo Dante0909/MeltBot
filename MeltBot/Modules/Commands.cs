@@ -20,7 +20,7 @@ namespace MeltBot.Modules
     {
         public RunsContext Context { private get; set; }
         public DiscordChannel DebugChannel { private get; set; }
-
+        public Random Random { private get; set; }
 
 
         [Hidden]
@@ -42,7 +42,6 @@ namespace MeltBot.Modules
                 Context.Add(new CerealShrine());
                 Context.SaveChanges();
             }
-            Random random = new Random(ctx.Message.Timestamp.Millisecond);
             
             Pong? p = Context.Pongs.Where(x=>x.UserMention == ctx.Member.Mention).FirstOrDefault();
             if(p is null)
@@ -53,7 +52,7 @@ namespace MeltBot.Modules
             }
             if (ctx.Channel.Id == 875075360587403304)
             {
-                if (random.Next(0, 12) == 0)
+                if (Random.Next(0, 12) == 0)
                 {
                     await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine");
                     if (Context.Cereal.First().SendPrayer(p))
@@ -82,7 +81,9 @@ namespace MeltBot.Modules
         [Command("cerealtest")]
         public async Task Cerealtest(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync("count : " + Context.Cereal.First().Prayers.ToString());
+            var c = Context.Cereal.Include(x => x.LastPong).First();
+            await ctx.Channel.SendMessageAsync("Count : " + c.Prayers.ToString());
+            await ctx.Channel.SendMessageAsync("Last prayer : " + c.LastPong.UserMention);
         }
 
         [Hidden]
@@ -208,12 +209,13 @@ namespace MeltBot.Modules
                     {
                         if (sender?.CurrentUser?.Presence?.Status == UserStatus.Online)
                         {
-                            Pong? last = r.Cereal.First().LastPong;
+                            var shrine = r.Cereal.Include(x => x.LastPong).First();
+                            Pong? last = shrine.LastPong;
                             last.LastSummonCount++;
                             string message = "<a:woahgiver:911084288705986570>";
                             foreach (Pong p in r.Pongs)
                             {
-                                message += " " + p.UserMention;
+                                message += $" {p.UserMention}";
                             }
                             message += " \n use %woahreceive to get blessed by melt";
                             await thread.SendMessageAsync(message).ConfigureAwait(false);
