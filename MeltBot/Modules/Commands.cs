@@ -52,7 +52,7 @@ namespace MeltBot.Modules
             }
             if (ctx.Channel.Id == 875075360587403304)
             {
-                if (Random.Next(0, 12) == 0)
+                if (Random.Next(0, 20) == 0)
                 {
                     await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine");
                     if (Context.Cereal.First().SendPrayer(p))
@@ -213,7 +213,7 @@ namespace MeltBot.Modules
                             Pong? last = shrine.LastPong;
                             last.LastSummonCount++;
                             string message = "<a:woahgiver:911084288705986570>";
-                            foreach (Pong p in r.Pongs)
+                            foreach (Pong p in r.Pongs.Where(x=>x.ToBePinged == true))
                             {
                                 message += $" {p.UserMention}";
                             }
