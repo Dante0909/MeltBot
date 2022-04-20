@@ -52,7 +52,7 @@ namespace MeltBot.Modules
             }
             if (ctx.Channel.Id == 875075360587403304)
             {
-                if (Random.Next(0, 20) == 0)
+                if (Random.Next(0, 100) == 0)
                 {
                     await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine");
                     if (Context.Cereal.First().SendPrayer(p))
@@ -94,10 +94,13 @@ namespace MeltBot.Modules
             {
                 if (ctx.User.Id == 290938252540641290)
                 {
-                    await ctx.Channel.SendMessageAsync(ctx.User.Mention);
-                    await ctx.Channel.SendMessageAsync(mention);
+                    var p = Context.Pongs.Where(x=>x.UserMention == mention).FirstOrDefault();
 
-                    Context.Pongs.Add(new Pong(mention));
+                    if (p is not null) p.ToBePinged = true;
+                    else Context.Pongs.Add(new Pong(mention, true));
+                    await ctx.Channel.SendMessageAsync(mention + "added");
+
+                    
                     Context.SaveChanges();
                 }
             }
