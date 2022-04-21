@@ -110,7 +110,14 @@ namespace MeltBot.Modules
                 await ctx.Channel.SendMessageAsync(ex.ToString());
             }
         }
-
+        [Hidden]
+        [Command("wtfping")]
+        public async Task WtfPing(CommandContext ctx)
+        {
+            var p = Context.Pongs.First(x => x.UserMention == "<@200454042290356225>");
+            Context.Pongs.Remove(p);
+            await Context.SaveChangesAsync();
+        }
         [Hidden]
         [Command("woahreceive")]
         public async Task AddPing(CommandContext ctx)
