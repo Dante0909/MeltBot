@@ -8,7 +8,7 @@ namespace PassionLib.Models
 {
     public class Pongv2
     {
-        public Pongv2(ulong id, bool toBePinged = true, int lastSummonCount = 0)
+        public Pongv2(ulong id, bool? toBePinged = true, int? lastSummonCount = 0)
         {
             Id = id;
             ToBePinged = toBePinged;
