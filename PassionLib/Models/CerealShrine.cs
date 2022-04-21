@@ -13,9 +13,9 @@ namespace PassionLib.Models
         public int Id { get; set; }
         public int Prayers { get; set; }
         
-        public Pong? LastPong { get; set; }
+        public Pongv2? LastPong { get; set; }
         public int Countdown { get; set; } = 29;
-        public bool SendPrayer(Pong p)
+        public bool SendPrayer(Pongv2 p)
         {
             LastPong = p;
             Prayers++;

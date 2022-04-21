@@ -16,6 +16,7 @@ namespace PassionLib.Models
         }
         [Key]
         public string UserMention { get; set; }
+
         public bool ToBePinged { get; set; } = false;
         public int LastSummonCount { get; set; } = 0;
     }

@@ -56,7 +56,7 @@ namespace KiarApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPongs()
         {
-            return Ok(await context.Pongs.ToListAsync());
+            return Ok(await context.Pongv2.ToListAsync());
         }
     }
 }
