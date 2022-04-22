@@ -234,7 +234,7 @@ namespace MeltBot.Modules
                             message += " \n use %woahreceive to get blessed by melt";
                             await thread.SendMessageAsync(message).ConfigureAwait(false);
                             await Task.Delay(60000);
-                            await thread.SendMessageAsync($"The last person to send a prayer is {last.UserMention}");
+                            await thread.SendMessageAsync($"The last person to send a prayer is {last?.UserMention()}");
                             var c = r.Cereal.First();
                             if (c.LowerCountdown() <= 0)
                             {
