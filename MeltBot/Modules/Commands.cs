@@ -78,7 +78,7 @@ namespace MeltBot.Modules
             Context.SaveChanges();
         }
         [Hidden]
-        [Command("cerealtest")]
+        [Command("cerealmostping")]
         public async Task CerealMostPing(CommandContext ctx, bool log = false)
         {
             if(ctx.User.Id == 290938252540641290)
@@ -86,7 +86,7 @@ namespace MeltBot.Modules
                 List<Pongv2> most = new List<Pongv2>();
                 foreach (var v in Context.Pongv2)
                 {
-                    if(log) Console.WriteLine(v.UserMention() + " " + v.LastSummonCount);
+                    if(log) await ctx.Channel.SendMessageAsync(v.UserMention() + " " + v.LastSummonCount).ConfigureAwait(false);
                     if (v.LastSummonCount == (most.Max(x => x.LastSummonCount) ?? 0)) most.Add(v);
                     else if (v.LastSummonCount > (most.Max(x => x.LastSummonCount) ?? 0))
                     {
@@ -101,7 +101,7 @@ namespace MeltBot.Modules
                     sb.Append(v.UserMention() + " ");
 
                 }
-                sb.Append("\n, you have sent the most last prayer. A gift awaits you..");
+                sb.Append("\nYou have sent the most last prayer. A gift awaits you..");
 
                 
                 await ctx.Channel.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
@@ -262,10 +262,34 @@ namespace MeltBot.Modules
                             var c = r.Cereal.First();
                             if (c.LowerCountdown() <= 0)
                             {
-                                var most = r.Pongv2.MaxBy(x => x.LastSummonCount);
+                                List<Pongv2> most = new List<Pongv2>();
+                                foreach (var v in r.Pongv2)
+                                {
+                                    if (v.LastSummonCount == (most.Max(x => x.LastSummonCount) ?? 0)) most.Add(v);
+                                    else if (v.LastSummonCount > (most.Max(x => x.LastSummonCount) ?? 0))
+                                    {
+                                        most.Clear();
+                                        most.Add(v);
+                                    }
+
+                                }
+
+                                StringBuilder sb = new StringBuilder();
+                                foreach (var v in most)
+                                {
+                                    sb.Append(v.UserMention() + " ");
+
+                                }
+                                sb.Append("\nYou have sent the most last prayer. A gift awaits you..");
+
+
+                                await thread.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
+
+                                foreach (var v in r.Pongv2)
+                                {
+                                    v.LastSummonCount = 0;
+                                }
                                 c.Countdown = 29;
-                                await r.Pongv2.ForEachAsync(x => x.LastSummonCount = 0);
-                                await thread.SendMessageAsync($"The follower with the most last prayer is {most?.UserMention()}. A gift awaits you..").ConfigureAwait(false);
                             }
                             else
                             {
