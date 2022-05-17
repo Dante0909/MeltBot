@@ -79,11 +79,35 @@ namespace MeltBot.Modules
         }
         [Hidden]
         [Command("cerealtest")]
-        public async Task Cerealtest(CommandContext ctx)
+        public async Task CerealMostPing(CommandContext ctx, bool log = false)
         {
-            var c = Context.Cereal.Include(x => x.LastPong).First();
-            await ctx.Channel.SendMessageAsync("Count : " + c.Prayers.ToString());
-            await ctx.Channel.SendMessageAsync("Last prayer : " + c.LastPong?.UserMention());
+            if(ctx.User.Id == 290938252540641290)
+            {
+                List<Pongv2> most = new List<Pongv2>();
+                foreach (var v in Context.Pongv2)
+                {
+                    if(log) Console.WriteLine(v.UserMention() + " " + v.LastSummonCount);
+                    if (v.LastSummonCount == (most.Max(x => x.LastSummonCount) ?? 0)) most.Add(v);
+                    else if (v.LastSummonCount > (most.Max(x => x.LastSummonCount) ?? 0))
+                    {
+                        most.Clear();
+                        most.Add(v);
+                    }
+
+                }
+                StringBuilder sb = new StringBuilder();
+                foreach (var v in most)
+                {
+                    sb.Append(v.UserMention() + " ");
+
+                }
+                sb.Append("\n, you have sent the most last prayer. A gift awaits you..");
+
+                
+                await ctx.Channel.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
+            }
+            
+            
         }
 
         [Hidden]
