@@ -42,7 +42,8 @@ namespace MeltBot.Modules
                 Context.Add(new CerealShrine());
                 Context.SaveChanges();
             }
-
+            var shrine = Context.Cereal.FirstOrDefault();
+            if (shrine is null) await ctx.Channel.SendMessageAsync("Shrine not found <:pensiveengine:976828247427936316>").ConfigureAwait(false);
             Pongv2? p = Context.Pongv2.FirstOrDefault(x => x.Id == ctx.Member.Id);
             if(p is null)
             {
@@ -54,16 +55,16 @@ namespace MeltBot.Modules
             {
                 if (Random.Next(0, 100) == 0)
                 {
-                    await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine");
+                    await ctx.Channel.SendMessageAsync("Trully blessed, two prayers have been sent to his shrine").ConfigureAwait(false);
                     if (Context.Cereal.First().SendPrayer(p))
                     {
-                        var c = await ctx.Client.GetChannelAsync(875075360587403304);
-                        await c.SendMessageAsync("<@141381999674785792> :dalaobow:");
+                        var c = await ctx.Client.GetChannelAsync(875075360587403304).ConfigureAwait(false);
+                        await c.SendMessageAsync("<@141381999674785792> :dalaobow:").ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine");
+                    await ctx.Channel.SendMessageAsync("A prayer has been sent to his shrine").ConfigureAwait(false);
                 }          
             }
             else
