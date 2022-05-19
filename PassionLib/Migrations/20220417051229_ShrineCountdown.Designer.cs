@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PassionLib.DAL;
@@ -11,9 +12,10 @@ using PassionLib.DAL;
 namespace PassionLib.Migrations
 {
     [DbContext(typeof(RunsContext))]
-    partial class RunsContextModelSnapshot : ModelSnapshot
+    [Migration("20220417051229_ShrineCountdown")]
+    partial class ShrineCountdown
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,15 +35,15 @@ namespace PassionLib.Migrations
                     b.Property<int>("Countdown")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("LastPongId")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<string>("LastPongUserMention")
+                        .HasColumnType("text");
 
                     b.Property<int>("Prayers")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LastPongId");
+                    b.HasIndex("LastPongUserMention");
 
                     b.ToTable("Cereal");
                 });
@@ -159,21 +161,20 @@ namespace PassionLib.Migrations
                     b.ToTable("MysticCodeAliases");
                 });
 
-            modelBuilder.Entity("PassionLib.Models.Pongv2", b =>
+            modelBuilder.Entity("PassionLib.Models.Pong", b =>
                 {
-                    b.Property<decimal>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<string>("UserMention")
+                        .HasColumnType("text");
 
-                    b.Property<int?>("LastSummonCount")
+                    b.Property<int>("LastSummonCount")
                         .HasColumnType("integer");
 
-                    b.Property<bool?>("ToBePinged")
+                    b.Property<bool>("ToBePinged")
                         .HasColumnType("boolean");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserMention");
 
-                    b.ToTable("Pongv2");
+                    b.ToTable("Pongs");
                 });
 
             modelBuilder.Entity("PassionLib.Models.Quest", b =>
@@ -403,9 +404,9 @@ namespace PassionLib.Migrations
 
             modelBuilder.Entity("PassionLib.Models.CerealShrine", b =>
                 {
-                    b.HasOne("PassionLib.Models.Pongv2", "LastPong")
+                    b.HasOne("PassionLib.Models.Pong", "LastPong")
                         .WithMany()
-                        .HasForeignKey("LastPongId");
+                        .HasForeignKey("LastPongUserMention");
 
                     b.Navigation("LastPong");
                 });

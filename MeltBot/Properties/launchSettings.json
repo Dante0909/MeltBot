@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "MeltBot": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DO_DB_RECREATION": "true",
+        "TOKEN": "ODc4MTM3MjQ3NzA1MjEwODkw.YR8zCg.RLMNkJlip_Fd372IVkGboJQvmcw",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

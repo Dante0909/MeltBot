@@ -12,17 +12,24 @@ namespace PassionLib.Models
         [Key]
         public int Id { get; set; }
         public int Prayers { get; set; }
-        public Pong? LastPong { get; set; }
-        public bool SendPrayer(Pong p)
+        
+        public Pongv2? LastPong { get; set; }
+        public int Countdown { get; set; } = 29;
+        public bool SendPrayer(Pongv2 p)
         {
             LastPong = p;
             Prayers++;
-            if(Prayers >= 29)
+            if (Prayers >= 29)
             {
                 Prayers = 0;
                 return true;
             }
             return false;
+        }
+        public int LowerCountdown()
+        {
+            Countdown--;
+            return Countdown;
         }
         public CerealShrine()
         {
