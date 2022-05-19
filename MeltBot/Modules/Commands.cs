@@ -84,9 +84,10 @@ namespace MeltBot.Modules
             if(ctx.User.Id == 290938252540641290)
             {
                 List<Pongv2> most = new List<Pongv2>();
+                StringBuilder sb = new StringBuilder();
                 foreach (var v in Context.Pongv2)
                 {
-                    if(log) await ctx.Channel.SendMessageAsync(v.UserMention() + " " + v.LastSummonCount).ConfigureAwait(false);
+                    if (log) sb.Append(v.UserMention() + " " + v.LastSummonCount + "\n");
                     if (v.LastSummonCount == (most.Max(x => x.LastSummonCount) ?? 0)) most.Add(v);
                     else if (v.LastSummonCount > (most.Max(x => x.LastSummonCount) ?? 0))
                     {
@@ -95,7 +96,7 @@ namespace MeltBot.Modules
                     }
 
                 }
-                StringBuilder sb = new StringBuilder();
+                
                 foreach (var v in most)
                 {
                     sb.Append(v.UserMention() + " ");
@@ -105,7 +106,14 @@ namespace MeltBot.Modules
 
                 
                 await ctx.Channel.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
+                foreach (var v in Context.Pongv2)
+                {
+                    v.LastSummonCount = 0;
+                }
             }
+            Context.Cereal.First().Countdown = 30;
+            Context.SaveChanges();
+
             
             
         }
